@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regisztráció</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Regisztráció</h1>
+        <nav>
+            <a href="index.html">Főoldal</a>
+            <a href="login.html">Bejelentkezés</a>
+        </nav>
+    </header>
+
+    <main>
+        <form id="registrationForm">
+            <label for="username">Felhasználónév:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Jelszó:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="role">Szerepkör:</label>
+            <select id="role" name="role">
+                <option value="user">Felhasználó</option>
+                <option value="coach">Edző</option>
+            </select>
+
+            <button type="submit">Regisztráció</button>
+        </form>
+    </main>
+
+    <script src="assets/scripts/auth.js"></script>
+</body>
+</html>
