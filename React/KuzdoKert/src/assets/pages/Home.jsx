@@ -1,5 +1,7 @@
-<>
- <div>
-    <p>cigány</p>
- </div>
-</>
+const Home = () => {
+   return(
+      <h1>Főoldal</h1>
+   ) 
+ };
+ 
+ export default Home;

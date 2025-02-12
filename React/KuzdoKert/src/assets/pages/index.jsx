@@ -1,5 +1,0 @@
-export * from './Home'
-export * from './EdzoiOldal'
-export * from './Login'
-export * from './Register'
-export * from './Profil'
