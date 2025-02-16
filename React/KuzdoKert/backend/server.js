@@ -25,6 +25,27 @@ db.connect((err) => {
   }
 });
 
+
+
+
+// **Felhasználók lekérdezése**
+// URL: "http://localhost:5000/users"
+app.get("/users", (req, res) => {
+    db.query("SELECT * FROM latogatok", (err, results) => {
+      if (err) {
+        console.error("🔴 Hiba:", err);
+        return res.status(500).json({ error: "Adatbázis hiba" });
+      }
+      res.json(results);
+    });
+  });
+
+
+
+
+
+
+
 // **Szerver indítása**
 const PORT = 5000;
 app.listen(PORT, () => {
