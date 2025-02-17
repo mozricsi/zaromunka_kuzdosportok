@@ -13,7 +13,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root", // MySQL felhasználónév
   password: "", // MySQL jelszó (ha van)
-  port: "3307",
+  port: "3306",
   database: "kuzdosportok",
 });
 
@@ -49,5 +49,5 @@ app.get("/users", (req, res) => {
 // **Szerver indítása**
 const PORT = 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Szerver fut a ${PORT}-es porton`);
+  console.log(`🚀 Szerver fut az ${PORT}-es porton`);
 });
