@@ -1,0 +1,12 @@
+adattárolási és kezelési funkciók
+
+asztali és mobil eszközön is lehessen használni (reszponzív)
+
+forráskód a tiszta kód elvei alapján kell megjelennie, (megjegyzések stb)
+
+szoftver célját komponenseinek leírását és használatát le kell írni
+szoftver célja
+hogyan valósítottuk meg, milyen lépések voltak
+kinek milyen feladata volt
+hogyan működöik a program
+kód bemutatása(nem mindet, csak néhányat)
