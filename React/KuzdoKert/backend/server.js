@@ -3,6 +3,7 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
+const jwt = require("jsonwebtoken");
 
 const app = express();
 app.use(express.json());
@@ -13,7 +14,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root", // MySQL felhasználónév
   password: "", // MySQL jelszó (ha van)
-  port: "3306",
+  port: "3307",
   database: "kuzdosportok",
 });
 
@@ -39,9 +40,6 @@ app.get("/users", (req, res) => {
       res.json(results);
     });
   });
-
-
-
 
 
 
