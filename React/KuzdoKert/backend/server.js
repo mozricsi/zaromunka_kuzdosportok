@@ -50,10 +50,10 @@ app.get("/users", (req, res) => {
     const jelszo = req.body.password
 
     db.query(
-      "INSERT INTO latogatok (felhasznalonev, jelszo) VALUES (?,?)",
+      "INSERT INTO latogatok (felhasznalonev, jelszo, regisztracio_datum) VALUES (?,?, NOW())",
       [felhasznalonev, jelszo],
       (err, result) => {
-        console.log(err);
+        console.log("Hibák:" + err);
       }
     );
   });

@@ -6,7 +6,7 @@ const Register = () => {
   const [felhasznalonevReg, setFelhasznalonevReg] = useState("");
   const [jelszoReg, setJelszoReg] = useState("");
   const register = () => {
-    Axios.post("http://localhost5000/register", {
+    Axios.post("http://localhost:5000/register", {
       username: felhasznalonevReg,
       password: jelszoReg,
     }).then((response) => {
