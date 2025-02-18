@@ -4,7 +4,26 @@ nav a {
     margin: 0 15px;
     text-decoration: none;
 }
+.kotelezo{
+    color: red;
+    font-size: larger;
+    font-weight: bolder;
+}
 
+.nemkotelezo{
+    color: rgb(68, 67, 67);
+    font-size: smaller;
+    opacity: 60%;
+}
+.reg_login {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    width: 40%;
+    text-align: center;
+    margin: 10px;
+}
 
 main {
     display: flex;

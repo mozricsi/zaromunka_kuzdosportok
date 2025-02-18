@@ -46,12 +46,19 @@ app.get("/users", (req, res) => {
   // Regisztráció
   app.post('/register', (req, res) =>{
 
+    const vnev = req.body.vnev
+    const knev = req.body.knev
+    const knev2 = req.body.knev2
+    const email = req.body.email
+    const szul = req.body.szul
+    const lakhely = req.body.lakhely
+    const tel = req.body.tel
     const felhasznalonev = req.body.username
     const jelszo = req.body.password
 
     db.query(
-      "INSERT INTO latogatok (felhasznalonev, jelszo, regisztracio_datum) VALUES (?,?, NOW())",
-      [felhasznalonev, jelszo],
+      "INSERT INTO latogatok (vnev, knev, knev2, lakhelyvaros, email, telefonszam, szul_ido, felhasznalonev, jelszo, regisztracio_datum) VALUES (?,?,?,?,?,?,?,?,?, NOW())",
+      [vnev, knev, knev2, lakhely, email, tel, szul, felhasznalonev, jelszo],
       (err, result) => {
         console.log("Hibák:" + err);
       }

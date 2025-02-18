@@ -25,9 +25,9 @@ CREATE TABLE IF NOT EXISTS `kuzdosportok`.`latogatok` (
   `vnev` VARCHAR(255) NOT NULL,
   `knev` VARCHAR(255) NOT NULL,
   `knev2` VARCHAR(255) NULL,
-  `telefonszam` VARCHAR(15) NULL,
   `email` VARCHAR(255) NOT NULL,
-  `szul_ido` DATE NOT NULL,
+  `telefonszam` VARCHAR(15) NULL,
+  `szul_ido` DATETIME NOT NULL,
   `lakhelyvaros` VARCHAR(255) NOT NULL,
   `regisztracio_datum` DATETIME NOT NULL,
   `felhasznalonev` VARCHAR(255) NOT NULL,
@@ -178,3 +178,4 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+latogatoklatogatok
