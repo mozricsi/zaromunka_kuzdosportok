@@ -43,6 +43,23 @@ app.get("/users", (req, res) => {
 
 
 
+  // Regisztráció
+  app.post('/register', (req, res) =>{
+
+    const felhasznalonev = req.body.username
+    const jelszo = req.body.password
+
+    db.query(
+      "INSERT INTO latogatok (felhasznalonev, jelszo) VALUES (?,?)",
+      [felhasznalonev, jelszo],
+      (err, result) => {
+        console.log(err);
+      }
+    );
+  });
+
+
+
 
 // **Szerver indítása**
 const PORT = 5000;
