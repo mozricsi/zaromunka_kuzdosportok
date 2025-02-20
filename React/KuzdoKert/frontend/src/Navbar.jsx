@@ -2,6 +2,7 @@ import React from "react";
 import {Link, NavLink} from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css' 
 import 'bootstrap/dist/js/bootstrap.min.js'
+import  logo from './assets/kepek/fiok.png'
 
 
 const Navbar = (()=>{
@@ -17,6 +18,20 @@ const Navbar = (()=>{
                 <NavLink className="navbar-brand" to='/EdzesNaplo'>Edzésnapló</NavLink>
                 <NavLink className="navbar-brand" to='/Login'>Bejelentkezés</NavLink>
                 <NavLink className="navbar-brand" to='/Register'>Regisztráció</NavLink>
+        
+                <li
+            className="dropdown"
+            onMouseEnter={() => setAccountDropdown(true)}
+            onMouseLeave={() => setAccountDropdown(false)}
+          >
+            <NavLink className="dropbtn" to="#"><img src={logo} alt="Company Logo" className="logo-img" /></NavLink>
+            {accountDropdown && (
+              <ul className="dropdown-content">
+                <li><NavLink to="/regisztracio">Regisztrálok</NavLink></li>
+                <li><NavLink to="/bejelentkezes">Bejelentkezem</NavLink></li>
+              </ul>
+            )}
+          </li>
 
             </nav>
         </div>
