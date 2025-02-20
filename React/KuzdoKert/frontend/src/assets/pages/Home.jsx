@@ -71,7 +71,6 @@ const Home = () => {
     fetchNews();
     const interval = setInterval(fetchNews, 300000); // 5 percenként frissít
     return () => clearInterval(interval);
-
   }, []);
 
   return (
@@ -86,7 +85,6 @@ const Home = () => {
         <h2>Üdvözöllek a Küzdősportok Világában!</h2>
         <div className="intro-content">
           <img
-          
             src="https://www.bing.com/images/search?view=detailV2&ccid=yi8EjF3j&id=94FD0A9B30542A3531E8E953DE3ABCDDD0280740&thid=OIP.yi8EjF3j2xnqiGXMC6AKHgAAAA&mediaurl=https%3a%2f%2fcdn.clarosports.com%2fclarosports%2f2023%2f03%2fbox-214809-1024x576.jpg&cdnurl=https%3a%2f%2fth.bing.com%2fth%2fid%2fR.ca2f048c5de3db19ea8865cc0ba00a1e%3frik%3dQAco0N28Ot5T6Q%26pid%3dImgRaw%26r%3d0&exph=266&expw=474&q=box&simid=608006686790543957&FORM=IRPRST&ck=CD2DFDEFA23D3358FF49FBDB49DBFD13&selectedIndex=12&itb=0"
             alt="Küzdősportok"
             className="intro-image"
@@ -106,7 +104,6 @@ const Home = () => {
           Ha edző vagy, regisztrálj és töltsd fel a saját klubod adatait, valamint az edzéseid időpontjait és helyszíneit.
           Így a felhasználók könnyen megtalálhatják és csatlakozhatnak az edzéseidhez.
         </p>
-        
       </section>
 
       {/* Edzésnapló */}
@@ -116,7 +113,6 @@ const Home = () => {
           A sima felhasználók számára elérhető az edzésnapló funkció, ahol a saját edzéseidet tudod vezetni. Kövesd
           nyomon a fejlődésedet, és maradj motivált!
         </p>
-        
       </section>
 
       {/* Profil oldal */}
@@ -126,7 +122,6 @@ const Home = () => {
           A profil oldalon módosíthatod a saját adataidat, és beállíthatod, hogy milyen típusú edzések érdekelnek téged.
           Így személyre szabott ajánlatokat kaphatsz.
         </p>
-        
       </section>
 
       {/* Hírek */}
@@ -152,8 +147,20 @@ const Home = () => {
         )}
       </section>
 
+      {/* Lábléc */}
       <footer>
         <p>Kövess minket a közösségi médiában, és maradj naprakész a legújabb hírekkel!</p>
+        <div className="social-icons">
+          <a href="https://twitter.com/search?q=boxing%20OR%20MMA&src=typed_query" target="_blank" rel="noopener noreferrer">
+            <img src="https://cdn-icons-png.flaticon.com/512/124/124021.png" alt="Twitter" />
+          </a>
+          <a href="https://www.instagram.com/explore/tags/boxing/" target="_blank" rel="noopener noreferrer">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" />
+          </a>
+          <a href="https://www.youtube.com/results?search_query=boxing+MMA" target="_blank" rel="noopener noreferrer">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174883.png" alt="YouTube" />
+          </a>
+        </div>
       </footer>
     </div>
   );
