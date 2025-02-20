@@ -10,6 +10,7 @@ import './assets/Styles/dropdown.css'
 const Navbar = (()=>{
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false) ;
 
     return(
         <div>
@@ -20,10 +21,26 @@ const Navbar = (()=>{
                 <NavLink className="navbar-brand" to='/EdzoiOldal'>Edzői oldal</NavLink>
                 <NavLink className="navbar-brand" to='/SportKartyak'>Sportok</NavLink>
                 <NavLink className="navbar-brand" to='/EdzesNaplo'>Edzésnapló</NavLink>
-                <NavLink className="navbar-brand" to='/Login'>Bejelentkezés</NavLink>
-                <NavLink className="navbar-brand" to='/Register'>Regisztráció</NavLink>
+                <div className="d-flex justify-content-end w-100">
+          {isLoggedIn ? (
+            <>
+            <button onClick={() => setIsLoggedIn(false)}>Kijel</button>
+              {/* Ha be van jelentkezve a felhasználó, akkor mutatjuk a Profil és Kijelentkezés linkeket */}
+              <NavLink className="navbar-brand" to='/Profil'>Profil</NavLink>
+              <NavLink className="navbar-brand" to='/Logout'>Kijelentkezés</NavLink>
+            </>
+          ) : (
+            <>
+            <button onClick={() => setIsLoggedIn(true)}>Bejelentkezés</button>
+              {/* Ha nincs bejelentkezve a felhasználó, akkor mutatjuk a Bejelentkezés és Regisztráció linkeket */}
+              <NavLink className="navbar-brand" to='/Login'>Bejelentkezés</NavLink>
+              <NavLink className="navbar-brand" to='/Register'>Regisztráció</NavLink>
+            </>
+          )}
+          </div>
+                
         
-            <div className="d-flex justify-content-end w-100">
+            <div >
                 {/* Fiók ikonú dropdown */}
                 <div 
                     className="nav-item dropdown" 
