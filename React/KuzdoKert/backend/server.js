@@ -11,8 +11,27 @@ const cookieParser = require('cookie-parser')
 const session = require('express-session')
 
 const app = express();
+
+
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:5173"],
+  methods: ["GET","POST"],
+  credentials: true
+}));
+
+app.use(cookieParser())
+app.use(bodyParser.urlencoded({extended: true}))
+
+app.use(session({
+  key: "userId",
+  secret: "secret",
+  resave: false,
+  saveUninitialized: false,
+  cookie:{
+    expires: 100000
+  },
+}))
 
 // **MySQL adatbázis kapcsolat**
 const db = mysql.createConnection({
@@ -30,22 +49,6 @@ db.connect((err) => {
     console.log("✅ MySQL kapcsolódva!");
   }
 });
-
-
-
-
-// **Felhasználók lekérdezése**
-// URL: "http://localhost:5000/users"
-app.get("/users", (req, res) => {
-    db.query("SELECT * FROM latogatok", (err, results) => {
-      if (err) {
-        console.error("🔴 Hiba:", err);
-        return res.status(500).json({ error: "Adatbázis hiba" });
-      }
-      res.json(results);
-    });
-  });
-
 
 
   // Regisztráció
@@ -88,6 +91,17 @@ app.get("/users", (req, res) => {
 
 
 
+  //login check (be vagy e jelentkezve)
+
+  app.get("/login", (req, res) => {
+    if (req.session.user) {
+      res.send({loggedIn: true, user: req.session.user})
+    }
+    else{
+      res.send({loggedIn: false})
+    }
+  })
+
 
   //login
   app.post('/login', (req, res) => {
@@ -106,6 +120,8 @@ app.get("/users", (req, res) => {
         if (result.length > 0) {
           bcrypt.compare(jelszo, result[0].jelszo, (error, response) =>{
             if (response) {
+              req.session.user = result
+              console.log(req.session.user)
               res.send(result)
             }
             else{

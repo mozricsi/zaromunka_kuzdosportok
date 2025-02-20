@@ -3,14 +3,35 @@ import {Link, NavLink} from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css' 
 import 'bootstrap/dist/js/bootstrap.min.js'
 import  logo from './assets/kepek/fiok.png'
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import './assets/Styles/dropdown.css'
+import Axios from "axios";
 
 
 const Navbar = (()=>{
 
+
+        // be vagy e jelentkezve lekérdezés-------------------------------
+        const [loginStatus, setLoginStatus] = useState(false);
+        Axios.defaults.withCredentials = true;
+       useEffect(() =>{
+         
+         Axios.get("http://localhost:5000/login").then((response) => {
+           console.log(response)
+           if (response.data.loggedIn == true) {
+                   setLoginStatus(response.data.user[0].felhasznalonev);
+                   
+           }else{
+             console.log({loginStatus}, "Nem vagy bejelentkezve")
+           }
+     
+         })
+       });
+   
+     //--------------------------------------------------------------------
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false) ;
+
 
     return(
         <div>
@@ -22,21 +43,21 @@ const Navbar = (()=>{
                 <NavLink className="navbar-brand" to='/SportKartyak'>Sportok</NavLink>
                 <NavLink className="navbar-brand" to='/EdzesNaplo'>Edzésnapló</NavLink>
                 <div className="d-flex justify-content-end w-100">
-          {isLoggedIn ? (
+
+                {loginStatus ? (
             <>
-            <button onClick={() => setIsLoggedIn(false)}>Kijel</button>
               {/* Ha be van jelentkezve a felhasználó, akkor mutatjuk a Profil és Kijelentkezés linkeket */}
               <NavLink className="navbar-brand" to='/Profil'>Profil</NavLink>
               <NavLink className="navbar-brand" to='/Logout'>Kijelentkezés</NavLink>
             </>
           ) : (
             <>
-            <button onClick={() => setIsLoggedIn(true)}>Bejelentkezés</button>
               {/* Ha nincs bejelentkezve a felhasználó, akkor mutatjuk a Bejelentkezés és Regisztráció linkeket */}
               <NavLink className="navbar-brand" to='/Login'>Bejelentkezés</NavLink>
               <NavLink className="navbar-brand" to='/Register'>Regisztráció</NavLink>
             </>
           )}
+
           </div>
                 
         
@@ -68,8 +89,6 @@ const Navbar = (()=>{
                     </ul>
                 </div>
             </div>
-                
-
             </nav>
         </div>
     )

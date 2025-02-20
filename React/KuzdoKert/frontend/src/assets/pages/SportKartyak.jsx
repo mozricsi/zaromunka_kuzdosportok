@@ -10,31 +10,31 @@ const SportKartyak = () => {
     
     <h1>Sportkártyák</h1>
  <main>
-        <div class="card" id="boxing">
+        <div className="card" id="boxing">
             <h2>Box</h2>
             <p>Kattints a részletekért!</p>
         </div>
-        <div class="card" id="judo">
+        <div className="card" id="judo">
             <h2>Judo</h2>
             <p>Kattints a részletekért!</p>
         </div>
-        <div class="card" id="jiu-jitsu">
+        <div className="card" id="jiu-jitsu">
             <h2>Jiu Jitsu</h2>
             <p>Kattints a részletekért!</p>
         </div>
-        <div class="card" id="muay-thai">
+        <div className="card" id="muay-thai">
             <h2>Muay Thai</h2>
             <p>Kattints a részletekért!</p>
         </div>
-        <div class="card" id="k1">
+        <div className="card" id="k1">
             <h2>K1</h2>
             <p>Kattints a részletekért!</p>
         </div>
-        <div class="card" id="wrestling">
+        <div className="card" id="wrestling">
             <h2>Birkózás</h2>
             <p>Kattints a részletekért!</p>
         </div>
-        <div class="card" id="kickbox">
+        <div className="card" id="kickbox">
             <h2>Kickbox</h2>
             <p>Kattints a részletekért!</p>
         </div>

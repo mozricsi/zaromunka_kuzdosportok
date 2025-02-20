@@ -1,9 +1,32 @@
 import React, {useState} from "react";
 import Axios from 'axios'
 import '../Styles/regisztracio.css'
+import { useEffect } from "react";
 
 
 const Register = () => {
+
+
+  
+    // be vagy e jelentkezve lekérdezés-------------------------------
+    const [loginStatus, setLoginStatus] = useState("");
+     Axios.defaults.withCredentials = true;
+     
+    useEffect(() =>{  
+      Axios.get("http://localhost:5000/login").then((response) => {
+        console.log(response)
+        if (response.data.loggedIn == true) {
+                setLoginStatus(response.data.user[0].felhasznalonev);
+                
+        }else{
+          console.log({loginStatus}, "Nem vagy bejelentkezve")
+        }
+  
+      })
+    });
+
+  //--------------------------------------------------------------------
+
   const [vezeteknevReg, setVezeteknevReg] = useState("");
   const [keresztnevReg, setKeresztnevReg] = useState("");
   const [keresztnev2Reg, setKeresztnev2Reg] = useState(null);
@@ -157,6 +180,7 @@ const Register = () => {
             <div>
               <button type="submit" onClick={register}>Regisztráció</button>
             </div>
+            <h1>{loginStatus}</h1>
       
     </div>
     </main>
