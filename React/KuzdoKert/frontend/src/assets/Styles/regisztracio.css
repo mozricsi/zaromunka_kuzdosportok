@@ -1,0 +1,22 @@
+.reg_names {
+    display: flex;
+    gap: 10px; /* Különbség a mezők között */
+  }
+  
+  .reg_names input {
+    width: 100%; /* Adott szélesség a mezőknek */
+  }
+
+  
+  .kotelezo{
+    color: red;
+    font-size: larger;
+    font-weight: bolder;
+}
+
+
+.nemkotelezo{
+    color: rgb(68, 67, 67);
+    font-size: smaller;
+    opacity: 60%;
+}

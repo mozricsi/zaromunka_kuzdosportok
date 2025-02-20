@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import Axios from 'axios'
+import '../Styles/regisztracio.css'
 
 
 const Register = () => {
@@ -40,44 +41,44 @@ const Register = () => {
     <main>
     <div className="reg_login">
       
-      <div>
-      <label><span className="kotelezo">*</span>Vezetéknév:</label> <br></br>
-          <input
-            type="text"
-            placeholder="Vezetéknév*"
-            onChange={(e) => {
-              setVezeteknevReg(e.target.value)
-            }}
-          />
-      </div>
+    <div className="reg_names">
+  <div>
+    <label><span className="kotelezo">*</span>Vezetéknév:</label> <br></br>
+    <input
+      type="text"
+      placeholder="Vezetéknév*"
+      onChange={(e) => {
+        setVezeteknevReg(e.target.value)
+      }}
+    />
+  </div>
 
-      <div>
-      <label><span className="kotelezo">*</span>Keresztnév:</label> <br></br>
-          <input
-            type="text"
-            placeholder="Keresztnév*"
-            onChange={(e) => {
-              setKeresztnevReg(e.target.value)
-            }}
-          />
-      </div>
+  <div>
+    <label><span className="kotelezo">*</span>Keresztnév:</label> <br></br>
+    <input
+      type="text"
+      placeholder="Keresztnév*"
+      onChange={(e) => {
+        setKeresztnevReg(e.target.value)
+      }}
+    />
+  </div>
 
-      <div>
-        <label>Harmadik név: <span className="nemkotelezo">(ha van)</span></label> <br></br>
-          <input
-            type="text"
-            placeholder="Harmadik név(ha van)"
-            onChange={(e) => {
-              if(e.target.value == ""){
-                setKeresztnev2Reg(null)
-              }
-              else{
-                setKeresztnev2Reg(e.target.value)
-              }
-              
-            }}
-          />
-      </div>
+  <div>
+    <label><span className="kotelezo"></span>Harmadik név: <span className="nemkotelezo"> (ha van)</span></label> <br></br>
+    <input
+      type="text"
+      placeholder="Harmadik név(ha van)"
+      onChange={(e) => {
+        if (e.target.value === "") {
+          setKeresztnev2Reg(null);
+        } else {
+          setKeresztnev2Reg(e.target.value);
+        }
+      }}
+    />
+  </div>
+</div>
             
       <div>
         <label><span className="kotelezo">*</span>Email cím:</label> <br></br>
