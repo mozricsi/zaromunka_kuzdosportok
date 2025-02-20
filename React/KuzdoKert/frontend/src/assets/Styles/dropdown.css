@@ -1,0 +1,37 @@
+.dropdown-menu {
+    min-width: 150px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 5px 0;
+    right: 0; /* A menüt a jobb oldalra igazítja */
+    left: auto; /* Megakadályozza, hogy balra csússzon */
+    min-width: 180px; /* Ha túl széles lenne, korlátozza */
+    max-width: 250px; /* Ha mégis nagy lenne, ad neki egy határt */
+    overflow: hidden; /* Ha mégis kilógna, levágja */
+}
+
+
+/* Eltávolítja a kattintás utáni kék fókuszt */
+.dropdown-item:focus,
+.dropdown-item:active {
+    background-color: transparent !important; 
+    color: inherit !important;
+    outline: none !important;
+    box-shadow: none !important; /* Bootstrap fókusz árnyékának eltávolítása */
+}
+
+/* Hover állapot - amikor az egér felette van */
+.dropdown-item:hover {
+    background-color: #f1f1f1 !important; /* Világos szürke háttér */
+    color: #212529 !important; /* Normál szövegszín */
+}
+
+.dropdown-item {
+    background-color: transparent !important;
+    color: #212529 !important;
+}
+
+#dropjobbra{
+    text-align: right;
+}
