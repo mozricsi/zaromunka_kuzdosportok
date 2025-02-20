@@ -1,25 +1,23 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { FaEdit } from 'react-icons/fa';
 import "../Styles/profil.css";
 
 const Profil = () => {
  
   const [userData, setUserData] = useState({
-    lastName: 'Kovács',
-    firstName: 'János',
+    lastName: '',
+    firstName: '',
     middleName: '',
-    email: 'janos.kovacs@example.com',
-    birthDate: '1990-01-01',
-    location: 'Budapest',
-    phoneNumber: '+36 30 123 4567',
-    username: 'janos90',
-    password: '********',
+    email: '',
+    birthDate: '',
+    location: '',
+    phoneNumber: '',
+    username: '',
+    password: '',
     profilePicture: null,
   });
 
-  const [editingField, setEditingField] = useState(null); // Melyik mezőt szerkesztjük éppen
-  const [tempValue, setTempValue] = useState(''); // Ideiglenes érték a szerkesztéshez
+  const [editMode, setEditMode] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -50,75 +48,165 @@ const Profil = () => {
     }
   };
 
-  const startEditing = (field, value) => {
-    setEditingField(field);
-    setTempValue(value);
-  };
-
-  const saveEditing = (field) => {
-    setUserData({ ...userData, [field]: tempValue });
-    setEditingField(null);
-    setTempValue('');
+  const handleSaveChanges = () => {
+    setEditMode(false);
     alert('Adatok sikeresen frissítve!');
   };
 
   return (
     <div className="profile-page">
       <h1>Profil</h1>
-      <table className="profile-table">
-        <tbody>
-          {Object.entries(userData).map(([key, value]) => (
-            key !== 'profilePicture' && (
-              <tr key={key}>
-                <th>{key === 'lastName' ? 'Vezetéknév' :
-                     key === 'firstName' ? 'Keresztnév' :
-                     key === 'middleName' ? 'Harmadik név (ha van)' :
-                     key === 'email' ? 'Email cím' :
-                     key === 'birthDate' ? 'Születési dátum' :
-                     key === 'location' ? 'Lakhely' :
-                     key === 'phoneNumber' ? 'Telefonszám' :
-                     key === 'username' ? 'Felhasználónév' :
-                     key === 'password' ? 'Jelszó' : key}:</th>
-                <td>
-                  {editingField === key ? (
-                    <>
-                      <input
-                        type={key === 'birthDate' ? 'date' : key === 'password' ? 'password' : 'text'}
-                        value={tempValue}
-                        onChange={(e) => setTempValue(e.target.value)}
-                      />
-                      <button onClick={() => saveEditing(key)}>Mentés</button>
-                    </>
-                  ) : (
-                    <>
-                      {key === 'password' ? '********' : value}
-                      <FaEdit
-                        className="edit-icon"
-                        onClick={() => startEditing(key, value)}
-                      />
-                    </>
-                  )}
-                </td>
-              </tr>
-            )
-          ))}
-          <tr>
-            <th>Profilkép:</th>
-            <td>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleProfilePictureChange}
-              />
-              {userData.profilePicture && (
-                <div className="profile-picture">
-                  <img src={userData.profilePicture} alt="Profilkép" />
-                </div>
-              )}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      {editMode ? (
+        <table className="profile-table">
+          <tbody>
+            <tr>
+              <th>Vezetéknév:</th>
+              <td>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={userData.lastName}
+                  onChange={handleInputChange}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>Keresztnév:</th>
+              <td>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={userData.firstName}
+                  onChange={handleInputChange}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>Harmadik név (ha van):</th>
+              <td>
+                <input
+                  type="text"
+                  name="middleName"
+                  value={userData.middleName}
+                  onChange={handleInputChange}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>Email cím:</th>
+              <td>
+                <input
+                  type="email"
+                  name="email"
+                  value={userData.email}
+                  onChange={handleInputChange}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>Születési dátum:</th>
+              <td>
+                <input
+                  type="date"
+                  name="birthDate"
+                  value={userData.birthDate}
+                  onChange={handleInputChange}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>Lakhely:</th>
+              <td>
+                <input
+                  type="text"
+                  name="location"
+                  value={userData.location}
+                  onChange={handleInputChange}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>Telefonszám:</th>
+              <td>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  value={userData.phoneNumber}
+                  onChange={handleInputChange}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>Felhasználónév:</th>
+              <td>
+                <input
+                  type="text"
+                  name="username"
+                  value={userData.username}
+                  onChange={handleInputChange}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>Profilkép:</th>
+              <td>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleProfilePictureChange}
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      ) : (
+        <table className="profile-table">
+          <tbody>
+            <tr>
+              <th>Vezetéknév:</th>
+              <td>{userData.lastName}</td>
+            </tr>
+            <tr>
+              <th>Keresztnév:</th>
+              <td>{userData.firstName}</td>
+            </tr>
+            <tr>
+              <th>Harmadik név (ha van):</th>
+              <td>{userData.middleName}</td>
+            </tr>
+            <tr>
+              <th>Email cím:</th>
+              <td>{userData.email}</td>
+            </tr>
+            <tr>
+              <th>Születési dátum:</th>
+              <td>{userData.birthDate}</td>
+            </tr>
+            <tr>
+              <th>Lakhely:</th>
+              <td>{userData.location}</td>
+            </tr>
+            <tr>
+              <th>Telefonszám:</th>
+              <td>{userData.phoneNumber}</td>
+            </tr>
+            <tr>
+              <th>Felhasználónév:</th>
+              <td>{userData.username}</td>
+            </tr>
+            <tr>
+              <th>Profilkép:</th>
+              <td>
+                {userData.profilePicture && (
+                  <div className="profile-picture">
+                    <img src={userData.profilePicture} alt="Profilkép" />
+                  </div>
+                )}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      )}
 
       <div className="password-change">
         <h2>Jelszó változtatása</h2>
@@ -136,6 +224,10 @@ const Profil = () => {
         />
         <button onClick={handlePasswordChange}>Jelszó változtatása</button>
       </div>
+
+      <button onClick={editMode ? handleSaveChanges : () => setEditMode(true)}>
+        {editMode ? 'Mentés' : 'Szerkesztés'}
+      </button>
     </div>
   );
 };
