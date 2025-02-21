@@ -77,7 +77,7 @@ const Home = () => {
     <div className="App">
       <header>
         <h1>Küzdősportok Világa</h1>
-        <p>Fedezd fel a különböző küzdősportokat, regisztrálj edzőként, és tartsd karban az edzésnaplódat!</p>
+        <p>Fedezd fel a különböző küzdősportokat, regisztrálj akár edzőként, és tartsd karban az edzésnaplódat!</p>
       </header>
 
       {/* Weboldal bemutatása */}
