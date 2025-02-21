@@ -16,7 +16,7 @@ const SportKartyak = () => {
     { id: 'k1', title: 'K1', image: 'https://eaglekickboxing.co.uk/wp-content/uploads/2020/05/Mtgp.jpg-400-of-644-scaled-e1592092266858.jpg' },
     { id: 'wrestling', title: 'Birkózás', image: 'https://cdn.vox-cdn.com/thumbor/rsC7jguUw-X5dDcimccgFpmZ7y0=/0x248:4000x2498/1600x900/cdn.vox-cdn.com/photo_images/8424126/150155058.jpg' },
     { id: 'kickbox', title: 'Kickbox', image: 'https://staticg.sportskeeda.com/editor/2022/02/6dd45-16443294303689-1920.jpg' },
-    { id: 'mma', title: 'Mma', image: 'https://th.bing.com/th/id/OIP.Y2Qv1XgDg0JF-FSqgd5skAHaFj?rs=1&pid=ImgDetMain' },
+    { id: 'mma', title: 'MMA', image: 'https://th.bing.com/th/id/OIP.Y2Qv1XgDg0JF-FSqgd5skAHaFj?rs=1&pid=ImgDetMain' },
 
   ];
 

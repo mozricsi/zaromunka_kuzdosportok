@@ -203,3 +203,48 @@ footer p {
 .social-icons img:hover {
   transform: scale(1.2);
 }
+
+/* Bevezető szekció */
+.intro-section {
+  margin-bottom: 40px;
+  padding: 20px;
+  background: #2c2c2c; /* Enyhén világosabb háttér */
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  position: relative; /* Pozicionáláshoz szükséges */
+}
+
+.intro-content {
+  display: flex;
+  flex-direction: column; /* Tartalom egymás alatt */
+  align-items: flex-start; /* Tartalom balra igazítva */
+  gap: 20px;
+}
+
+.intro-image {
+  width: 150px; /* Kisebb méret */
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+  position: absolute; /* Abszolút pozicionálás */
+  top: 20px; /* Felső margó */
+  right: 20px; /* Jobb margó */
+}
+
+.intro-image:hover {
+  transform: scale(1.05);
+}
+
+.intro-section h2 {
+  font-size: 2rem;
+  color: #ff4500;
+  margin-bottom: 10px;
+}
+
+.intro-section p {
+  font-size: 1rem;
+  color: #ccc;
+  line-height: 1.6;
+  max-width: 80%; /* Szöveg szélességének korlátozása */
+}

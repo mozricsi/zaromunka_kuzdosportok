@@ -85,7 +85,7 @@ const Home = () => {
         <h2>Üdvözöllek a Küzdősportok Világában!</h2>
         <div className="intro-content">
           <img
-            src="https://www.bing.com/images/search?view=detailV2&ccid=yi8EjF3j&id=94FD0A9B30542A3531E8E953DE3ABCDDD0280740&thid=OIP.yi8EjF3j2xnqiGXMC6AKHgAAAA&mediaurl=https%3a%2f%2fcdn.clarosports.com%2fclarosports%2f2023%2f03%2fbox-214809-1024x576.jpg&cdnurl=https%3a%2f%2fth.bing.com%2fth%2fid%2fR.ca2f048c5de3db19ea8865cc0ba00a1e%3frik%3dQAco0N28Ot5T6Q%26pid%3dImgRaw%26r%3d0&exph=266&expw=474&q=box&simid=608006686790543957&FORM=IRPRST&ck=CD2DFDEFA23D3358FF49FBDB49DBFD13&selectedIndex=12&itb=0"
+            src="https://cdn.qwenlm.ai/output/36a0457c-ad32-4b7e-85de-9a8ab7eee151/t2i/ecd1e84f-c5ec-45d6-a496-0c5b5173ea5e/8c054a9d-01d9-4a9e-a389-8f41c70f9c31.png"
             alt="Küzdősportok"
             className="intro-image"
           />
