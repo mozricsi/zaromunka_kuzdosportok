@@ -33,6 +33,8 @@ app.use(session({
   },
 }))
 
+//--------------------------------------------------------
+
 // **MySQL adatbázis kapcsolat**
 const db = mysql.createConnection({
   host: "localhost",
@@ -50,6 +52,7 @@ db.connect((err) => {
   }
 });
 
+//----------------------------------------------------
 
   // Regisztráció
   app.post('/register', (req, res) =>{
@@ -88,7 +91,7 @@ db.connect((err) => {
 
     
   });
-
+//----------------------------------------------------------------
 
 
   //login check (be vagy e jelentkezve)
@@ -137,7 +140,7 @@ db.connect((err) => {
     );
   })
 
-
+//-----------------------------------------------------------------------------
 
 
 // **Szerver indítása**
