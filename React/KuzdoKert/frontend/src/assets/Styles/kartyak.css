@@ -21,6 +21,10 @@ main {
     cursor: pointer;
     margin: 10px;
     transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 400px; /* Rögzített magasság */
 }
 
 .card:hover {
@@ -28,11 +32,18 @@ main {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
-.card-image {
+.image-container {
     width: 100%;
-    height: auto;
+    height: 250px; /* Rögzített magasság a képeknek */
+    overflow: hidden;
     border-radius: 5px;
     margin-bottom: 15px;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Képek arányos kitöltése */
 }
 
 @media (max-width: 768px) {
