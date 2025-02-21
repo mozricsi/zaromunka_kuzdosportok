@@ -1,21 +1,58 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import "../Styles/profil.css";
+import Axios from "axios";
 
 const Profil = () => {
+
+
+      // be vagy e jelentkezve lekérdezés-------------------------------
+      const [loginStatus, setLoginStatus] = useState("");
+      Axios.defaults.withCredentials = true;
+      
+     useEffect(() =>{  
+       Axios.get("http://localhost:5000/login").then((response) => {
+         console.log(response)
+         if (response.data.loggedIn == true) {
+                 setLoginStatus(response.data.user[0].felhasznalonev);
+                 setUserData( prevState => ({
+                  ...prevState,
+                  vnev: response.data.user[0].vnev,
+                  knev: response.data.user[0].knev,
+                  knev2: response.data.user[0].knev2,
+                  email: response.data.user[0].email,
+                  szul: response.data.user[0].szul_ido,
+                  lakhely: response.data.user[0].lakhelyvaros,
+                  tel: response.data.user[0].telefonszam,
+                  username: response.data.user[0].felhasznalonev,
+                  password: response.data.user[0].jelszo,
+                 }))
+                 
+         }else{
+           console.log({loginStatus}, "Nem vagy bejelentkezve")
+         }
+   
+       })
+     });
  
+   //--------------------------------------------------------------------
+
+
+  // konstansok a felhasználó adataival
   const [userData, setUserData] = useState({
-    lastName: null,
-    firstName: null,
-    middleName: null,
+    vnev: null,
+    knev: null,
+    knev2: null,
     email: null,
-    birthDate: null,
-    location: null,
-    phoneNumber: null,
+    szul: null,
+    lakhely: null,
+    tel: null,
     username: null,
     password: null,
     profilePicture: null,
   });
+  
+
 
   const [editMode, setEditMode] = useState(false);
   const [newPassword, setNewPassword] = useState('');
@@ -24,7 +61,7 @@ const Profil = () => {
 //--------------------------------------------------------------
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
+    setUserDataUpdate({ ...userDataUpdate, [name]: value });
   };
   //profilkép?
 //--------------------------------------------------------------
@@ -53,10 +90,28 @@ const Profil = () => {
   const handleSaveChanges = () => {
     setEditMode(false);
     alert('Adatok sikeresen frissítve!');
+    console.log(userDataUpdate.vnev)
   };
+
+  //---------------------------------------------------
+  const [userDataUpdate, setUserDataUpdate] = useState({
+    vnev: null,
+    knev: null,
+    knev2: null,
+    email: null,
+    szul: null,
+    lakhely: null,
+    tel: null,
+    username: null,
+    password: null,
+    profilePicture: null,
+  });
+  
+//---------------------------------------------------
 
   return (
     <div className="profile-page">
+      <h1>{loginStatus}</h1>
       <h1>Profil</h1>
       {editMode ? (
         <table className="profile-table">
@@ -66,8 +121,8 @@ const Profil = () => {
               <td>
                 <input
                   type="text"
-                  name="lastName"
-                  value={userData.lastName}
+                  name="vnev"
+                  value={userData.vnev}
                   onChange={handleInputChange}
                 />
               </td>
@@ -77,8 +132,8 @@ const Profil = () => {
               <td>
                 <input
                   type="text"
-                  name="firstName"
-                  value={userData.firstName}
+                  name="knev"
+                  value={userData.knev}
                   onChange={handleInputChange}
                 />
               </td>
@@ -88,8 +143,8 @@ const Profil = () => {
               <td>
                 <input
                   type="text"
-                  name="middleName"
-                  value={userData.middleName}
+                  name="knev2"
+                  value={userData.knev2}
                   onChange={handleInputChange}
                 />
               </td>
@@ -110,8 +165,8 @@ const Profil = () => {
               <td>
                 <input
                   type="date"
-                  name="birthDate"
-                  value={userData.birthDate}
+                  name="szul"
+                  value={userData.szul}
                   onChange={handleInputChange}
                 />
               </td>
@@ -121,8 +176,8 @@ const Profil = () => {
               <td>
                 <input
                   type="text"
-                  name="location"
-                  value={userData.location}
+                  name="lakhely"
+                  value={userData.lakhely}
                   onChange={handleInputChange}
                 />
               </td>
@@ -132,8 +187,8 @@ const Profil = () => {
               <td>
                 <input
                   type="tel"
-                  name="phoneNumber"
-                  value={userData.phoneNumber}
+                  name="tel"
+                  value={userData.tel}
                   onChange={handleInputChange}
                 />
               </td>
@@ -161,36 +216,41 @@ const Profil = () => {
             </tr>
           </tbody>
         </table>
+
       ) : (
+
         <table className="profile-table">
           <tbody>
             <tr>
               <th>Vezetéknév:</th>
-              <td>{userData.lastName}</td>
+              <td>{userData.vnev}</td>
             </tr>
             <tr>
               <th>Keresztnév:</th>
-              <td>{userData.firstName}</td>
+              <td>{userData.knev}</td>
             </tr>
-            <tr>
-              <th>Harmadik név (ha van):</th>
-              <td>{userData.middleName}</td>
-            </tr>
+            
+              {userData.knev2 && (
+                <tr>
+                  <th>Harmadik név:</th>
+                  <td>{userData.knev2}</td>
+                </tr>
+              )}
             <tr>
               <th>Email cím:</th>
               <td>{userData.email}</td>
             </tr>
             <tr>
               <th>Születési dátum:</th>
-              <td>{userData.birthDate}</td>
+              <td>{userData.szul}</td>
             </tr>
             <tr>
               <th>Lakhely:</th>
-              <td>{userData.location}</td>
+              <td>{userData.lakhely}</td>
             </tr>
             <tr>
               <th>Telefonszám:</th>
-              <td>{userData.phoneNumber}</td>
+              <td>{userData.tel}</td>
             </tr>
             <tr>
               <th>Felhasználónév:</th>
@@ -231,7 +291,9 @@ const Profil = () => {
         {editMode ? 'Mentés' : 'Szerkesztés'}
       </button>
     </div>
+    
   );
+  
 };
   
   export default Profil;
