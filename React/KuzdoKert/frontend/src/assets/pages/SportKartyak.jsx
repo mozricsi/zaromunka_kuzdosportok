@@ -9,7 +9,7 @@ const SportKartyak = () => {
 
   // Kártyák adatai
   const cards = [
-    { id: 'boxing', title: 'Box', image: 'https://images.daznservices.com/di/library/DAZN_News/ee/26/artur-beterbiev-vs-dmitry-bivol_cus9dhbfyeoo17j3n1y5i0kuq.jpg?t=534847237' },
+    { id: 'SportLeiras', title: 'Box', image: 'https://images.daznservices.com/di/library/DAZN_News/ee/26/artur-beterbiev-vs-dmitry-bivol_cus9dhbfyeoo17j3n1y5i0kuq.jpg?t=534847237' },
     { id: 'judo', title: 'Judo', image: 'https://78884ca60822a34fb0e6-082b8fd5551e97bc65e327988b444396.ssl.cf3.rackcdn.com/up/2019/12/1Iliadis9227-1577780463-1577780464.jpg' },
     { id: 'jiu-jitsu', title: 'Jiu Jitsu', image: 'https://cdn-images-1.medium.com/max/1600/1*96FA5T__PjyxjQqPdKrlCQ.jpeg' },
     { id: 'muay-thai', title: 'Muay Thai', image: 'https://th.bing.com/th/id/R.54c76e6bb6cc1526ac80b9404eb31140?rik=BkmkizItcCQANQ&pid=ImgRaw&r=0' },
