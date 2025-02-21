@@ -27,32 +27,42 @@ const Register = () => {
 
   //--------------------------------------------------------------------
 
-  const [vezeteknevReg, setVezeteknevReg] = useState("");
-  const [keresztnevReg, setKeresztnevReg] = useState("");
+  const [vezeteknevReg, setVezeteknevReg] = useState(null);
+  const [keresztnevReg, setKeresztnevReg] = useState(null);
   const [keresztnev2Reg, setKeresztnev2Reg] = useState(null);
-  const [emailReg, setEmailReg] = useState("");
-  const [szulReg, setSzulReg] = useState("");
-  const [lakhelyReg, setLakhelyReg] = useState("");
-  const [telReg, setTelReg] = useState("");
-  const [felhasznalonevReg, setFelhasznalonevReg] = useState("");
-  const [jelszoReg, setJelszoReg] = useState("");
+  const [emailReg, setEmailReg] = useState(null);
+  const [szulReg, setSzulReg] = useState(null);
+  const [lakhelyReg, setLakhelyReg] = useState(null);
+  const [telReg, setTelReg] = useState(null);
+  const [felhasznalonevReg, setFelhasznalonevReg] = useState(null);
+  const [jelszoReg, setJelszoReg] = useState(null);
   const register = () => {
-    Axios.post("http://localhost:5000/register", {
+    if(vezeteknevReg && keresztnevReg && emailReg && szulReg && lakhelyReg && felhasznalonevReg && jelszoReg){
 
-      username: felhasznalonevReg,
-      password: jelszoReg,
-      vnev: vezeteknevReg,
-      knev: keresztnevReg,
-      knev2: keresztnev2Reg,
-      email: emailReg,
-      szul: szulReg,
-      lakhely: lakhelyReg,
-      tel: telReg,
-      
-    }).then((response) => {
-      console.log(response);
-    });
+      Axios.post("http://localhost:5000/register", {
+
+        username: felhasznalonevReg,
+        password: jelszoReg,
+        vnev: vezeteknevReg,
+        knev: keresztnevReg,
+        knev2: keresztnev2Reg,
+        email: emailReg,
+        szul: szulReg,
+        lakhely: lakhelyReg,
+        tel: telReg,
+        
+      }).then((response) => {
+        console.log(response);
+      });
+      console.log("Sikeres regisztráció!")
+
+    }else{
+      console.log("Minden kötelező mezőt ki kell tölteni!")
+    }
+    
   };
+
+
   // Szar a reszponzivitás!!!
   return (
 

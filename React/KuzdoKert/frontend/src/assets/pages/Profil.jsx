@@ -5,27 +5,29 @@ import "../Styles/profil.css";
 const Profil = () => {
  
   const [userData, setUserData] = useState({
-    lastName: '',
-    firstName: '',
-    middleName: '',
-    email: '',
-    birthDate: '',
-    location: '',
-    phoneNumber: '',
-    username: '',
-    password: '',
+    lastName: null,
+    firstName: null,
+    middleName: null,
+    email: null,
+    birthDate: null,
+    location: null,
+    phoneNumber: null,
+    username: null,
+    password: null,
     profilePicture: null,
   });
 
   const [editMode, setEditMode] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
+  //input change
+//--------------------------------------------------------------
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
   };
-
+  //profilkép?
+//--------------------------------------------------------------
   const handleProfilePictureChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -36,7 +38,7 @@ const Profil = () => {
       reader.readAsDataURL(file);
     }
   };
-
+//--------------------------------------------------------------
   const handlePasswordChange = () => {
     if (newPassword === confirmPassword) {
       setUserData({ ...userData, password: newPassword });
