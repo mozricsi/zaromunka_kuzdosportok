@@ -1,10 +1,8 @@
-
 nav a {
     color: white;
     margin: 0 15px;
     text-decoration: none;
 }
-
 
 main {
     display: flex;
@@ -22,10 +20,19 @@ main {
     text-align: center;
     cursor: pointer;
     margin: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .card:hover {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-image {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 15px;
 }
 
 @media (max-width: 768px) {
