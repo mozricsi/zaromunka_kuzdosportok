@@ -79,7 +79,7 @@ db.connect((err) => {
         [vnev, knev, knev2, lakhely, email, tel, szul, felhasznalonev, hash],
         (err, result) => {
           if (err == null){
-            console.log("Az isnert (regisztráció) sikeresen lefutott.")
+            console.log("Az insert (regisztráció) sikeresen lefutott.")
           }
           else{
              console.log("Hibák:" + err);

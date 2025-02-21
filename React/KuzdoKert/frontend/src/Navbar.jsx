@@ -38,10 +38,10 @@ const Navbar = (()=>{
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
 
                 <Link className="navbar-brand" to='/'>Főoldal</Link>
-                <NavLink className="navbar-brand" to='/Profil'>Profilom</NavLink>
-                <NavLink className="navbar-brand" to='/EdzoiOldal'>Edzői oldal</NavLink>
-                <NavLink className="navbar-brand" to='/SportKartyak'>Sportok</NavLink>
+                <NavLink className="navbar-brand" to='/SportKartyak'>Sportok</NavLink>               
+                <NavLink className="navbar-brand" to='/EdzoiOldal'>Edzői oldal</NavLink>              
                 <NavLink className="navbar-brand" to='/EdzesNaplo'>Edzésnapló</NavLink>
+                <NavLink className="navbar-brand" to='/Profil'>Profilom</NavLink>
                 <div className="d-flex justify-content-end w-100">
 
                 {loginStatus ? (
