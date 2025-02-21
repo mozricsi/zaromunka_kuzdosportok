@@ -59,10 +59,13 @@ const Profil = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   //input change
 //--------------------------------------------------------------
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setUserDataUpdate({ ...userDataUpdate, [name]: value });
-  };
+const handleInputChange = (e) => {
+  const { name, value } = e.target;
+  setUserData((prevState) => ({
+    ...prevState,
+    [name]: value,
+  }));
+};
   //profilkép?
 //--------------------------------------------------------------
   const handleProfilePictureChange = (e) => {
@@ -91,21 +94,22 @@ const Profil = () => {
     setEditMode(false);
     alert('Adatok sikeresen frissítve!');
     console.log(userDataUpdate.vnev)
+    const [userDataUpdate, setUserDataUpdate] = useState({
+      vnev: null,
+      knev: null,
+      knev2: null,
+      email: null,
+      szul: null,
+      lakhely: null,
+      tel: null,
+      username: null,
+      password: null,
+      profilePicture: null,
+    });
   };
 
   //---------------------------------------------------
-  const [userDataUpdate, setUserDataUpdate] = useState({
-    vnev: null,
-    knev: null,
-    knev2: null,
-    email: null,
-    szul: null,
-    lakhely: null,
-    tel: null,
-    username: null,
-    password: null,
-    profilePicture: null,
-  });
+
   
 //---------------------------------------------------
 
@@ -122,7 +126,7 @@ const Profil = () => {
                 <input
                   type="text"
                   name="vnev"
-                  value={userData.vnev}
+                  value="{userData.vnev}"
                   onChange={handleInputChange}
                 />
               </td>

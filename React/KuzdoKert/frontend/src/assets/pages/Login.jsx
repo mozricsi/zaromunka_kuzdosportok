@@ -7,8 +7,8 @@ import {Link} from "react-router-dom";
 const Login = () => {
 
  
-  const [felhasznalonev, setFelhasznalonev] = useState("");
-  const [jelszo, setJelszo] = useState("");
+  const [felhasznalonev, setFelhasznalonev] = useState(null);
+  const [jelszo, setJelszo] = useState(null);
 
 
 
