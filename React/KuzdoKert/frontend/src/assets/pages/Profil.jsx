@@ -61,7 +61,7 @@ const Profil = () => {
 //--------------------------------------------------------------
 const handleInputChange = (e) => {
   const { name, value } = e.target;
-  setUserData((prevState) => ({
+  setUserDataUpdate((prevState) => ({
     ...prevState,
     [name]: value,
   }));
@@ -89,12 +89,13 @@ const handleInputChange = (e) => {
       alert('A jelszavak nem egyeznek!');
     }
   };
-
+//--------------------------------------------------------------
   const handleSaveChanges = () => {
     setEditMode(false);
-    alert('Adatok sikeresen frissítve!');
     console.log(userDataUpdate.vnev)
+    const { name, value } = e.target;
     const [userDataUpdate, setUserDataUpdate] = useState({
+      
       vnev: null,
       knev: null,
       knev2: null,
@@ -126,7 +127,7 @@ const handleInputChange = (e) => {
                 <input
                   type="text"
                   name="vnev"
-                  value="{userData.vnev}"
+                  value=""
                   onChange={handleInputChange}
                 />
               </td>
