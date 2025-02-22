@@ -12,18 +12,16 @@ const Register = () => {
     const [loginStatus, setLoginStatus] = useState("");
      Axios.defaults.withCredentials = true;
      
-    useEffect(() =>{  
+     useEffect(() => {  
       Axios.get("http://localhost:5000/login").then((response) => {
-        console.log(response)
-        if (response.data.loggedIn == true) {
-                setLoginStatus(response.data.user[0].felhasznalonev);
-                
-        }else{
-          console.log({loginStatus}, "Nem vagy bejelentkezve")
+        console.log(response);
+        if (response.data.loggedIn === true) {
+          setLoginStatus(response.data.user[0].felhasznalonev);
+        } else {
+          console.log({ loginStatus }, "Nem vagy bejelentkezve");
         }
-  
-      })
-    });
+      });
+    }, []);
 
   //--------------------------------------------------------------------
 

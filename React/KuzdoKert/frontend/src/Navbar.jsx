@@ -14,19 +14,16 @@ const Navbar = (()=>{
         // be vagy e jelentkezve lekérdezés-------------------------------
         const [loginStatus, setLoginStatus] = useState(false);
         Axios.defaults.withCredentials = true;
-       useEffect(() =>{
-         
-         Axios.get("http://localhost:5000/login").then((response) => {
-           console.log(response)
-           if (response.data.loggedIn == true) {
-                   setLoginStatus(response.data.user[0].felhasznalonev);
-                   
-           }else{
-             console.log({loginStatus}, "Nem vagy bejelentkezve")
-           }
-     
-         })
-       });
+        useEffect(() => {  
+          Axios.get("http://localhost:5000/login").then((response) => {
+            console.log(response);
+            if (response.data.loggedIn === true) {
+              setLoginStatus(response.data.user[0].felhasznalonev);
+            } else {
+              console.log({ loginStatus }, "Nem vagy bejelentkezve");
+            }
+          });
+        }, []);
    
      //--------------------------------------------------------------------
 
