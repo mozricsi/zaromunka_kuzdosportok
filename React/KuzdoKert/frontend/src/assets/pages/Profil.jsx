@@ -38,16 +38,16 @@ const Profil = () => {
 
   // konstansok a felhasználó adataival
   const [userData, setUserData] = useState({
-    vnev: null,
-    knev: null,
-    knev2: null,
-    email: null,
-    szul: null,
-    lakhely: null,
-    tel: null,
-    username: null,
-    password: null,
-    profilePicture: null,
+    vnev: undefined,
+    knev: undefined,
+    knev2: undefined,
+    email: undefined,
+    szul: undefined,
+    lakhely: undefined,
+    tel: undefined,
+    username: undefined,
+    password: undefined,
+    profilePicture: undefined,
   });
   
 
@@ -59,7 +59,7 @@ const Profil = () => {
 //--------------------------------------------------------------
 const handleInputChange = (e) => {
   const { name, value } = e.target;
-  setUserDataUpdate((prevState) => ({
+  setUserData((prevState) => ({
     ...prevState,
     [name]: value,
   }));
@@ -88,24 +88,18 @@ const handleInputChange = (e) => {
     }
   };
 //--------------------------------------------------------------
-  const handleSaveChanges = () => {
-    setEditMode(false);
-    console.log(userDataUpdate.vnev)
-    const { name, value } = e.target;
-    const [userDataUpdate, setUserDataUpdate] = useState({
-      
-      vnev: null,
-      knev: null,
-      knev2: null,
-      email: null,
-      szul: null,
-      lakhely: null,
-      tel: null,
-      username: null,
-      password: null,
-      profilePicture: null,
+const handleSaveChanges = () => {
+  Axios.post("http://localhost:5000/updateUser", userData)
+    .then((response) => {
+      console.log("Sikeresen frissítve:", response.data);
+      alert("Profil frissítve!");
+      setEditMode(false);
+    })
+    .catch((error) => {
+      console.error("Hiba az adatok mentésekor:", error);
+      alert("Hiba történt a mentés közben.");
     });
-  };
+};
 
   //---------------------------------------------------
 
@@ -125,7 +119,8 @@ const handleInputChange = (e) => {
                 <input
                   type="text"
                   name="vnev"
-                  value=""
+                  
+                  value={userData.vnev || ""}
                   onChange={handleInputChange}
                 />
               </td>
@@ -136,7 +131,7 @@ const handleInputChange = (e) => {
                 <input
                   type="text"
                   name="knev"
-                  value={userData.knev}
+                  value={userData.knev || ""}
                   onChange={handleInputChange}
                 />
               </td>
@@ -147,7 +142,7 @@ const handleInputChange = (e) => {
                 <input
                   type="text"
                   name="knev2"
-                  value={userData.knev2}
+                  value={userData.knev2 || ""}
                   onChange={handleInputChange}
                 />
               </td>
@@ -158,7 +153,7 @@ const handleInputChange = (e) => {
                 <input
                   type="email"
                   name="email"
-                  value={userData.email}
+                  value={userData.email || ""}
                   onChange={handleInputChange}
                 />
               </td>
@@ -169,7 +164,7 @@ const handleInputChange = (e) => {
                 <input
                   type="date"
                   name="szul"
-                  value={userData.szul}
+                  value={userData.szul || ""}
                   onChange={handleInputChange}
                 />
               </td>
@@ -180,7 +175,7 @@ const handleInputChange = (e) => {
                 <input
                   type="text"
                   name="lakhely"
-                  value={userData.lakhely}
+                  value={userData.lakhely || ""}
                   onChange={handleInputChange}
                 />
               </td>
@@ -191,7 +186,7 @@ const handleInputChange = (e) => {
                 <input
                   type="tel"
                   name="tel"
-                  value={userData.tel}
+                  value={userData.tel || ""}
                   onChange={handleInputChange}
                 />
               </td>
@@ -202,7 +197,7 @@ const handleInputChange = (e) => {
                 <input
                   type="text"
                   name="username"
-                  value={userData.username}
+                  value={userData.username || ""}
                   onChange={handleInputChange}
                 />
               </td>

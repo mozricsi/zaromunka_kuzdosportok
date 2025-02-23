@@ -143,6 +143,29 @@ db.connect((err) => {
 //-----------------------------------------------------------------------------
 
 
+//felhasználói adat frissítés
+app.post("/updateUser", (req, res) => {
+  const { vnev, knev, knev2, email, szul, lakhely, tel, username, password } = req.body;
+  
+  const sql = `
+    UPDATE latogatok 
+    SET vnev = ?, knev = ?, knev2 = ?, email = ?, szul_ido = ?, lakhelyvaros = ?, telefonszam = ?, jelszo = ?
+    WHERE felhasznalonev = ?;
+  `;
+
+  db.query(sql, [vnev, knev, knev2, email, szul, lakhely, tel, password, username], (err, result) => {
+    if (err) {
+      console.error("Hiba az adatbázis frissítésekor:", err);
+      res.status(500).send("Hiba történt az adatok frissítése közben.");
+    } else {
+      res.send({ message: "Profil sikeresen frissítve!" });
+    }
+  });
+});
+//jelszó még nem fix h működik
+//--------------------------------------------------------------------------------------
+
+
 // **Szerver indítása**
 const PORT = 5000;
 app.listen(PORT, () => {
