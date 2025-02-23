@@ -10,13 +10,11 @@ const Profil = () => {
       const [loginStatus, setLoginStatus] = useState("");
       Axios.defaults.withCredentials = true;
       
-      useEffect(() => {  
+      useEffect(() => {
         Axios.get("http://localhost:5000/login").then((response) => {
-          console.log(response);
           if (response.data.loggedIn === true) {
             setLoginStatus(response.data.user[0].felhasznalonev);
-            setUserData(prevState => ({
-              ...prevState,
+            setUserData({
               vnev: response.data.user[0].vnev,
               knev: response.data.user[0].knev,
               knev2: response.data.user[0].knev2,
@@ -26,12 +24,12 @@ const Profil = () => {
               tel: response.data.user[0].telefonszam,
               username: response.data.user[0].felhasznalonev,
               password: response.data.user[0].jelszo,
-            }));
+            });
           } else {
-            console.log({ loginStatus }, "Nem vagy bejelentkezve");
+            console.log("Nem vagy bejelentkezve");
           }
         });
-      }, []);
+      }, [loginStatus]);
  
    //--------------------------------------------------------------------
 
@@ -99,6 +97,7 @@ const handleSaveChanges = () => {
       console.error("Hiba az adatok mentésekor:", error);
       alert("Hiba történt a mentés közben.");
     });
+    
 };
 
   //---------------------------------------------------

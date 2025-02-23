@@ -156,14 +156,55 @@ app.post("/updateUser", (req, res) => {
   db.query(sql, [vnev, knev, knev2, email, szul, lakhely, tel, password, username], (err, result) => {
     if (err) {
       console.error("Hiba az adatbázis frissítésekor:", err);
-      res.status(500).send("Hiba történt az adatok frissítése közben.");
+      return res.status(500).send("Hiba történt az adatok frissítése közben."); // 🔹 FONTOS: return, hogy ne fusson tovább!
+    }
+
+    console.log("✅ Profil sikeresen frissítve!");
+
+    // **Süti törlése és újra létrehozása**
+    res.clearCookie("userId");
+    res.cookie("userId", username, {
+      maxAge: 1000000
+    });
+
+
+    req.session.user = [{
+      vnev, knev, knev2, email, szul_ido: szul, lakhelyvaros: lakhely, telefonszam: tel, felhasznalonev: username, jelszo: password
+    }];
+
+
+    res.send({ message: "Profil sikeresen frissítve!", user: req.session.user });
+  });
+});
+
+//jelszó még nem fix h működik
+//--------------------------------------------------------------------------------------
+
+
+
+//sportok lekérése
+app.get("/sports/:id", (req, res) => {
+  const sportId = req.params.id; // Az id paramétert lekérjük az URL-ből
+
+  const sql = "SELECT * FROM kuzdosportok.sport WHERE sport_id = ?";
+
+  db.query(sql, [sportId], (err, results) => {
+    if (err) {
+      console.error("Hiba az adatlekérdezés során:", err);
+      return res.status(500).json({ error: "Adatbázis hiba" });
+    }
+
+    if (results.length > 0) {
+      res.json(results[0]); // Az első találatot visszaküldjük
     } else {
-      res.send({ message: "Profil sikeresen frissítve!" });
+      res.status(404).json({ error: "Nincs ilyen sport" });
     }
   });
 });
-//jelszó még nem fix h működik
-//--------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------
+
+
 
 
 // **Szerver indítása**

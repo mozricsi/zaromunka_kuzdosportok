@@ -69,7 +69,7 @@ const Login = () => {
           required
         />
         
-        <Link onClick={login} className="navbar-brand" to='/'>Bejelentkezés</Link>
+        <Link onClick={login} className="navbar-brand" to='/Profil'>Bejelentkezés</Link>
 
         <h1>{loginStatus}</h1>
         
