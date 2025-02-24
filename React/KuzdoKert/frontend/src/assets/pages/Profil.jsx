@@ -6,14 +6,7 @@ import Axios from "axios";
 const Profil = () => {
 
 
-      const formatDate = (szul) => {
-        const date = new Date(szul);
-        return date.toLocaleDateString("hu-HU", {
-          year: "numeric",
-          month: "numeric",
-          day: "numeric"
-        })
-      }
+
 
 
       // be vagy e jelentkezve lekérdezés-------------------------------
@@ -173,7 +166,7 @@ const handleSaveChanges = () => {
                 <input
                   type="date"
                   name="szul"
-                  value={formatDate(userData.szul) || ""}
+                  value={userData.szul || ""}
                   onChange={handleInputChange}
                 />
               </td>
