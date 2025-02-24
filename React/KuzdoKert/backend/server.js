@@ -145,7 +145,7 @@ db.connect((err) => {
 
 //kijelentkezés
 app.post("/logout", (req, res) => {
-  res.clearCookie("userId", { path: "/" });
+  res.clearCookie("userId");
   res.json({ message: "Sikeres kijelentkezés!" });
 });
 
