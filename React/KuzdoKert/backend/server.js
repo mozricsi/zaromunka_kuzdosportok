@@ -143,6 +143,15 @@ db.connect((err) => {
 //-----------------------------------------------------------------------------
 
 
+//kijelentkezés
+app.post("/logout", (req, res) => {
+  res.clearCookie("userId", { path: "/" });
+  res.json({ message: "Sikeres kijelentkezés!" });
+});
+
+//-------------------------------------------------------
+
+
 //felhasználói adat frissítés
 app.post("/updateUser", (req, res) => {
   const { vnev, knev, knev2, email, szul, lakhely, tel, username, password } = req.body;
