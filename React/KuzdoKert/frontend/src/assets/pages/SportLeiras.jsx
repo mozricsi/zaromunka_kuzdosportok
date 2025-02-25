@@ -32,7 +32,7 @@ const SportLeiras = () => {
   
 
     checkLoginStatus();
-    const interval = setInterval(checkLoginStatus, 1);
+    const interval = setInterval(checkLoginStatus, 100);
   
     return () => {
 
