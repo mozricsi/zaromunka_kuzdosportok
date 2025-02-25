@@ -13,7 +13,7 @@ const Login = () => {
 
 
     // be vagy e jelentkezve lekérdezés
-    const [loginStatus, setLoginStatus] = useState("");
+    const [loginStatus, setLoginStatus] = useState(false);
      Axios.defaults.withCredentials = true;
      useEffect(() => {
       Axios.get("http://localhost:5000/login").then((response) => {

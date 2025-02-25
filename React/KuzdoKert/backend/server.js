@@ -101,7 +101,7 @@ db.connect((err) => {
       res.send({loggedIn: true, user: req.session.user})
     }
     else{
-      res.send({loggedIn: false})
+      res.send({loggedIn: false, user: null})
     }
   })
 
@@ -145,8 +145,16 @@ db.connect((err) => {
 
 //kijelentkezés
 app.post("/logout", (req, res) => {
-  res.clearCookie("userId");
-  res.json({ message: "Sikeres kijelentkezés!" });
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Hiba a kijelentkezés során:", err);
+      return res.status(500).json({ error: "Nem sikerült kijelentkezni" });
+    }
+    
+    res.clearCookie("userId");
+    res.json({ loggedIn: false, user: null, message: "Sikeres kijelentkezés!" });
+    
+  });
 });
 
 //-------------------------------------------------------

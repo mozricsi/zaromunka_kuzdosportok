@@ -1,12 +1,18 @@
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 
 const Logout = () => {
+  const [loginStatus, setLoginStatus] = useState(false);
   const navigate = useNavigate();
+  localStorage.clear();
+  sessionStorage.clear();
+    Axios.defaults.withCredentials = true;
     Axios.post("http://localhost:5000/logout")
       .then(() => {
         console.log("Sikeres kijelentkezés!");
+        setLoginStatus(false);
         setTimeout(() => {
           navigate("/login"); 
         }, 1000); 
@@ -16,9 +22,11 @@ const Logout = () => {
       });
 
   return (
+    
     <>
     <h1>Kijelentkezés...</h1>
     <p>Hamarosán átirányítunk a bejelentkezéshez...</p>
+    
     </>
   );
 };
