@@ -201,9 +201,9 @@ app.post("/updateUser", (req, res) => {
 
 //sportok lekérése
 app.get("/sports/:id", (req, res) => {
-  const sportId = req.params.id; // Az id paramétert lekérjük az URL-ből
+  const sportId = req.params.id;
 
-  const sql = "SELECT * FROM kuzdosportok.sport WHERE sport_id = ?";
+  const sql = "SELECT sport_id, sportnev, leiras FROM kuzdosportok.sport WHERE sport_id = ?";
 
   db.query(sql, [sportId], (err, results) => {
     if (err) {
@@ -212,12 +212,13 @@ app.get("/sports/:id", (req, res) => {
     }
 
     if (results.length > 0) {
-      res.json(results[0]); // Az első találatot visszaküldjük
+      res.json(results[0]);
     } else {
       res.status(404).json({ error: "Nincs ilyen sport" });
     }
   });
 });
+
 
 //----------------------------------------------------------------------------------------
 

@@ -22,7 +22,7 @@ const SportKartyak = () => {
 
   // Kártyára kattintás eseménykezelő
   const handleCardClick = (id) => {
-    navigate(`/SportLeiras/:${id}`);
+    navigate(`/SportLeiras/${id}`);
   };
 
   return (

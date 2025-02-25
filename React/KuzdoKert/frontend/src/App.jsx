@@ -25,6 +25,7 @@ function App() {
         <Route path="/SportLeiras" element={<SportLeiras />} />
         <Route path="/EdzesNaplo" element={<EdzesNaplo />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="/SportLeiras/:id" element={<SportLeiras/>} />
 
       </Routes>
     </Router>
