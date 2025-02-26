@@ -203,7 +203,7 @@ app.post("/updateUser", (req, res) => {
 app.get("/sports/:id", (req, res) => {
   const sportId = req.params.id;
 
-  const sql = "SELECT sport_id, sportnev, leiras FROM kuzdosportok.sport WHERE sport_id = ?";
+  const sql = "SELECT sport_id, sportnev, leiras, szabalyok FROM kuzdosportok.sport WHERE sport_id = ?";
 
   db.query(sql, [sportId], (err, results) => {
     if (err) {
@@ -221,6 +221,22 @@ app.get("/sports/:id", (req, res) => {
 
 
 //----------------------------------------------------------------------------------------
+
+//klubbok lekérése
+app.get("/klubbok/:sportId", (req, res) => {
+  const sportId = req.params.sportId;
+  const query = `SELECT * FROM klubbok WHERE sport_id = ?`;
+
+  db.query(query, [sportId], (err, results) => {
+    if (err) {
+      console.error("Hiba történt:", err);
+      res.status(500).json({ error: "Adatbázis hiba" });
+    } else {
+      res.json(results);
+    }
+  });
+});
+//-----------------------------------------------------------------------------------------------
 
 
 
