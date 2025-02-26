@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import '../Styles/sportleiras.css';
+import '../../Styles/sportleiras.css';
 import Axios from 'axios';
 
-const SportLeiras = () => {
+const SportLeiras1 = () => {
   const { sport } = useParams(); // URL paraméter lekérése (pl. /sport/box)
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [clubs, setClubs] = useState([]);
@@ -124,4 +124,4 @@ const SportLeiras = () => {
   );
 };
 
-export default SportLeiras;
+export default SportLeiras1;
