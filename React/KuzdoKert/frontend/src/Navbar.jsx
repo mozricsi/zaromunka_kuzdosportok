@@ -33,7 +33,7 @@ const Navbar = (()=>{
         
 
           checkLoginStatus();
-          const interval = setInterval(checkLoginStatus, 1);
+          const interval = setInterval(checkLoginStatus, 80);
         
           return () => {
 

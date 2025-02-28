@@ -107,7 +107,7 @@ const SportLeiras = () => {
 
        {/* Magyarországi egyesületek */}
        <section className="clubs-section">
-            <h2>Magyarországi box egyesületek</h2>
+            <h2>Magyarországi {sport.sportnev} egyesületek</h2>
             <div className="clubs-grid">
               {clubs.map((club) => (
                 <div key={club.sprotklub_id} className="club-card">
