@@ -8,7 +8,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const NEWS_API_KEY = '6ed9be5621794199b9b943fbb1a4febf'; // Helyettesítsd be a saját NewsAPI kulcsoddal
   const TRANSLATE_API_KEY = 'YOUR_GOOGLE_TRANSLATE_KEY'; // Helyettesítsd be a saját Google Translate API kulcsoddal
-  const TOPIC = 'boxing OR MMA'; // Keresési feltétel: box vagy MMA hírek
+  const TOPIC = 'boxing OR MMA or kickboxing'; // Keresési feltétel: box vagy MMA hírek
 
   // Hírek lekérése a NewsAPI-ról
   const fetchNews = async () => {
