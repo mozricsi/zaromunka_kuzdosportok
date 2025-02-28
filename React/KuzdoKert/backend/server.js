@@ -93,6 +93,28 @@ db.connect((err) => {
   });
 //----------------------------------------------------------------
 
+//felhasználónév check
+
+app.post("/checkUsername", (req, res) => {
+  const felhasznalonev = req.body.username;
+
+  db.query(
+    "SELECT felhasznalonev FROM kuzdosportok.latogatok WHERE felhasznalonev = ?",
+    [felhasznalonev],
+    (err, result) => {
+      if (err) {
+        res.status(500).send({ error: "Database error" });
+      } else {
+        console.log("SQL result:", result); // Ellenőrizd a szerveren
+        res.send({ exists: result.length > 0 });
+      }
+    }
+  );
+});
+
+
+//-----------------------------------------------------------------------------------
+
 
   //login check (be vagy e jelentkezve)
 

@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import Axios from 'axios'
 import '../Styles/regisztracio.css'
 import { useEffect } from "react";
+import {useNavigate} from "react-router-dom";
 
 
 const Register = () => {
@@ -34,32 +35,73 @@ const Register = () => {
   const [telReg, setTelReg] = useState(null);
   const [felhasznalonevReg, setFelhasznalonevReg] = useState(null);
   const [jelszoReg, setJelszoReg] = useState(null);
-  const register = () => {
-    if(vezeteknevReg && keresztnevReg && emailReg && szulReg && lakhelyReg && felhasznalonevReg && jelszoReg){
+  const [jelszoReg2, setJelszoReg2] = useState(null);
 
-      Axios.post("http://localhost:5000/register", {
+  const [reg, setReg] = useState(null);
+  const navigate = useNavigate();
 
-        username: felhasznalonevReg,
-        password: jelszoReg,
-        vnev: vezeteknevReg,
-        knev: keresztnevReg,
-        knev2: keresztnev2Reg,
-        email: emailReg,
-        szul: szulReg,
-        lakhely: lakhelyReg,
-        tel: telReg,
-        
-      }).then((response) => {
-        console.log(response);
-      });
-      console.log("Sikeres regisztráció!")
-
-    }else{
-      console.log("Minden kötelező mezőt ki kell tölteni!")
+  const register = async () => {
+    const usernameToCheck = felhasznalonevReg; // Mentjük az aktuális értéket
+  
+    if (!usernameToCheck) {
+      setReg("A felhasználónév megadása kötelező!");
+      return;
     }
-    
-  };
+    else{
 
+      try {
+        // Felhasználónév ellenőrzés
+        const response = await Axios.post("http://localhost:5000/checkUsername", {
+          username: usernameToCheck,
+        });
+    
+        console.log("API válasz:", response.data);
+        
+        setTimeout(() => {
+
+          if (response.data.exists == true) {
+            setReg("Létező felhasználónév!");
+            return;
+          }else{
+          if (vezeteknevReg && keresztnevReg && emailReg && szulReg && lakhelyReg && usernameToCheck && jelszoReg) {
+            if (jelszoReg === jelszoReg2) {
+              Axios.post("http://localhost:5000/register", {
+                username: usernameToCheck,
+                password: jelszoReg,
+                vnev: vezeteknevReg,
+                knev: keresztnevReg,
+                knev2: keresztnev2Reg,
+                email: emailReg,
+                szul: szulReg,
+                lakhely: lakhelyReg,
+                tel: telReg,
+              });
+      
+              setReg("Sikeres regisztráció!");
+              setTimeout(() => {
+                navigate("/login");
+              }, 1000);
+            } else {
+              setReg("A beírt jelszó nem egyezik!");
+            }
+          } else {
+            setReg("Minden kötelező mezőt ki kell tölteni!");
+          }
+          }
+      
+
+        }, 10);
+        
+        
+      } catch (error) {
+        console.error("Hiba történt a szerverrel:", error);
+        setReg("Hiba történt a regisztráció során.");
+      }
+
+    }
+   
+  };
+  
 
   // Szar a reszponzivitás!!!
   return (
@@ -177,7 +219,7 @@ const Register = () => {
                   type="password"
                   placeholder="Jelszó újra*"
                     onChange={(e) => {
-                        setJelszoReg(e.target.value)
+                        setJelszoReg2(e.target.value)
                       }}
                     required
                   />
@@ -186,6 +228,7 @@ const Register = () => {
             <br></br>
 
             <div>
+            <p>{reg}</p>
               <button type="submit" onClick={register}>Regisztráció</button>
             </div>
             <h1>{loginStatus}</h1>
