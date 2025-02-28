@@ -2,13 +2,12 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../Styles/kartyak.css';
 
-
-
 const SportKartyak = () => {
   const navigate = useNavigate();
 
   // Kártyák adatai
   const cards = [
+    { id: '1', title: 'Box', image: 'https://images.daznservices.com/di/library/DAZN_News/ee/26/artur-beterbiev-vs-dmitry-bivol_cus9dhbfyeoo17j3n1y5i0kuq.jpg?t=534847237' },
     { id: '1', title: 'Box', image: 'https://images.daznservices.com/di/library/DAZN_News/ee/26/artur-beterbiev-vs-dmitry-bivol_cus9dhbfyeoo17j3n1y5i0kuq.jpg?t=534847237' },
     { id: '2', title: 'Judo', image: 'https://78884ca60822a34fb0e6-082b8fd5551e97bc65e327988b444396.ssl.cf3.rackcdn.com/up/2019/12/1Iliadis9227-1577780463-1577780464.jpg' },
     { id: '3', title: 'Jiu Jitsu', image: 'https://cdn-images-1.medium.com/max/1600/1*96FA5T__PjyxjQqPdKrlCQ.jpeg' },
@@ -20,14 +19,12 @@ const SportKartyak = () => {
 
   ];
 
-  // Kártyára kattintás eseménykezelő
   const handleCardClick = (id) => {
     navigate(`/SportLeiras/${id}`);
   };
 
   return (
-    <div>
-      
+    <div className="sport-page"> {/* Egyedi osztálynév */}
       <h1>Sportkártyák</h1>
       <main>
         {cards.map((card) => (
