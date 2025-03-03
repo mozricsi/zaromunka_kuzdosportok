@@ -9,6 +9,7 @@ import Axios from "axios";
 
 const Navbar = () => {
   const [loginStatus, setLoginStatus] = useState(false);
+  const [userRole, setUserRole] = useState(null); // Szerepkör tárolása
 
   Axios.defaults.withCredentials = true;
   useEffect(() => {
@@ -17,8 +18,10 @@ const Navbar = () => {
         .then((response) => {
           if (response.data.loggedIn) {
             setLoginStatus(response.data.user[0].felhasznalonev);
+            setUserRole(response.data.user[0].role); // Feltételezem, hogy a szerver visszaadja a role-t
           } else {
             setLoginStatus(false);
+            setUserRole(null);
           }
         })
         .catch((error) => {
@@ -40,17 +43,21 @@ const Navbar = () => {
     <div>
       <nav className="navbar navbar-expand-lg custom-navbar">
         <Link className="navbar-brand nav-item" to="/">Főoldal</Link>
-        <NavLink className="navbar-brand nav-item" to="/SportKartyak" activeClassName="active">Sportok</NavLink>
+        <NavLink className="navbar-brand nav-item" to="/SportKartyak">Sportok</NavLink>
         <div className="d-flex justify-content-end w-100">
           {loginStatus ? (
             <>
-              <NavLink className="navbar-brand nav-item" to="/EdzoiOldal" activeClassName="active">Edzői oldal</NavLink>
-              <NavLink className="navbar-brand nav-item" to="/EdzesNaplo" activeClassName="active">Edzésnapló</NavLink>
+              {userRole === "coach" && (
+                <NavLink className="navbar-brand nav-item" to="/EdzoiOldal">Edzői oldal</NavLink>
+              )}
+              {userRole === "visitor" && (
+                <NavLink className="navbar-brand nav-item" to="/EdzesNaplo">Edzésnapló</NavLink>
+              )}
             </>
           ) : (
             <>
-              <NavLink className="navbar-brand nav-item" to="/Login" activeClassName="active">Bejelentkezés</NavLink>
-              <NavLink className="navbar-brand nav-item" to="/Register" activeClassName="active">Regisztráció</NavLink>
+              <NavLink className="navbar-brand nav-item" to="/Login">Bejelentkezés</NavLink>
+              <NavLink className="navbar-brand nav-item" to="/Register">Regisztráció</NavLink>
             </>
           )}
         </div>
@@ -74,8 +81,8 @@ const Navbar = () => {
                 className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}
                 aria-labelledby="navbarDropdown"
               >
-                <li><NavLink className="dropdown-item" to="/Profil" activeClassName="active">Profilom</NavLink></li>
-                <li><NavLink className="dropdown-item" to="/Logout" activeClassName="active">Kijelentkezés</NavLink></li>
+                <li><NavLink className="dropdown-item" to="/Profil">Profilom</NavLink></li>
+                <li><NavLink className="dropdown-item" to="/Logout">Kijelentkezés</NavLink></li>
               </ul>
             </div>
           ) : null}

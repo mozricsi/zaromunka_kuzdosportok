@@ -10,18 +10,17 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [loginStatus, setLoginStatus] = useState(false);
+  const [userRole, setUserRole] = useState(null); // Szerepkör tárolása
   Axios.defaults.withCredentials = true;
 
   useEffect(() => {
     Axios.get("http://localhost:5000/login").then((response) => {
-      console.log(response);
       if (response.data.loggedIn === true) {
         setLoginStatus(response.data.user[0].felhasznalonev);
+        setUserRole(response.data.user[0].role); // Szerepkör lekérdezése
         setTimeout(() => {
           navigate("/profil");
         }, 1000);
-      } else {
-        console.log({ loginStatus }, "Nem vagy bejelentkezve");
       }
     });
   }, []);
@@ -39,9 +38,9 @@ const Login = () => {
         }).then((response) => {
           if (response.data.message) {
             setInfo(response.data.message);
-            console.log(response.data.message);
           } else {
             setLoginStatus(response.data[0].felhasznalonev);
+            setUserRole(response.data[0].role); // Szerepkör beállítása
             setTimeout(() => {
               navigate("/profil");
             }, 1000);

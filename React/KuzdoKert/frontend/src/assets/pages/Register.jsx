@@ -4,22 +4,17 @@ import '../Styles/regisztracio.css';
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-  // Bejelentkezés ellenőrzése
   const [loginStatus, setLoginStatus] = useState("");
   Axios.defaults.withCredentials = true;
   
   useEffect(() => {  
     Axios.get("http://localhost:5000/login").then((response) => {
-      console.log(response);
       if (response.data.loggedIn === true) {
         setLoginStatus(response.data.user[0].felhasznalonev);
-      } else {
-        console.log({ loginStatus }, "Nem vagy bejelentkezve");
       }
     });
   }, []);
 
-  // Állapotok
   const [vezeteknevReg, setVezeteknevReg] = useState(null);
   const [keresztnevReg, setKeresztnevReg] = useState(null);
   const [keresztnev2Reg, setKeresztnev2Reg] = useState(null);
@@ -30,6 +25,7 @@ const Register = () => {
   const [felhasznalonevReg, setFelhasznalonevReg] = useState(null);
   const [jelszoReg, setJelszoReg] = useState(null);
   const [jelszoReg2, setJelszoReg2] = useState(null);
+  const [role, setRole] = useState("visitor"); // Új állapot a szerepkörhöz
 
   const [reg, setReg] = useState(null);
   const navigate = useNavigate();
@@ -63,6 +59,7 @@ const Register = () => {
                   szul: szulReg,
                   lakhely: lakhelyReg,
                   tel: telReg,
+                  role: role, // Szerepkör elküldése
                 });
 
                 setReg("Sikeres regisztráció!");
@@ -187,6 +184,18 @@ const Register = () => {
                 onChange={(e) => setJelszoReg2(e.target.value)}
                 required
               />
+            </div>
+
+            <div>
+              <label><span className="kotelezo">*</span>Szerepkör:</label> <br />
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                required
+              >
+                <option value="visitor">Látogató</option>
+                <option value="coach">Edző</option>
+              </select>
             </div>
           </div>
 

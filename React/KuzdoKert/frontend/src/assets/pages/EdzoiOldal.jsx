@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
 import Axios from 'axios';
 import '../Styles/EdzoiOldal.css';
+import { useNavigate } from "react-router-dom";
 
 const EdzoiOldal = () => {
-  // Bejelentkezési státusz és felhasználói adatok
   const [loginStatus, setLoginStatus] = useState("");
   const [userId, setUserId] = useState(null);
+  const [userRole, setUserRole] = useState(null);
   const [workouts, setWorkouts] = useState([]);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
-  // Edzés űrlap állapotok
   const [sportId, setSportId] = useState("");
   const [hely, setHely] = useState("");
   const [idonap, setIdonap] = useState("");
   const [ido, setIdo] = useState("");
   const [leiras, setLeiras] = useState("");
 
-  // Elérhető sportok a sport táblából (statikusan az adatbázisod alapján)
   const sports = [
     { id: 1, name: "Box" },
     { id: 2, name: "Judo" },
@@ -28,7 +28,6 @@ const EdzoiOldal = () => {
     { id: 8, name: "MMA" },
   ];
 
-  // Bejelentkezési státusz ellenőrzése
   useEffect(() => {
     Axios.defaults.withCredentials = true;
     Axios.get("http://localhost:5000/login").then((response) => {
@@ -36,15 +35,20 @@ const EdzoiOldal = () => {
         const user = response.data.user[0];
         setLoginStatus(user.felhasznalonev);
         setUserId(user.user_id);
-        // Edzések betöltése az adott edzőhöz
-        loadWorkouts(user.user_id);
+        setUserRole(user.role);
+        if (user.role !== "coach") {
+          setMessage("Ez az oldal csak edzők számára elérhető!");
+          navigate("/profil");
+        } else {
+          loadWorkouts(user.user_id);
+        }
       } else {
         setMessage("Kérlek, jelentkezz be edzőként!");
+        navigate("/login");
       }
     });
-  }, []);
+  }, [navigate]);
 
-  // Edzések betöltése
   const loadWorkouts = (userId) => {
     Axios.get(`http://localhost:5000/coach/workouts/${userId}`).then((response) => {
       setWorkouts(response.data);
@@ -54,7 +58,6 @@ const EdzoiOldal = () => {
     });
   };
 
-  // Edzés hozzáadása
   const addWorkout = async (e) => {
     e.preventDefault();
 
@@ -71,9 +74,9 @@ const EdzoiOldal = () => {
         idonap,
         ido,
         leiras: leiras || "Nincs leírás megadva",
-        vnev: loginStatus.split('.')[0], // Feltételezem, hogy a vezetéknév a felhasznalonev eleje
-        knev: loginStatus.split('.')[1] || "Edző", // Feltételezem, hogy a keresztnév a felhasznalonev vége
-        klubbnev: `${loginStatus} Klubja`, // Dinamikus klubnév
+        vnev: loginStatus.split('.')[0],
+        knev: loginStatus.split('.')[1] || "Edző",
+        klubbnev: `${loginStatus} Klubja`,
       });
 
       setMessage("Edzés sikeresen hozzáadva!");
@@ -96,7 +99,7 @@ const EdzoiOldal = () => {
 
       {!loginStatus && <p className="warning">{message}</p>}
 
-      {loginStatus && (
+      {loginStatus && userRole === "coach" && (
         <>
           <form onSubmit={addWorkout} className="workout-form">
             <div className="form-group">

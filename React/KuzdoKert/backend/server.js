@@ -55,41 +55,37 @@ db.connect((err) => {
 //----------------------------------------------------
 
   // Regisztráció
-  app.post('/register', (req, res) =>{
-
-    const vnev = req.body.vnev
-    const knev = req.body.knev
-    const knev2 = req.body.knev2
-    const email = req.body.email
-    const szul = req.body.szul
-    const lakhely = req.body.lakhely
-    const tel = req.body.tel
-    const felhasznalonev = req.body.username
-    const jelszo = req.body.password
-
-
-    bcrypt.hash(jelszo,saltRounds, (err, hash) =>{
-
-      if (err){
-        console.log(err)
+  app.post('/register', (req, res) => {
+    const vnev = req.body.vnev;
+    const knev = req.body.knev;
+    const knev2 = req.body.knev2;
+    const email = req.body.email;
+    const szul = req.body.szul;
+    const lakhely = req.body.lakhely;
+    const tel = req.body.tel;
+    const felhasznalonev = req.body.username;
+    const jelszo = req.body.password;
+    const role = req.body.role || "visitor"; // Alapértelmezett: látogató
+  
+    bcrypt.hash(jelszo, saltRounds, (err, hash) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send("Hiba a jelszó hash-elése közben.");
       }
-
+  
       db.query(
-        "INSERT INTO latogatok (vnev, knev, knev2, lakhelyvaros, email, telefonszam, szul_ido, felhasznalonev, jelszo, regisztracio_datum) VALUES (?,?,?,?,?,?,?,?,?, NOW())",
-        [vnev, knev, knev2, lakhely, email, tel, szul, felhasznalonev, hash],
+        "INSERT INTO latogatok (vnev, knev, knev2, lakhelyvaros, email, telefonszam, szul_ido, felhasznalonev, jelszo, role, regisztracio_datum) VALUES (?,?,?,?,?,?,?,?,?,?, NOW())",
+        [vnev, knev, knev2, lakhely, email, tel, szul, felhasznalonev, hash, role],
         (err, result) => {
-          if (err == null){
-            console.log("Az insert (regisztráció) sikeresen lefutott.")
+          if (err) {
+            console.log("Hibák:" + err);
+            return res.status(500).send("Hiba a regisztráció során.");
           }
-          else{
-             console.log("Hibák:" + err);
-          }
+          console.log("Az insert (regisztráció) sikeresen lefutott.");
+          res.send({ message: "Sikeres regisztráció!" });
         }
       );
-
     });
-
-    
   });
 //----------------------------------------------------------------
 
@@ -129,38 +125,42 @@ app.post("/checkUsername", (req, res) => {
 
 
   //login
+  app.get("/login", (req, res) => {
+    if (req.session.user) {
+      res.send({ loggedIn: true, user: req.session.user });
+    } else {
+      res.send({ loggedIn: false, user: null });
+    }
+  });
+  
   app.post('/login', (req, res) => {
-    const felhasznalonev = req.body.username
-    const jelszo = req.body.password
-
+    const felhasznalonev = req.body.username;
+    const jelszo = req.body.password;
+  
     db.query(
       "SELECT * FROM latogatok WHERE felhasznalonev = ?",
       felhasznalonev,
       (err, result) => {
-
-        if (err){
-          res.send({err: err});
+        if (err) {
+          res.send({ err: err });
         }
-
+  
         if (result.length > 0) {
-          bcrypt.compare(jelszo, result[0].jelszo, (error, response) =>{
+          bcrypt.compare(jelszo, result[0].jelszo, (error, response) => {
             if (response) {
-              req.session.user = result
-              console.log(req.session.user)
-              res.send(result)
-            }
-            else{
-              res.send({message: "Rossz felhasználó/jelszó kombináció!"});
+              req.session.user = result;
+              console.log(req.session.user);
+              res.send(result); // A result tartalmazza a role-t is
+            } else {
+              res.send({ message: "Rossz felhasználó/jelszó kombináció!" });
             }
           });
+        } else {
+          res.send({ message: "Nem létező felhasználó!" });
         }
-        else{
-          res.send({message: "Nem létező felhasználó!"});
-        }
-        
       }
     );
-  })
+  });
 
 //-----------------------------------------------------------------------------
 
