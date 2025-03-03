@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import '../Styles/kartyak.css';
 
 
-
 const SportKartyak = () => {
   const navigate = useNavigate();
 
@@ -17,17 +16,15 @@ const SportKartyak = () => {
     { id: '6', title: 'Birkózás', image: 'https://cdn.vox-cdn.com/thumbor/rsC7jguUw-X5dDcimccgFpmZ7y0=/0x248:4000x2498/1600x900/cdn.vox-cdn.com/photo_images/8424126/150155058.jpg' },
     { id: '7', title: 'Kickbox', image: 'https://staticg.sportskeeda.com/editor/2022/02/6dd45-16443294303689-1920.jpg' },
     { id: '8', title: 'MMA', image: 'https://th.bing.com/th/id/OIP.Y2Qv1XgDg0JF-FSqgd5skAHaFj?rs=1&pid=ImgDetMain' },
-
+  
   ];
 
-  // Kártyára kattintás eseménykezelő
   const handleCardClick = (id) => {
     navigate(`/SportLeiras/${id}`);
   };
 
   return (
-    <div>
-      
+    <div className="sport-page"> {/* Egyedi osztálynév */}
       <h1>Sportkártyák</h1>
       <main>
         {cards.map((card) => (
