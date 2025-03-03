@@ -37,9 +37,16 @@
 }
 
 /* Szabályok szekció - SportLeiras-specifikus */
+.sport-leiras .rules-section {
+  background-color: #2c2c2c; /* Enyhén világosabb háttér a szabályok szekcióhoz */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
 .sport-leiras .rules-section p {
   font-size: 1.1rem; /* Némileg nagyobb betűméret */
-  color: #ccc; /* Halvány szürke szöveg */
+  color: #fff; /* Fehér szöveg a jobb olvashatóság érdekében */
   line-height: 1.8; /* Több hely a sorok között */
   margin-bottom: 15px; /* Több térköz a bekezdések között */
 }
@@ -47,6 +54,47 @@
 .sport-leiras .rules-section strong {
   color: #ff4500; /* Narancssárga kiemelés a fontos részekhez */
   font-weight: bold;
+}
+
+.sport-leiras .rules-section ul {
+  list-style: none; /* Az alapértelmezett listajelzők eltávolítása */
+  padding-left: 20px; /* Behúzás a listaelemekhez */
+  margin: 0;
+}
+
+.sport-leiras .rules-section li {
+  position: relative;
+  font-size: 1.1rem;
+  color: #fff; /* Fehér szöveg a jobb olvashatóság érdekében */
+  line-height: 1.8;
+  margin-bottom: 10px;
+  padding-left: 25px; /* Hely a narancssárga jelzőnek */
+}
+
+.sport-leiras .rules-section li:before {
+  content: "•"; /* Egyedi listajelző: narancssárga pont */
+  position: absolute;
+  left: 0;
+  color: #ff4500; /* Narancssárga szín a jelzőhöz */
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+/* Mérkőzés menetének kiemelése (az első listaelem) */
+.sport-leiras .rules-section ul li:first-child {
+  font-size: 1.2rem; /* Kicsit nagyobb betűméret a kiemeléshez */
+  color: #ff6347; /* Világosabb narancssárga szín a szöveghez */
+  background-color: #3a1f1f; /* Sötét narancssárga/barna háttér */
+  padding: 10px 25px 10px 35px; /* Padding a kiemeléshez */
+  border-radius: 5px; /* Lekerekített sarkok */
+  margin-bottom: 15px; /* Több térköz a többi elem előtt */
+}
+
+.sport-leiras .rules-section ul li:first-child:before {
+  content: "★"; /* Csillag jelző a mérkőzés menetéhez */
+  color: #ff6347; /* Világosabb narancssárga jelző */
+  font-size: 1.2rem;
+  left: 10px; /* Kicsit beljebb helyezve */
 }
 
 /* Versenyek és egyesületek - SportLeiras-specifikus */
@@ -238,6 +286,20 @@
 
   .sport-leiras h4 {
       font-size: 1.1rem;
+  }
+
+  .sport-leiras .rules-section {
+      padding: 15px;
+  }
+
+  .sport-leiras .rules-section p,
+  .sport-leiras .rules-section li {
+      font-size: 1rem;
+  }
+
+  .sport-leiras .rules-section ul li:first-child {
+      font-size: 1.1rem; /* Kisebb betűméret mobilon */
+      padding: 8px 20px 8px 30px; /* Kisebb padding */
   }
 
   .sport-leiras .event-card,
