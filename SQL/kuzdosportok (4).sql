@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2025. Már 03. 14:13
+-- Létrehozás ideje: 2025. Már 03. 14:58
 -- Kiszolgáló verziója: 10.4.32-MariaDB
 -- PHP verzió: 8.2.12
 
@@ -107,6 +107,7 @@ CREATE TABLE `klubbok` (
 --
 
 INSERT INTO `klubbok` (`sprotklub_id`, `sport_id`, `user_id`, `vnev`, `knev`, `klubbnev`, `hely`, `idonap`, `ido`, `szabalyok`, `leiras`) VALUES
+(0, 2, 7, 'bela', 'feri', 'bferi Klubja', 'Vecsés', 'Hétfő', '16:28:00', NULL, 'halado'),
 (1, 1, 1, 'Kiss', 'Péter', 'Szolnoki Boxegyesület', 'Szolnok', 'Hétfő', '17:30:00', 'Nincs szabály', 'Barátságos közösség vagyunk.'),
 (2, 1, 2, 'Nagy', 'Anna', 'Debreceni Boxegyesület', 'Debrecen', 'Szerda', '11:30:00', 'Nincs szabály', 'Barátságos közösség vagyunk.'),
 (3, 2, 3, 'Tóth', 'Gábor', 'Szolnoki Judo egyesület', 'Szeged', 'Péntek', '20:00:00', 'Nincs szabály', 'Barátságos közösség vagyunk.');
@@ -157,7 +158,7 @@ INSERT INTO `latogatok` (`user_id`, `vnev`, `knev`, `knev2`, `telefonszam`, `ema
 (5, 'Varga', 'Béla', NULL, 5, 'varga.bela@example.com', '1988-07-19', 'Győr', '2025-02-22 00:00:00', 'vbela', '$2b$10$S/oxPWR1GAefsAw1sksUtu9ghwQO.M1d9pOiQ3vX0Q5uQHSfbNqV2', 0, 'visitor'),
 (6, 'kovacs', 'jeno', NULL, NULL, 'kovacsjeno@gmail.com', '2025-03-19', 'Saab', '2025-03-03 12:58:26', 'kjeno', '$2b$10$E4uY7aLRJ4uCeMCXKvDOj.Z6MzmiHVAm4mZKRLqhMcNywp8ihg8ou', 0, 'visitor'),
 (7, 'bela', 'feri', NULL, NULL, 'belaferi@gmail.com', '2025-03-14', 'Budapest', '2025-03-03 14:09:27', 'bferi', '$2b$10$I/6jCKKXuCCqpoPBu7Qcy.fLhOjeaCYOpgTx267Eu3/Rzv7CyHTZu', 0, 'coach'),
-(8, 'kati', 'bela', NULL, NULL, 'katibela@gmail.com', '2025-03-27', 'Szeged', '2025-03-03 14:10:52', 'kbela', '$2b$10$EEcah7idtzB.GaZzoEKLJOfVHfAL./AjETF4WjEtthjjUFdSgxLlq', 0, 'visitor');
+(8, 'kati', 'bela', NULL, NULL, 'katibela@gmail.com', '2025-03-27', 'Szeged', '2025-03-03 14:10:52', 'kbela', '$2b$10$fBN1L4viZ4imJqPtzm61vOSBHLbyeLwsJsjv45h0sda/u7QTr2PSy', 0, 'visitor');
 
 -- --------------------------------------------------------
 
