@@ -83,18 +83,18 @@ CREATE TABLE IF NOT EXISTS `kuzdosportok`.`klubbok` (
   CONSTRAINT `fk user_id`
     FOREIGN KEY (`user_id`)
     REFERENCES `kuzdosportok`.`latogatok` (`user_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `kb vnev`
     FOREIGN KEY (`vnev`)
     REFERENCES `kuzdosportok`.`latogatok` (`vnev`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `kb knev`
     FOREIGN KEY (`knev`)
     REFERENCES `kuzdosportok`.`latogatok` (`knev`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_hungarian_ci;

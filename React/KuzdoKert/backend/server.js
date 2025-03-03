@@ -217,6 +217,8 @@ app.post("/updateUser", (req, res) => {
 
 
     res.send({ message: "Profil sikeresen frissítve!", user: req.session.user });
+
+    
   });
 });
 
