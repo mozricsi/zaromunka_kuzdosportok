@@ -7,6 +7,8 @@ const EdzoiOldal = () => {
   const [loginStatus, setLoginStatus] = useState("");
   const [userId, setUserId] = useState(null);
   const [userRole, setUserRole] = useState(null);
+  const [userVnev, setUserVnev] = useState(""); // Vezetéknév tárolása
+  const [userKnev, setUserKnev] = useState(""); // Keresztnév tárolása
   const [workouts, setWorkouts] = useState([]);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
@@ -36,6 +38,8 @@ const EdzoiOldal = () => {
         setLoginStatus(user.felhasznalonev);
         setUserId(user.user_id);
         setUserRole(user.role);
+        setUserVnev(user.vnev || "Edző");
+        setUserKnev(user.knev || "Edző");
         if (user.role !== "coach") {
           setMessage("Ez az oldal csak edzők számára elérhető!");
           navigate("/profil");
@@ -50,8 +54,9 @@ const EdzoiOldal = () => {
   }, [navigate]);
 
   const loadWorkouts = (userId) => {
-    Axios.get(`http://localhost:5000/coach/workouts/${userId}`).then((response) => {
-      setWorkouts(response.data);
+    Axios.get(`http://localhost:5000/klubbok/all`).then((response) => {
+      const userWorkouts = response.data.filter(workout => workout.user_id === userId);
+      setWorkouts(userWorkouts);
     }).catch((error) => {
       console.error("Hiba az edzések betöltésekor:", error);
       setMessage("Hiba történt az edzések betöltésekor.");
@@ -67,28 +72,40 @@ const EdzoiOldal = () => {
     }
 
     try {
-      const response = await Axios.post("http://localhost:5000/coach/add-workout", {
+      console.log("Küldött adatok:", {
         user_id: userId,
-        sport_id: sportId,
+        sport_id: parseInt(sportId, 10),
         hely,
         idonap,
         ido,
         leiras: leiras || "Nincs leírás megadva",
-        vnev: loginStatus.split('.')[0],
-        knev: loginStatus.split('.')[1] || "Edző",
-        klubbnev: `${loginStatus} Klubja`,
+        vnev: userVnev,
+        knev: userKnev,
+        klubbnev: `${loginStatus} Klubja` || "Edző Klubbja",
       });
 
-      setMessage("Edzés sikeresen hozzáadva!");
-      setWorkouts([...workouts, response.data.workout]);
+      const response = await Axios.post("http://localhost:5000/coach/add-workout", {
+        user_id: userId,
+        sport_id: parseInt(sportId, 10),
+        hely,
+        idonap,
+        ido,
+        leiras: leiras || "Nincs leírás megadva",
+        vnev: userVnev,
+        knev: userKnev,
+        klubbnev: `${loginStatus} Klubja` || "Edző Klubbja",
+      });
+
+      setMessage(response.data.message);
+      loadWorkouts(userId); // Frissítjük az edzéseket az adatbázisból
       setSportId("");
       setHely("");
       setIdonap("");
       setIdo("");
       setLeiras("");
     } catch (error) {
-      console.error("Hiba az edzés hozzáadásakor:", error);
-      setMessage("Hiba történt az edzés hozzáadása során.");
+      console.error("Hiba az edzés hozzáadásakor:", error.response ? error.response.data : error.message);
+      setMessage(`Hiba történt az edzés hozzáadása során: ${error.message}`);
     }
   };
 
@@ -177,7 +194,7 @@ const EdzoiOldal = () => {
               <ul>
                 {workouts.map((workout) => (
                   <li key={workout.sprotklub_id} className="workout-item">
-                    <strong>{workout.sportnev}</strong> - {workout.hely}, {workout.idonap} {workout.ido} <br />
+                    <strong>{sports.find(s => s.id === workout.sport_id)?.name}</strong> - {workout.hely}, {workout.idonap} {workout.ido} <br />
                     Leírás: {workout.leiras}
                   </li>
                 ))}

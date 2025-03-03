@@ -208,3 +208,30 @@
     color: #ff4500;
     margin-right: 10px;
   }
+
+  /* EdzesNaplo.css (bővítés) */
+.motivation-message {
+  background: #2c2c2c;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  margin-top: 40px;
+  text-align: center;
+}
+
+.motivation-message h2 {
+  font-size: 2rem;
+  color: #ff4500;
+  margin-bottom: 10px;
+}
+
+.motivation-message p {
+  font-size: 1rem;
+  color: #ccc;
+  line-height: 1.6;
+}
+
+.sport-item.selected {
+  background-color: #ff4500 !important;
+  color: #fff !important;
+}

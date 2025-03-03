@@ -124,15 +124,6 @@ app.post("/checkUsername", (req, res) => {
   })
 
 
-  //login
-  app.get("/login", (req, res) => {
-    if (req.session.user) {
-      res.send({ loggedIn: true, user: req.session.user });
-    } else {
-      res.send({ loggedIn: false, user: null });
-    }
-  });
-  
   app.post('/login', (req, res) => {
     const felhasznalonev = req.body.username;
     const jelszo = req.body.password;
@@ -150,7 +141,7 @@ app.post("/checkUsername", (req, res) => {
             if (response) {
               req.session.user = result;
               console.log(req.session.user);
-              res.send(result); // A result tartalmazza a role-t is
+              res.send(result); // A result tartalmazza a vnev, knev, role stb. értékeket
             } else {
               res.send({ message: "Rossz felhasználó/jelszó kombináció!" });
             }
@@ -317,7 +308,93 @@ app.post("/changePassword", (req, res) => {
   });
 });
 
+
+
 //----------------------------------------------------------------------------------------------
+
+// Edzés hozzáadása az edző által
+app.post("/coach/add-workout", (req, res) => {
+  const { user_id, sport_id, hely, idonap, ido, leiras, vnev, knev, klubbnev } = req.body;
+
+  console.log("Küldött adatok:", { user_id, sport_id, hely, idonap, ido, leiras, vnev, knev, klubbnev });
+
+  // Ellenőrizzük, hogy minden szükséges mező meg van adva
+  if (!user_id || !sport_id || !hely || !idonap || !ido) {
+    return res.status(400).json({ error: "Minden kötelező mezőt ki kell tölteni!" });
+  }
+
+  // Ellenőrizzük, hogy sport_id és user_id számok
+  if (isNaN(user_id) || isNaN(sport_id)) {
+    return res.status(400).json({ error: "A user_id és sport_id számnak kell lennie!" });
+  }
+
+  // Ellenőrizzük, hogy a user_id létezik-e a latogatok táblában
+  db.query("SELECT user_id FROM latogatok WHERE user_id = ?", [user_id], (err, userResult) => {
+    if (err) {
+      console.error("Hiba a felhasználó ellenőrzésekor:", err.message);
+      return res.status(500).json({ error: "Adatbázis hiba", details: err.message });
+    }
+    if (userResult.length === 0) {
+      return res.status(400).json({ error: "A felhasználó nem létezik!" });
+    }
+
+    // Ellenőrizzük, hogy a sport_id létezik-e a sport táblában
+    db.query("SELECT sport_id FROM sport WHERE sport_id = ?", [sport_id], (err, sportResult) => {
+      if (err) {
+        console.error("Hiba a sport ellenőrzésekor:", err.message);
+        return res.status(500).json({ error: "Adatbázis hiba", details: err.message });
+      }
+      if (sportResult.length === 0) {
+        return res.status(400).json({ error: "A sport nem létezik!" });
+      }
+
+      const sql = `
+        INSERT INTO klubbok (sport_id, user_id, vnev, knev, klubbnev, hely, idonap, ido, leiras, szabalyok)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)
+      `;
+
+      db.query(sql, [sport_id, user_id, vnev, knev, klubbnev, hely, idonap, ido, leiras], (err, result) => {
+        if (err) {
+          console.error("Hiba az edzés hozzáadásakor:", err.message);
+          if (err.code === 'ER_DUP_ENTRY') {
+            return res.status(500).json({ error: "Duplikált bejegyzés", details: err.message });
+          }
+          return res.status(500).json({ error: "Adatbázis hiba", details: err.message });
+        }
+
+        // Az újonnan hozzáadott edzés lekérdezése (visszaküldéshez)
+        db.query(
+          "SELECT * FROM klubbok WHERE sprotklub_id = LAST_INSERT_ID()",
+          (err, newWorkout) => {
+            if (err) {
+              console.error("Hiba az új edzés lekérdezésekor:", err.message);
+              return res.status(500).json({ error: "Adatbázis hiba", details: err.message });
+            }
+            res.json({ message: "Edzés sikeresen hozzáadva!", workout: newWorkout[0] });
+          }
+        );
+      });
+    });
+  });
+});
+
+// Összes klub lekérdezése látogatóknak
+app.get("/klubbok/all", (req, res) => {
+  const query = `
+    SELECT k.*, s.sportnev 
+    FROM klubbok k 
+    JOIN sport s ON k.sport_id = s.sport_id
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Hiba történt:", err);
+      res.status(500).json({ error: "Adatbázis hiba" });
+    } else {
+      res.json(results);
+    }
+  });
+});
 
 
 
