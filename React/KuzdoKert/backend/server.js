@@ -150,12 +150,12 @@ app.post("/checkUsername", (req, res) => {
               res.send(result)
             }
             else{
-              res.send({message: "Rossz felhasználó/jelszó kombináció"});
+              res.send({message: "Rossz felhasználó/jelszó kombináció!"});
             }
           });
         }
         else{
-          res.send({message: "Nem létező felhasználó"});
+          res.send({message: "Nem létező felhasználó!"});
         }
         
       }
@@ -260,6 +260,64 @@ app.get("/klubbok/:sportId", (req, res) => {
 });
 //-----------------------------------------------------------------------------------------------
 
+
+//Jelszóváltoztatás
+app.post("/changePassword", (req, res) => {
+  const { username, oldPassword, newPassword } = req.body;
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({ message: "Az új jelszónak legalább 6 karakter hosszúnak kell lennie!" });
+  }
+
+  const query = "SELECT jelszo FROM latogatok WHERE felhasznalonev = ?";
+  db.query(query, [username], (err, result) => {
+    if (err) {
+      return res.status(500).json({ message: "Hiba történt az adatbázisban." });
+    }
+    if (result.length === 0) {
+      return res.status(404).json({ message: "Felhasználó nem található." });
+    }
+
+    const hashedPassword = result[0].jelszo;
+
+    // Ellenőrizzük a régi jelszót
+    bcrypt.compare(oldPassword, hashedPassword, (err, match) => {
+      if (err) {
+        return res.status(500).json({ message: "Hiba történt az ellenőrzés során." });
+      }
+      if (!match) {
+        return res.status(400).json({ message: "A régi jelszó helytelen!" });
+      }
+
+      // Ellenőrizzük, hogy az új jelszó nem egyezik-e a jelenlegi hash-elt jelszóval
+      bcrypt.compare(newPassword, hashedPassword, (err, same) => {
+        if (err) {
+          return res.status(500).json({ message: "Hiba történt az ellenőrzés során." });
+        }
+        if (same) {
+          return res.status(400).json({ message: "Az új jelszó nem lehet ugyanaz, mint a régi!" });
+        }
+
+        // Ha minden rendben van, akkor hash-eljük az új jelszót
+        bcrypt.hash(newPassword, 10, (err, newHashedPassword) => {
+          if (err) {
+            return res.status(500).json({ message: "Hiba történt a jelszó hash-elésekor." });
+          }
+
+          const updateQuery = "UPDATE latogatok SET jelszo = ? WHERE felhasznalonev = ?";
+          db.query(updateQuery, [newHashedPassword, username], (err, result) => {
+            if (err) {
+              return res.status(500).json({ message: "Hiba történt a jelszó frissítésekor." });
+            }
+            res.json({ message: "Jelszó sikeresen megváltoztatva!" });
+          });
+        });
+      });
+    });
+  });
+});
+
+//----------------------------------------------------------------------------------------------
 
 
 

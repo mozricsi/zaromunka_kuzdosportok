@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../Styles/profil.css";
 import Axios from "axios";
 
@@ -13,6 +13,8 @@ const Profil = () => {
       const [loginStatus, setLoginStatus] = useState(false);
       Axios.defaults.withCredentials = true;
       
+      const navigate = useNavigate();
+
       useEffect(() => {
         Axios.get("http://localhost:5000/login").then((response) => {
           if (response.data.loggedIn === true) {
@@ -30,6 +32,7 @@ const Profil = () => {
             });
           } else {
             console.log("Nem vagy bejelentkezve");
+            navigate("/login");
           }
         });
       }, [loginStatus]);
@@ -54,8 +57,9 @@ const Profil = () => {
 
 
   const [editMode, setEditMode] = useState(false);
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   //input change
 //--------------------------------------------------------------
 const handleInputChange = (e) => {
@@ -78,18 +82,61 @@ const handleInputChange = (e) => {
     }
   };
 //--------------------------------------------------------------
-  const handlePasswordChange = () => {
-    if (newPassword === confirmPassword) {
-      setUserData({ ...userData, password: newPassword });
-      setNewPassword('');
-      setConfirmPassword('');
-      alert('Jelszó sikeresen megváltoztatva!');
-    } else {
-      alert('A jelszavak nem egyeznek!');
-    }
-  };
+const handlePasswordChange = () => {
+  if (!oldPassword || !newPassword || !confirmPassword) {
+    alert("Minden mezőt ki kell tölteni!");
+    return;
+  }
+
+  if (newPassword.length < 6) {
+    alert("Az új jelszónak legalább 6 karakter hosszúnak kell lennie!");
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    alert("A megadott jelszavak nem egyeznek!");
+    return;
+  }
+
+
+
+  Axios.post("http://localhost:5000/changePassword", {
+    username: userData.username,
+    oldPassword: oldPassword,
+    newPassword: newPassword,
+  })
+    .then((response) => {
+      alert(response.data.message);
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    })
+    .catch((error) => {
+      if (error.response) {
+        // Ha a szerver válasza tartalmaz üzenetet, akkor azt jelenítsük meg
+        alert(error.response.data.message || "Hiba történt a jelszóváltoztatás során.");
+      } else {
+        // Ha nincs válasz a szervertől, akkor általános hibaüzenet
+        alert("Nem sikerült csatlakozni a szerverhez. Próbáld újra később.");
+      }
+      console.error("Hiba:", error);
+    });
+};
+
+
 //--------------------------------------------------------------
 const handleSaveChanges = () => {
+
+  const requiredFields = ["vnev", "knev", "email", "szul", "lakhely", "username"];
+
+  // Ellenőrizzük, hogy van-e üres mező
+  const emptyFields = requiredFields.filter((field) => !userData[field] || userData[field].trim() === "");
+
+  if (emptyFields.length > 0) {
+    alert("A *-al jelölt mezőket ki kell tölteni!");
+    return;
+  }
+
   Axios.post("http://localhost:5000/updateUser", userData)
     .then((response) => {
       console.log("Sikeresen frissítve:", response.data);
@@ -116,7 +163,7 @@ const handleSaveChanges = () => {
         <table className="profile-table">
           <tbody>
             <tr>
-              <th>Vezetéknév:</th>
+              <th>*Vezetéknév:</th>
               <td>
                 <input
                   type="text"
@@ -128,7 +175,7 @@ const handleSaveChanges = () => {
               </td>
             </tr>
             <tr>
-              <th>Keresztnév:</th>
+              <th>*Keresztnév:</th>
               <td>
                 <input
                   type="text"
@@ -150,7 +197,7 @@ const handleSaveChanges = () => {
               </td>
             </tr>
             <tr>
-              <th>Email cím:</th>
+              <th>*Email cím:</th>
               <td>
                 <input
                   type="email"
@@ -161,7 +208,7 @@ const handleSaveChanges = () => {
               </td>
             </tr>
             <tr>
-              <th>Születési dátum:</th>
+              <th>*Születési dátum:</th>
               <td>
                 <input
                   type="date"
@@ -172,7 +219,7 @@ const handleSaveChanges = () => {
               </td>
             </tr>
             <tr>
-              <th>Lakhely:</th>
+              <th>*Lakhely:</th>
               <td>
                 <input
                   type="text"
@@ -194,7 +241,7 @@ const handleSaveChanges = () => {
               </td>
             </tr>
             <tr>
-              <th>Felhasználónév:</th>
+              <th>*Felhasználónév:</th>
               <td>
                 <input
                   type="text"
@@ -218,7 +265,7 @@ const handleSaveChanges = () => {
         </table>
 
       ) : (
-
+      <>
         <table className="profile-table">
           <tbody>
             <tr>
@@ -268,10 +315,15 @@ const handleSaveChanges = () => {
             </tr>
           </tbody>
         </table>
-      )}
-
-      <div className="password-change">
+        
+        <div className="password-change">
         <h2>Jelszó változtatása</h2>
+        <label>Régi jelszó:</label>
+        <input
+          type="password"
+          value={oldPassword}
+          onChange={(e) => setOldPassword(e.target.value)}
+        />
         <label>Új jelszó:</label>
         <input
           type="password"
@@ -286,6 +338,11 @@ const handleSaveChanges = () => {
         />
         <button onClick={handlePasswordChange}>Jelszó változtatása</button>
       </div>
+
+        </>
+      )}
+
+      
 
       <button onClick={editMode ? handleSaveChanges : () => setEditMode(true)}>
         {editMode ? 'Mentés' : 'Szerkesztés'}

@@ -9,6 +9,7 @@ const Login = () => {
  
   const [felhasznalonev, setFelhasznalonev] = useState(null);
   const [jelszo, setJelszo] = useState(null);
+  const [info, setInfo] = useState(null);
   const navigate = useNavigate();
 
 
@@ -32,11 +33,11 @@ const Login = () => {
   //--------------------------------------------------------------------
   const login = () => {
     if(!felhasznalonev){
-      console.log("Nincs felhasználónév")
+      setInfo("Írj be felhasználónevet!")
     }
     else{
       if(!jelszo){
-        console.log("nincs jelszó")
+        setInfo("Írj be jelszót!")
       }
       else{
         Axios.post("http://localhost:5000/login", {
@@ -46,7 +47,7 @@ const Login = () => {
           
         }).then((response) => {
           if (response.data.message) {
-            setLoginStatus(response.data.message)
+            setInfo(response.data.message)
             console.log(response.data.message)
           }
           else {
@@ -76,6 +77,7 @@ const Login = () => {
 ) : (
   <div>
     <h2>Bejelentkezés!</h2>
+    <p>{info}</p>
     <input
       type="text"
       placeholder="Felhasználónév"
