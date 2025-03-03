@@ -1,7 +1,7 @@
 /* navbar.css */
 .custom-navbar {
     font-family: 'Roboto', Arial, sans-serif;
-    background-color: #333; /* Világosabb szürke háttér */
+    background-color: #545353; /* Világosabb szürke háttér */
     padding: 15px 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
