@@ -40,7 +40,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root", // MySQL felhasználónév
   password: "", // MySQL jelszó (ha van)
-  port: "3307",
+  port: "3306",
   database: "kuzdosportok",
 });
 
@@ -378,23 +378,60 @@ app.post("/coach/add-workout", (req, res) => {
   });
 });
 
-// Összes klub lekérdezése látogatóknak
-app.get("/klubbok/all", (req, res) => {
+app.get('/ertekelesek/:sportklub_id', (req, res) => {
+  const sportklub_id = req.params.sportklub_id;
   const query = `
-    SELECT k.*, s.sportnev 
-    FROM klubbok k 
-    JOIN sport s ON k.sport_id = s.sport_id
+    SELECT e.*, l.felhasznalonev 
+    FROM ertekelesek e 
+    JOIN latogatok l ON e.user_id = l.user_id 
+    WHERE e.sportklub_id = ?
   `;
-
-  db.query(query, (err, results) => {
+  
+  db.query(query, [sportklub_id], (err, results) => {
     if (err) {
-      console.error("Hiba történt:", err);
-      res.status(500).json({ error: "Adatbázis hiba" });
-    } else {
-      res.json(results);
+      console.error('Hiba az értékelések lekérésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt az értékelések lekérésekor.' });
     }
+    res.json(results);
   });
 });
+
+// Új értékelés hozzáadása
+app.post('/ertekelesek', (req, res) => {
+  const { user_id, sportklub_id, szoveges_ertekeles, csillagos_ertekeles } = req.body;
+
+  // Ellenőrizzük, hogy a felhasználó létezik-e és visitor szerepköre van-e
+  const checkUserQuery = `SELECT role FROM latogatok WHERE user_id = ?`;
+  db.query(checkUserQuery, [user_id], (err, results) => {
+    if (err) {
+      console.error('Hiba a felhasználó ellenőrzésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt a felhasználó ellenőrzésekor.' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Felhasználó nem található.' });
+    }
+
+    const userRole = results[0].role;
+    if (userRole !== 'visitor') {
+      return res.status(403).json({ message: 'Csak látogatók adhatnak értékelést!' });
+    }
+
+    // Értékelés beszúrása
+    const insertQuery = `
+      INSERT INTO ertekelesek (user_id, sportklub_id, szoveges_ertekeles, csillagos_ertekeles)
+      VALUES (?, ?, ?, ?)
+    `;
+    db.query(insertQuery, [user_id, sportklub_id, szoveges_ertekeles, csillagos_ertekeles], (err, result) => {
+      if (err) {
+        console.error('Hiba az értékelés hozzáadásakor:', err);
+        return res.status(500).json({ message: 'Hiba történt az értékelés hozzáadása során.' });
+      }
+      res.json({ message: 'Értékelés sikeresen hozzáadva!' });
+    });
+  });
+});
+
 
 
 
