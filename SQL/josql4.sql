@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `kuzdosportok`.`latogatok` (
   `regisztracio_datum` DATETIME NOT NULL,
   `felhasznalonev` VARCHAR(255) NOT NULL,
   `jelszo` VARCHAR(255) NOT NULL,
-  `edzo` INT(11) NOT NULL,
+  `role` enum('visitor','coach') DEFAULT 'visitor',
   PRIMARY KEY (`user_id`),
   INDEX `vnevidx` (`vnev` ASC),
   INDEX `knevidx` (`knev` ASC))
@@ -46,7 +46,7 @@ COLLATE = utf8_hungarian_ci;
 -- Table `kuzdosportok`.`adatmodositas`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `kuzdosportok`.`adatmodositas` (
-  `modositas_id` INT(11) NOT NULL,
+  `modositas_id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11) NOT NULL,
   `adat_modositas_datum` DATETIME NOT NULL,
   PRIMARY KEY (`modositas_id`),
@@ -64,7 +64,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- Table `kuzdosportok`.`klubbok`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `kuzdosportok`.`klubbok` (
-  `sprotklub_id` INT(11) NOT NULL,
+  `sprotklub_id` INT(11) NOT NULL AUTO_INCREMENT,
   `sport_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
   `vnev` VARCHAR(255) NOT NULL,
@@ -83,18 +83,18 @@ CREATE TABLE IF NOT EXISTS `kuzdosportok`.`klubbok` (
   CONSTRAINT `fk user_id`
     FOREIGN KEY (`user_id`)
     REFERENCES `kuzdosportok`.`latogatok` (`user_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `kb vnev`
     FOREIGN KEY (`vnev`)
     REFERENCES `kuzdosportok`.`latogatok` (`vnev`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `kb knev`
     FOREIGN KEY (`knev`)
     REFERENCES `kuzdosportok`.`latogatok` (`knev`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_hungarian_ci;
@@ -104,7 +104,7 @@ COLLATE = utf8_hungarian_ci;
 -- Table `kuzdosportok`.`ertekelesek`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `kuzdosportok`.`ertekelesek` (
-  `ertekeles_id` INT(11) NOT NULL,
+  `ertekeles_id` INT(11) NOT NULL AUTO_INCREMENT,
   `szoveges_ertekeles` VARCHAR(255) NOT NULL,
   `csillagos_ertekeles` INT(1) NOT NULL,
   `user_id` INT(11) NOT NULL,
@@ -130,7 +130,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- Table `kuzdosportok`.`esemenyek`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `kuzdosportok`.`esemenyek` (
-  `esemeny_id` INT(11) NOT NULL,
+  `esemeny_id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11) NOT NULL,
   `latogato_resztvevo` INT(1) NOT NULL,
   `pontos_cim` VARCHAR(255) NOT NULL,
@@ -156,7 +156,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- Table `kuzdosportok`.`jelentkezes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `kuzdosportok`.`jelentkezes` (
-  `jelentkezes_id` INT(11) NOT NULL,
+  `jelentkezes_id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11) NOT NULL,
   `sportkulb_id` INT(11) NOT NULL,
   `jelentkezes_ido` DATETIME NOT NULL,
@@ -223,13 +223,15 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- 3: tgabi
 -- 4: Szabó
 -- 5: vargabelus
-INSERT INTO kuzdosportok.latogatok (user_id, vnev, knev, knev2, telefonszam, email, szul_ido, lakhelyvaros, regisztracio_datum, felhasznalonev, jelszo, edzo) 
-VALUES 
-(1, 'Kiss', 'Péter', NULL, '1', 'kiss.peter@example.com', '1990-05-12', 'Budapest', '2025-02-22', 'kpeter', '$2b$10$Ye0uo3ffgRUMuM1rX369V.6di9clKRXre7/vjxOz5u3QlYDUxWlIW', 1),
-(2, 'Nagy', 'Anna', NULL, '2', 'nagy.anna@example.com', '1985-08-25', 'Debrecen', '2025-02-22', 'nanna', '$2b$10$F6z0jKRpuk5Iw9X/Hd5FRuG.ADcQmEEOd0Fsqci1jVXz2vZhUXzQi', 1),
-(3, 'Tóth', 'Gábor', 'Ferenc', '3', 'toth.gabor@example.com', '1992-11-10', 'Szeged', '2025-02-22', 'tgabor', '$2b$10$NTAJ.Zz7abNQN44PPYo2yOLxmWP0BXy3n/KZa6b16KTgCbD7J7MfG', 1),
-(4, 'Szabó', 'Mária', 'Anna', '4', 'szabo.maria@example.com', '1995-03-14', 'Pécs', '2025-02-22', 'smaria', '$2b$10$lU4EEgGIuS2QhocVvFBi4eekNPi.sDCCYKqWC1.z1LarzOC23A.HG', 0),
-(5, 'Varga', 'Béla', NULL, '5', 'varga.bela@example.com', '1988-07-19', 'Győr', '2025-02-22', 'vbela', '$2b$10$S/oxPWR1GAefsAw1sksUtu9ghwQO.M1d9pOiQ3vX0Q5uQHSfbNqV2', 0);
+INSERT INTO `latogatok` (`user_id`, `vnev`, `knev`, `knev2`, `telefonszam`, `email`, `szul_ido`, `lakhelyvaros`, `regisztracio_datum`, `felhasznalonev`, `jelszo`, `role`) VALUES
+(1, 'Kiss', 'Péter', NULL, 1, 'kiss.peter@example.com', '1990-05-12', 'Budapest', '2025-02-22 00:00:00', 'kpeter', '$2b$10$Ye0uo3ffgRUMuM1rX369V.6di9clKRXre7/vjxOz5u3QlYDUxWlIW', 'coach'),
+(2, 'Nagy', 'Anna', NULL, 2, 'nagy.anna@example.com', '1985-08-25', 'Debrecen', '2025-02-22 00:00:00', 'nanna', '$2b$10$F6z0jKRpuk5Iw9X/Hd5FRuG.ADcQmEEOd0Fsqci1jVXz2vZhUXzQi', 'coach'),
+(3, 'Tóth', 'Gábor', 'Ferenc', 3, 'toth.gabor@example.com', '1992-11-10', 'Szeged', '2025-02-22 00:00:00', 'tgabor', '$2b$10$NTAJ.Zz7abNQN44PPYo2yOLxmWP0BXy3n/KZa6b16KTgCbD7J7MfG', 'coach'),
+(4, 'Szabó', 'Mária', 'Anna', 4, 'szabo.maria@example.com', '1995-03-14', 'Pécs', '2025-02-22 00:00:00', 'smaria', '$2b$10$lU4EEgGIuS2QhocVvFBi4eekNPi.sDCCYKqWC1.z1LarzOC23A.HG', 'visitor'),
+(5, 'Varga', 'Béla', NULL, 5, 'varga.bela@example.com', '1988-07-19', 'Győr', '2025-02-22 00:00:00', 'vbela', '$2b$10$S/oxPWR1GAefsAw1sksUtu9ghwQO.M1d9pOiQ3vX0Q5uQHSfbNqV2', 'visitor'),
+(6, 'kovacs', 'jeno', NULL, NULL, 'kovacsjeno@gmail.com', '2025-03-19', 'Saab', '2025-03-03 12:58:26', 'kjeno', '$2b$10$E4uY7aLRJ4uCeMCXKvDOj.Z6MzmiHVAm4mZKRLqhMcNywp8ihg8ou', 'visitor'),
+(7, 'bela', 'feri', NULL, NULL, 'belaferi@gmail.com', '2025-03-14', 'Budapest', '2025-03-03 14:09:27', 'bferi', '$2b$10$I/6jCKKXuCCqpoPBu7Qcy.fLhOjeaCYOpgTx267Eu3/Rzv7CyHTZu', 'coach'),
+(8, 'kati', 'bela', NULL, NULL, 'katibela@gmail.com', '2025-03-27', 'Szeged', '2025-03-03 14:10:52', 'kbela', '$2b$10$fBN1L4viZ4imJqPtzm61vOSBHLbyeLwsJsjv45h0sda/u7QTr2PSy', 'visitor');
 
 
 -- sportok hozzáadása

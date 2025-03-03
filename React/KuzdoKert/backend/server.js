@@ -123,14 +123,14 @@ app.post("/checkUsername", (req, res) => {
     }
   })
 
-
+//bejelentkezés
   app.post('/login', (req, res) => {
     const felhasznalonev = req.body.username;
     const jelszo = req.body.password;
   
     db.query(
       "SELECT * FROM latogatok WHERE felhasznalonev = ?",
-      felhasznalonev,
+      [felhasznalonev],
       (err, result) => {
         if (err) {
           res.send({ err: err });
@@ -142,6 +142,19 @@ app.post("/checkUsername", (req, res) => {
               req.session.user = result;
               console.log(req.session.user);
               res.send(result); // A result tartalmazza a vnev, knev, role stb. értékeket
+
+              db.query(
+                "INSERT INTO latogatobejelentkezesek (user_id, bejelentkezes_ido) VALUES (?, NOW())",
+                [req.session.user[0].user_id],
+                (err,) => {
+                  if (err) {
+                    console.log("Hibák:" + err);
+                    return res.status(500).send("Hiba a beszúrás során");
+                  }
+                  console.log("Az insert sikeresen lefutott.");
+                }
+              );
+
             } else {
               res.send({ message: "Rossz felhasználó/jelszó kombináció!" });
             }
@@ -204,6 +217,8 @@ app.post("/updateUser", (req, res) => {
 
 
     res.send({ message: "Profil sikeresen frissítve!", user: req.session.user });
+
+    
   });
 });
 
