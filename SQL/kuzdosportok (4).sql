@@ -312,7 +312,8 @@ ALTER TABLE `sport`
 --
 -- A kiírt táblák AUTO_INCREMENT értéke
 --
-
+  ALTER TABLE `klubbok`
+  MODIFY `sportklub_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 --
 -- AUTO_INCREMENT a táblához `latogatobejelentkezesek`
 --
