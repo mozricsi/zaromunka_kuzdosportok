@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Axios from 'axios';
+import { useNavigate } from "react-router-dom";
 import '../Styles/sportleiras.css';
 
 const SportLeiras = () => {
@@ -14,6 +15,8 @@ const SportLeiras = () => {
   const [userRole, setUserRole] = useState(null);
   const [ratings, setRatings] = useState({});
   const [newRating, setNewRating] = useState({});
+
+  const navigate = useNavigate();
 
   // Bejelentkezés ellenőrzése
   useEffect(() => {
@@ -29,6 +32,9 @@ const SportLeiras = () => {
             setLoginStatus(false);
             setUserId(null);
             setUserRole(null);
+            setTimeout(() => {
+              navigate("/login");
+            }, 1000);
           }
         })
         .catch((error) => {
@@ -278,7 +284,9 @@ const SportLeiras = () => {
           </div>
         </>
       ) : (
-        <p>Jelentkezz be kérlek</p>
+        <> 
+               <p>Jelentkezz be kérlek</p>
+        </>
       )}
     </div>
   );
