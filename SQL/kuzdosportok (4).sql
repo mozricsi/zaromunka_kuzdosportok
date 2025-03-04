@@ -20,6 +20,9 @@ SET time_zone = "+00:00";
 --
 -- Adatbázis: `kuzdosportok`
 --
+DROP DATABASE kuzdosportok
+CREATE DATABASE IF NOT EXISTS kuzdosportok
+CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -312,8 +315,8 @@ ALTER TABLE `sport`
 --
 -- A kiírt táblák AUTO_INCREMENT értéke
 --
-  ALTER TABLE `klubbok`
-  MODIFY `sportklub_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+  ALTER TABLE `klubbok` CHANGE `sprotklub_id` `sprotklub_id` INT(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT a táblához `latogatobejelentkezesek`
 --
