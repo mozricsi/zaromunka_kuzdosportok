@@ -1,9 +1,11 @@
+/* kartyak.css */
+
 /* Csak a .sport-page osztályon belüli elemekre vonatkoznak a stílusok */
 .sport-page {
-  background-color: #333;
-  color: #ff4500;
+  background-color: #333; /* Világosabb szürke háttér, mint a navbar */
+  color: #ff4500; /* Narancssárga szöveg, illik a többihez */
   padding: 20px;
-  padding-top: 0;
+  padding-top: 0; /* A fejléc miatt nincs padding felül */
 }
 
 .sport-page h1 {
@@ -12,24 +14,26 @@
   margin-bottom: 30px;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: #ff4500;
-  background-color: #333;
-  padding: 20px 0;
+  color: #ff4500; /* Narancssárga szöveg */
+  background-color: #333; /* Ugyanaz a világosabb szürke háttér */
+  padding: 20px 0; /* Padding a cím körül */
 }
 
 .sport-page main {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 25px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #333;
+  background-color: #333; /* Világosabb szürke háttér a kártyákhoz */
 }
 
 .sport-page .card {
-  background-color: #2c2c2c;
+  background-color: #2c2c2c; /* Enyhén sötétebb szürke a kártyáknak */
   border-radius: 15px;
+  width: 300px;
   padding: 15px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -39,7 +43,7 @@
 .sport-page .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-  background-color: #1a1a1a;
+  background-color: #1a1a1a; /* Sötétebb szürke hover esetén */
 }
 
 .sport-page .card-image {
@@ -47,18 +51,18 @@
   height: 200px;
   object-fit: cover;
   border-radius: 10px;
-  border: 2px solid #ff4500;
+  border: 2px solid #ff4500; /* Narancssárga keret, illik a dizájnhoz */
 }
 
 .sport-page .card h2 {
-  color: #ff4500;
+  color: #ff4500; /* Narancssárga szöveg */
   margin: 15px 0;
   font-size: 1.8em;
   text-align: center;
 }
 
 .sport-page .card p {
-  color: #ccc;
+  color: #ccc; /* Halvány szürke szöveg a jobb olvashatóságért */
   text-align: center;
   font-size: 1.1em;
   margin-bottom: 10px;
@@ -68,51 +72,26 @@
 /* Reszponzív design */
 @media (max-width: 768px) {
   .sport-page main {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
+      flex-direction: column;
+      align-items: center;
   }
 
   .sport-page .card {
-    width: 100%;
-    padding: 10px;
+      width: 90%;
+      max-width: 400px;
   }
 
   .sport-page h1 {
-    font-size: 2em;
-  }
-
-  .sport-page .card-image {
-    height: 180px;
-  }
-
-  .sport-page .card h2 {
-    font-size: 1.5em;
-  }
-
-  .sport-page .card p {
-    font-size: 1em;
+      font-size: 2em;
   }
 }
 
 @media (max-width: 480px) {
-  .sport-page main {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .sport-page h1 {
-    font-size: 1.5em;
+  .sport-page .card {
+      width: 100%;
   }
 
   .sport-page .card-image {
-    height: 150px;
-  }
-
-  .sport-page .card h2 {
-    font-size: 1.2em;
-  }
-
-  .sport-page .card p {
-    font-size: 0.9em;
+      height: 180px;
   }
 }
