@@ -4,8 +4,8 @@
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
-  background-color: #1a1a1a; /* Sötét háttér */
-  color: #fff; /* Világos szöveg */
+  background-color: #1a1a1a;
+  color: #fff;
 }
 
 header {
@@ -15,7 +15,7 @@ header {
 
 header h1 {
   font-size: 3rem;
-  color: #ff4500; /* Narancssárga kiemelés */
+  color: #ff4500;
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -29,7 +29,7 @@ header p {
 .intro-section {
   margin-bottom: 40px;
   padding: 20px;
-  background: #2c2c2c; /* Enyhén világosabb háttér */
+  background: #2c2c2c;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
@@ -204,47 +204,163 @@ footer p {
   transform: scale(1.2);
 }
 
-/* Bevezető szekció */
-.intro-section {
-  margin-bottom: 40px;
-  padding: 20px;
-  background: #2c2c2c; /* Enyhén világosabb háttér */
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  position: relative; /* Pozicionáláshoz szükséges */
+/* Reszponzív dizájn */
+@media (max-width: 768px) {
+  .App {
+    padding: 15px;
+    max-width: 90%;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  header p {
+    font-size: 1rem;
+  }
+
+  .intro-section {
+    padding: 15px;
+  }
+
+  .intro-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .intro-image {
+    max-width: 300px;
+  }
+
+  .intro-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .intro-section p {
+    font-size: 0.9rem;
+  }
+
+  .coach-section,
+  .training-log-section,
+  .profile-section {
+    padding: 15px;
+  }
+
+  .coach-section h2,
+  .training-log-section h2,
+  .profile-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .coach-section p,
+  .training-log-section p,
+  .profile-section p {
+    font-size: 0.9rem;
+  }
+
+  .news-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .news-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  .news-item {
+    padding: 15px;
+  }
+
+  .news-item h3 {
+    font-size: 1rem;
+  }
+
+  .news-item p {
+    font-size: 0.9rem;
+  }
+
+  footer {
+    padding: 15px;
+  }
+
+  footer p {
+    font-size: 0.9rem;
+  }
+
+  .social-icons img {
+    width: 25px;
+    height: 25px;
+  }
 }
 
-.intro-content {
-  display: flex;
-  flex-direction: column; /* Tartalom egymás alatt */
-  align-items: flex-start; /* Tartalom balra igazítva */
-  gap: 20px;
-}
+@media (max-width: 480px) {
+  .App {
+    padding: 10px;
+  }
 
-.intro-image {
-  width: 150px; /* Kisebb méret */
-  height: auto;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease;
-  position: absolute; /* Abszolút pozicionálás */
-  top: 20px; /* Felső margó */
-  right: 20px; /* Jobb margó */
-}
+  header h1 {
+    font-size: 1.5rem;
+  }
 
-.intro-image:hover {
-  transform: scale(1.05);
-}
+  header p {
+    font-size: 0.9rem;
+  }
 
-.intro-section h2 {
-  font-size: 2rem;
-  color: #ff4500;
-  margin-bottom: 10px;
-}
+  .intro-image {
+    max-width: 200px;
+  }
 
-.intro-section p {
-  font-size: 1rem;
-  color: #ccc;
-  line-height: 1.6;
-  max-width: 80%; /* Szöveg szélességének korlátozása */
+  .intro-section h2 {
+    font-size: 1.2rem;
+  }
+
+  .intro-section p {
+    font-size: 0.8rem;
+  }
+
+  .coach-section,
+  .training-log-section,
+  .profile-section {
+    padding: 10px;
+  }
+
+  .coach-section h2,
+  .training-log-section h2,
+  .profile-section h2 {
+    font-size: 1.2rem;
+  }
+
+  .coach-section p,
+  .training-log-section p,
+  .profile-section p {
+    font-size: 0.8rem;
+  }
+
+  .news-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .news-item {
+    padding: 10px;
+  }
+
+  .news-item h3 {
+    font-size: 0.9rem;
+  }
+
+  .news-item p {
+    font-size: 0.8rem;
+  }
+
+  footer {
+    padding: 10px;
+  }
+
+  footer p {
+    font-size: 0.8rem;
+  }
+
+  .social-icons img {
+    width: 20px;
+    height: 20px;
+  }
 }

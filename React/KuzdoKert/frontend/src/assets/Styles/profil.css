@@ -1,154 +1,59 @@
-
-/* Profil oldal általános stílusai */
-.profile-page {
+.logout-container {
+  font-family: 'Roboto', Arial, sans-serif;
+  max-width: 600px;
+  margin: 20px auto;
   padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-  background: #2c2c2c;
+  background-color: #1a1a1a;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* Címsorok */
-.profile-page h1 {
-  font-size: 2rem;
-  color: #ff4500;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
-  margin-bottom: 20px;
 }
 
-.profile-page h2 {
-  font-size: 1.5rem;
+/* Cím */
+.logout-container h1 {
   color: #ff4500;
-  margin-bottom: 10px;
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Táblázat */
-.profile-table {
-  width: 100%;
-  border-collapse: collapse;
+/* Szöveg */
+.logout-container p {
+  font-size: 1.2rem;
+  color: #ccc;
+  line-height: 1.6;
   margin-bottom: 20px;
 }
 
-.profile-table th,
-.profile-table td {
-  padding: 10px;
-  text-align: left;
-  color: #ccc;
-}
-
-.profile-table th {
-  font-weight: bold;
-  width: 30%;
-}
-
-.profile-table td {
-  width: 70%;
-}
-
-/* Input mezők */
-.profile-table input[type="text"],
-.profile-table input[type="email"],
-.profile-table input[type="tel"],
-.profile-table input[type="date"],
-.profile-table input[type="file"] {
-  width: 100%;
-  padding: 8px;
-  background: #333;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
-  transition: border 0.3s ease;
-}
-
-.profile-table input:focus {
-  outline: none;
-  border: 1px solid #ff4500;
-}
-
-/* Profil kép */
-.profile-picture img {
-  max-width: 150px;
-  height: auto;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-/* Checkboxok */
-.checkbox-label {
-  display: block;
-  margin: 5px 0;
-  color: #ccc;
-}
-
-.checkbox-label input[type="checkbox"] {
-  margin-right: 10px;
-}
-
-/* Jelszó változtatás szekció */
-.password-change {
-  margin-bottom: 20px;
-}
-
-.password-change label {
-  display: block;
-  color: #ccc;
-  margin-bottom: 5px;
-}
-
-.password-change input[type="password"] {
-  width: 100%;
-  padding: 8px;
-  background: #333;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.password-change input:focus {
-  outline: none;
-  border: 1px solid #ff4500;
-}
-
-/* Gombok */
-.profile-page button {
-  padding: 10px 20px;
-  background-color: #ff4500;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  display: block;
-  margin: 0 auto;
-}
-
-.profile-page button:hover {
-  background-color: #cc3700;
-  transform: scale(1.05);
-}
-
-/* Reszponzivitás */
-@media (max-width: 600px) {
-  .profile-page {
+/* Reszponzív dizájn */
+@media (max-width: 768px) {
+  .logout-container {
+    margin: 10px;
     padding: 15px;
   }
 
-  .profile-page h1 {
+  .logout-container h1 {
+    font-size: 2rem;
+  }
+
+  .logout-container p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logout-container {
+    padding: 10px;
+    margin: 5px;
+  }
+
+  .logout-container h1 {
     font-size: 1.5rem;
   }
 
-  .profile-table th,
-  .profile-table td {
-    display: block;
-    width: 100%;
-  }
-
-  .profile-table th {
-    margin-bottom: 5px;
+  .logout-container p {
+    font-size: 0.9rem;
   }
 }

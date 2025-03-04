@@ -4,34 +4,58 @@
     border: 1px solid #ddd;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     padding: 5px 0;
-    right: 0; /* A menüt a jobb oldalra igazítja */
-    left: auto; /* Megakadályozza, hogy balra csússzon */
-    min-width: 180px; /* Ha túl széles lenne, korlátozza */
-    max-width: 250px; /* Ha mégis nagy lenne, ad neki egy határt */
-    overflow: hidden; /* Ha mégis kilógna, levágja */
-}
-
-
-/* Eltávolítja a kattintás utáni kék fókuszt */
-.dropdown-item:focus,
-.dropdown-item:active {
-    background-color: transparent !important; 
+    right: 0;
+    left: auto;
+    min-width: 180px;
+    max-width: 250px;
+    overflow: hidden;
+  }
+  
+  /* Eltávolítja a kattintás utáni kék fókuszt */
+  .dropdown-item:focus,
+  .dropdown-item:active {
+    background-color: transparent !important;
     color: inherit !important;
     outline: none !important;
-    box-shadow: none !important; /* Bootstrap fókusz árnyékának eltávolítása */
-}
-
-/* Hover állapot - amikor az egér felette van */
-.dropdown-item:hover {
-    background-color: #f1f1f1 !important; /* Világos szürke háttér */
-    color: #212529 !important; /* Normál szövegszín */
-}
-
-.dropdown-item {
+    box-shadow: none !important;
+  }
+  
+  /* Hover állapot - amikor az egér felette van */
+  .dropdown-item:hover {
+    background-color: #f1f1f1 !important;
+    color: #212529 !important;
+  }
+  
+  .dropdown-item {
     background-color: transparent !important;
     color: #212529 !important;
-}
-
-#dropjobbra{
+  }
+  
+  #dropjobbra {
     text-align: right;
-}
+  }
+  
+  /* Reszponzív dizájn */
+  @media (max-width: 768px) {
+    .dropdown-menu {
+      min-width: 150px;
+      max-width: 200px;
+    }
+  
+    .dropdown-item {
+      font-size: 0.9rem;
+      padding: 6px 10px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .dropdown-menu {
+      min-width: 120px;
+      max-width: 180px;
+    }
+  
+    .dropdown-item {
+      font-size: 0.8rem;
+      padding: 5px 8px;
+    }
+  }
