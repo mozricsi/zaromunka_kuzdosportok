@@ -176,15 +176,73 @@ CREATE TABLE `sport` (
 -- A tábla adatainak kiíratása `sport`
 --
 
-INSERT INTO `sport` (`sport_id`, `sportnev`, `leiras`, `szabalyok`) VALUES
-(1, 'Box', 'A box egy öklözősport, ahol két versenyző próbálja meg legyőzni egymást ütésekkel.', 'A mérkőzés 3-12 menetből áll, egy menet 3 perc. Csak öklökkel szabad ütni, tilos a hátat vagy tarkót támadni.'),
-(2, 'Judo', 'A judo egy japán harcművészet, célja az ellenfél lerántása vagy rögzítése.', 'Ipponnal vagy waza-arival lehet nyerni, tilos veszélyes technikák alkalmazása.'),
-(3, 'Jiu Jitsu', 'A brazil jiu-jitsu célja az ellenfél feladásra kényszerítése.', 'Pontozás pozíciók dominanciáján alapul, tilos sérülést okoző technikák.'),
-(4, 'Muay Thai', 'A Muay Thai thaiföldi ökölvívás, ütésekkel és rúgásokkal.', '3-5 menet, engedélyezett az ütés, rúgás, térdelés, tilos a fej használata.'),
-(5, 'K1', 'A K-1 kickboxing stílus, lábtechnikákkal és ütésekkel.', '3 menet, engedélyezett rúgás és térdelés, tilos a bokszolás.'),
-(6, 'Birkózás', 'A birkózás célja az ellenfél lerántása vagy rögzítése.', 'Győzelem 3 másodperces rögzítéssel, pontozás technikákért.'),
-(7, 'Kickbox', 'A Kickbox kombinálja a lábtechnikákat és ütéseket.', '3 menet, tilos a fejhasználat, győzelem kiütéssel vagy pontozással.'),
-(8, 'MMA', 'Az MMA vegyes harcművészet, több stílust ötvöz.', '3-5 menet, engedélyezett ütés, rúgás, fojtás, tilos veszélyes dobások.');
+INSERT INTO kuzdosportok.sport (sport_id, sportnev, leiras, szabalyok)
+VALUES
+(1, 'Box', 'A box egy öklözősport, ahol két versenyző próbálja meg legyőzni egymást ütésekkel. A mérkőzés egy ringben zajlik, és a cél az ellenfél kiütése vagy a pontozási győzelem elérése. Az alábbiakban bemutatjuk a legfontosabb szabályokat:', 
+'<ul>
+    <li>A mérkőzés általában 3-12 menetből áll, egy menet 3 perc.</li>
+    <li>Csak az öklökkel szabad ütni, és csak a test előre meghatározott részeire (fej, törzs).</li>
+    <li>Tilos az ököllel ütni az ellenfél hátulját vagy tarkóját.</li>
+    <li>A mérkőzést egy játékvezető irányítja, aki figyeli a szabályok betartását.</li>
+    <li>Ha egy versenyző kétszer is a földre kerül egy menetben, az automatikus kiütésnek minősül.</li>
+</ul>'),
+(2, 'Judo', 'A judo egy japán eredetű harcművészet és olimpiai sport, amelynek célja az ellenfél lerángatása vagy rögzítése a földön.
+          Az alábbiakban bemutatjuk a legfontosabb szabályokat:', '<ul>
+<li>A mérkőzés két részből áll: tachi-waza (álló technikák) és ne-waza (fekvő technikák).</li>
+<li>A győzelem ipponnal érhető el, amely teljes pontot jelent.</li>
+<li>Ha nincs ippon, a waza-ari (fél pont) dönt.</li>
+<li>Tilos veszélyes technikákat alkalmazni, például a hátsó fejre esést okozó dobásokat.</li>
+<li>A mérkőzést három bíró figyeli, akik döntenek a technikák érvényességéről.</li>
+</ul>'),
+(3, 'Jiu Jitsu', 'A brazil jiu-jitsu egy harcművészet és sport, amelynek célja az ellenfél elbénítása vagy feladásra kényszerítése
+          technikák segítségével, például kulcsokkal és fojtásokkal. Az alábbiakban bemutatjuk a legfontosabb szabályokat:', '<ul>
+<li>A mérkőzés általában 5-10 percig tart, attól függően, hogy melyik súlycsoportban versenyeznek.</li>
+<li>A győzelem akkor érhető el, ha az ellenfél feladást jelez (tap), vagy ha egy hatékony technika pontot ér.</li>
+<li>A pontozás a pozíciók dominanciáján alapul: pl. mount (4 pont), back control (4 pont).</li>
+<li>Tilos veszélyes technikákat alkalmazni, amelyek sérülést okozhatnak, például tiltott kulcsok használata.</li>
+<li>A mérkőzést bírók figyelik, akik döntenek a technikák érvényességéről és pontozásról.</li>
+</ul>'),
+(4, 'Muay Thai', 'A Muay Thai, más néven "Thaiföldi ökölvívás", egy harcművészet és sport, amelynek célja az ellenfél legyőzése
+          ütésekkel, rúgásokkal, térdelésekkel és bokszolással. Az alábbiakban bemutatjuk a legfontosabb szabályokat:', '<ul>
+<li>A mérkőzés általában 3-5 menetből áll, egy menet 3 percig tart.</li>
+<li>Engedélyezett technikák: ütés, rúgás, térdelés, bokszolás.</li>
+<li>Tilos a fej használata ütésként vagy az ellenfél hátának támadása.</li>
+<li>A mérkőzést bírók figyelik, akik döntenek a szabályok betartásáról és a pontozásról.</li>
+<li>A győzelem pontozással, kiütéssel vagy feladással érhető el.</li>
+</ul>'),
+(5, 'K1', 'A K-1 egy kickboxing stílusú harcművészet és sport, amely kombinálja a lábtechnikákat, ütéseket és térdeléseket.
+          Az alábbiakban bemutatjuk a legfontosabb szabályokat:', '<ul>
+<li>A mérkőzés általában 3 menetből áll, egy menet 3 percig tart.</li>
+<li>Engedélyezett technikák: ütés, rúgás, térdelés, fej-, törzs- és lábszár célzása.</li>
+<li>Tilos a bokszolás, fejhasználat vagy az ellenfél hátának támadása.</li>
+<li>A mérkőzést bírók figyelik, akik döntenek a szabályok betartásáról és a pontozásról.</li>
+<li>A győzelem pontozással, kiütéssel vagy feladással érhető el.</li>
+</ul>'),
+(6, 'Birkózás', 'A birkózás egy harcművészet és olimpiai sport, amelynek célja az ellenfél lerángatása vagy rögzítése a földön.
+          Az alábbiakban bemutatjuk a legfontosabb szabályokat:', '<ul>
+<li>A mérkőzés két részből áll: álló küzdés és földi küzdés.</li>
+<li>A győzelem akkor érhető el, ha az ellenfelet három másodpercre rögzítik a földön.</li>
+<li>Pontozás történik technikai pontokért, például dobásokért vagy irányításért.</li>
+<li>Tilos veszélyes technikákat alkalmazni, amelyek sérülést okozhatnak.</li>
+<li>A mérkőzést bírók figyelik, akik döntenek a technikák érvényességéről és pontozásról.</li>
+</ul>'),
+(7, 'Kickbox', 'A KickBox egy harcművészet és olimpiai sport, amely kombinálja a lábtechnikákat, ütéseket és térdeléseket.
+          Az alábbiakban bemutatjuk a legfontosabb szabályokat:', '<ul>
+<li>A mérkőzés általában 3 menetből áll, egy menet 2-3 percig tart.</li>
+<li>Engedélyezett technikák: ütés, rúgás, térdelés, fej-, törzs- és lábszár célzása.</li>
+<li>Tilos a bokszolás, fejhasználat vagy az ellenfél hátának támadása.</li>
+<li>A mérkőzést bírók figyelik, akik döntenek a szabályok betartásáról és a pontozásról.</li>
+<li>A győzelem pontozással, kiütéssel vagy feladással érhető el.</li>
+</ul>'),
+(8, 'MMA', 'Az MMA (Mixed Martial Arts) egy vegyes harcművészet, amely kombinálja a birkózást, boxot, jiu-jitsut és más stílusokat.
+          Az alábbiakban bemutatjuk a legfontosabb szabályokat:', '<ul>
+<li>A mérkőzés általában 3-5 menetből áll, egy menet 5 percig tart.</li>
+<li>Engedélyezett technikák: ütések, rúgások, bokszolás, fojtások, kulcsok és dobások.</li>
+<li>Tilos veszélyes technikák, például a hátsó fejre esést okozó dobások vagy tiltott területek támadása.</li>
+<li>A mérkőzést bírók figyelik, akik döntenek a szabályok betartásáról és a pontozásról.</li>
+<li>A győzelem kiütéssel, feladással, bírói döntéssel vagy diszkvalifikációval érhető el.</li>
+</ul>');
+
 
 --
 -- Indexek a kiírt táblákhoz
