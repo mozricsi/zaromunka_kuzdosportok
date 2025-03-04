@@ -20,6 +20,10 @@ SET time_zone = "+00:00";
 --
 -- Adatbázis: `kuzdosportok`
 --
+<<<<<<< HEAD:SQL/kuzdosportok.sql
+=======
+
+>>>>>>> dd23d03225a308e608d5c117ad69253058244b5b:SQL/kuzdosportok (4).sql
 
 -- --------------------------------------------------------
 
