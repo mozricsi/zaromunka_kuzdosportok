@@ -4,7 +4,6 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const saltRounds = 10
 require("dotenv").config();
-const router = express.Router();
 const jwt = require("jsonwebtoken");
 
 const bodyParser = require('body-parser')
@@ -448,51 +447,7 @@ app.post('/ertekelesek', (req, res) => {
   });
 });
 
-<<<<<<< HEAD
-// Értesítések lekérdezése a látogató számára
-app.get('/notifications/:user_id', (req, res) => {
-  const user_id = req.params.user_id;
-=======
-//edzésnapló hozzáadott edzések
-app.get("/klubbok/all/:userId", (req, res) => {
-  const { userId } = req.params;
-  
-  db.query("SELECT * FROM klubbok WHERE user_id = ?", [userId], (error, results) => {
-      if (error) {
-          console.error("Hiba az edzések lekérdezésekor:", error);
-          return res.status(500).json({ message: "Hiba történt az edzések lekérdezésekor." });
-      }
-      res.json(results);
-  });
-});
 
->>>>>>> f7df00eabb1dc3c66158021937c9f5a964bbaf1e
-
-  const query = `
-    SELECT 
-      j.jelentkezes_id,
-      k.klubbnev,
-      k.hely,
-      k.idonap,
-      k.ido,
-      l.vnev AS coach_vnev,
-      l.knev AS coach_knev
-    FROM jelentkezes j
-    JOIN klubbok k ON j.sportkulb_id = k.sprotklub_id
-    JOIN latogatok l ON k.user_id = l.user_id
-    WHERE j.user_id = ?
-      AND k.idonap = DAYNAME(CURDATE())
-      AND j.elfogadva = 1
-  `;
-
-  db.query(query, [user_id], (err, results) => {
-    if (err) {
-      console.error('Hiba az értesítések lekérdezésekor:', err);
-      return res.status(500).json({ message: 'Hiba történt az értesítések lekérdezésekor.' });
-    }
-    res.json(results);
-  });
-});
 
 // Jelentkezés hozzáadása (ha még nincs ilyen endpoint)
 app.post('/apply-workout', (req, res) => {
@@ -543,6 +498,53 @@ app.get('/coach-notifications/:user_id', (req, res) => {
   });
 });
 
+// Értesítések lekérdezése a látogató számára
+app.get('/notifications/:user_id', (req, res) => {
+  const user_id = req.params.user_id;
+
+  const query = `
+    SELECT 
+      j.jelentkezes_id,
+      k.klubbnev,
+      k.hely,
+      k.idonap,
+      k.ido,
+      l.vnev AS coach_vnev,
+      l.knev AS coach_knev
+    FROM jelentkezes j
+    JOIN klubbok k ON j.sportkulb_id = k.sprotklub_id
+    JOIN latogatok l ON k.user_id = l.user_id
+    WHERE j.user_id = ?
+      AND k.idonap = DAYNAME(CURDATE())
+      AND j.elfogadva = 1
+  `;
+
+  db.query(query, [user_id], (err, results) => {
+    if (err) {
+      console.error('Hiba az értesítések lekérdezésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt az értesítések lekérdezésekor.' });
+    }
+    res.json(results);
+  });
+});
+
+// Jelentkezés hozzáadása (ha még nincs ilyen endpoint)
+app.post('/apply-workout', (req, res) => {
+  const { user_id, sportklub_id } = req.body;
+
+  const query = `
+    INSERT INTO jelentkezes (user_id, sportkulb_id, jelentkezes_ido, elfogadasi_ido, elfogadva)
+    VALUES (?, ?, NOW(), NOW(), 1)
+  `;
+
+  db.query(query, [user_id, sportklub_id], (err, result) => {
+    if (err) {
+      console.error('Hiba a jelentkezés hozzáadásakor:', err);
+      return res.status(500).json({ message: 'Hiba történt a jelentkezés során.' });
+    }
+    res.json({ message: 'Sikeres jelentkezés!' });
+  });
+});
 
 // **Szerver indítása**
 const PORT = 5000;
