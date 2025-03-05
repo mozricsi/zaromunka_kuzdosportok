@@ -54,14 +54,18 @@ const EdzoiOldal = () => {
   }, [navigate]);
 
   const loadWorkouts = (userId) => {
-    Axios.get(`http://localhost:5000/klubbok/all`).then((response) => {
-      const userWorkouts = response.data.filter(workout => workout.user_id === userId);
-      setWorkouts(userWorkouts);
-    }).catch((error) => {
-      console.error("Hiba az edzések betöltésekor:", error);
-      setMessage("Hiba történt az edzések betöltésekor.");
-    });
-  };
+    const intervalId = setInterval(() => {
+      Axios.get(`http://localhost:5000/klubbok/all/${userId}`)
+        .then((response) => {
+          setWorkouts(response.data);
+        })
+        .catch((error) => {
+          console.error("Hiba az edzések betöltésekor:", error);
+          setMessage("Hiba történt az edzések betöltésekor.");
+        });
+    }, 1000);
+};
+
 
   const addWorkout = async (e) => {
     e.preventDefault();

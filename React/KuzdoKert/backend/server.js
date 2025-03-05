@@ -4,6 +4,7 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const saltRounds = 10
 require("dotenv").config();
+const router = express.Router();
 const jwt = require("jsonwebtoken");
 
 const bodyParser = require('body-parser')
@@ -444,6 +445,19 @@ app.post('/ertekelesek', (req, res) => {
       }
       res.json({ message: 'Értékelés sikeresen hozzáadva!' });
     });
+  });
+});
+
+//edzésnapló hozzáadott edzések
+app.get("/klubbok/all/:userId", (req, res) => {
+  const { userId } = req.params;
+  
+  db.query("SELECT * FROM klubbok WHERE user_id = ?", [userId], (error, results) => {
+      if (error) {
+          console.error("Hiba az edzések lekérdezésekor:", error);
+          return res.status(500).json({ message: "Hiba történt az edzések lekérdezésekor." });
+      }
+      res.json(results);
   });
 });
 
