@@ -382,3 +382,18 @@ h1 {
     font-size: 0.8rem;
   }
 }
+
+.apply-button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #ff4500;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.apply-button:hover {
+  background-color: #cc3700;
+}

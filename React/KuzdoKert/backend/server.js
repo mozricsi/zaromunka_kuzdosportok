@@ -447,7 +447,84 @@ app.post('/ertekelesek', (req, res) => {
   });
 });
 
+// Értesítések lekérdezése a látogató számára
+app.get('/notifications/:user_id', (req, res) => {
+  const user_id = req.params.user_id;
 
+  const query = `
+    SELECT 
+      j.jelentkezes_id,
+      k.klubbnev,
+      k.hely,
+      k.idonap,
+      k.ido,
+      l.vnev AS coach_vnev,
+      l.knev AS coach_knev
+    FROM jelentkezes j
+    JOIN klubbok k ON j.sportkulb_id = k.sprotklub_id
+    JOIN latogatok l ON k.user_id = l.user_id
+    WHERE j.user_id = ?
+      AND k.idonap = DAYNAME(CURDATE())
+      AND j.elfogadva = 1
+  `;
+
+  db.query(query, [user_id], (err, results) => {
+    if (err) {
+      console.error('Hiba az értesítések lekérdezésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt az értesítések lekérdezésekor.' });
+    }
+    res.json(results);
+  });
+});
+
+// Jelentkezés hozzáadása (ha még nincs ilyen endpoint)
+app.post('/apply-workout', (req, res) => {
+  const { user_id, sportklub_id } = req.body;
+
+  const query = `
+    INSERT INTO jelentkezes (user_id, sportkulb_id, jelentkezes_ido, elfogadasi_ido, elfogadva)
+    VALUES (?, ?, NOW(), NOW(), 1)
+  `;
+
+  db.query(query, [user_id, sportklub_id], (err, result) => {
+    if (err) {
+      console.error('Hiba a jelentkezés hozzáadásakor:', err);
+      return res.status(500).json({ message: 'Hiba történt a jelentkezés során.' });
+    }
+    res.json({ message: 'Sikeres jelentkezés!' });
+  });
+});
+
+// Edzők értesítései a jelentkezésekről
+app.get('/coach-notifications/:user_id', (req, res) => {
+  const user_id = req.params.user_id;
+
+  const query = `
+    SELECT 
+      j.jelentkezes_id,
+      l.felhasznalonev AS visitor_username,
+      k.klubbnev,
+      k.hely,
+      k.idonap,
+      k.ido,
+      j.jelentkezes_ido
+    FROM jelentkezes j
+    JOIN latogatok l ON j.user_id = l.user_id
+    JOIN klubbok k ON j.sportkulb_id = k.sprotklub_id
+    WHERE k.user_id = ?
+      AND j.elfogadva = 1
+    ORDER BY j.jelentkezes_ido DESC
+    LIMIT 10
+  `;
+
+  db.query(query, [user_id], (err, results) => {
+    if (err) {
+      console.error('Hiba az edzői értesítések lekérdezésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt az értesítések lekérdezésekor.' });
+    }
+    res.json(results);
+  });
+});
 
 
 // **Szerver indítása**

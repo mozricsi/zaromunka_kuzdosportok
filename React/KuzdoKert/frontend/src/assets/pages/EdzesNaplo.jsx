@@ -9,6 +9,7 @@ const EdzesNaplo = () => {
   const [selectedSport, setSelectedSport] = useState(''); // Kiválasztott küzdősport
   const [loginStatus, setLoginStatus] = useState(false);
   const [userRole, setUserRole] = useState(null);
+  const [userId, setUserId] = useState(null); // Hozzáadjuk a userId-t a jelentkezéshez
   const [viewedWorkoutsCount, setViewedWorkoutsCount] = useState(0); // Megtekintett edzések száma
   const [showMotivation, setShowMotivation] = useState(false); // Motiváló üzenet megjelenítése
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const EdzesNaplo = () => {
       if (response.data.loggedIn === true) {
         setLoginStatus(response.data.user[0].felhasznalonev);
         setUserRole(response.data.user[0].role);
+        setUserId(response.data.user[0].user_id); // User ID beállítása
         if (response.data.user[0].role !== "visitor") {
           navigate("/profil");
         } else {
@@ -52,13 +54,26 @@ const EdzesNaplo = () => {
     setSelectedSport(''); // Sport szűrés alaphelyzetbe
   };
 
-  // Edzés megtekintésének követése (kattintás vagy megjelenítés)
+  // Edzés megtekintésének követése
   const handleWorkoutView = () => {
     const newCount = viewedWorkoutsCount + 1;
     setViewedWorkoutsCount(newCount);
-    // Például 5 edzés megtekintése után jelenjen meg a motiváló üzenet
     if (newCount >= 5 && !showMotivation) {
       setShowMotivation(true);
+    }
+  };
+
+  // Jelentkezés az edzésre
+  const handleApply = async (sportklub_id) => {
+    try {
+      const response = await Axios.post("http://localhost:5000/apply-workout", {
+        user_id: userId,
+        sportklub_id,
+      });
+      alert(response.data.message);
+    } catch (error) {
+      console.error("Hiba a jelentkezés során:", error);
+      alert("Hiba történt a jelentkezés során.");
     }
   };
 
@@ -66,13 +81,11 @@ const EdzesNaplo = () => {
   const getFilteredCoachWorkouts = () => {
     let filteredWorkouts = [...coachWorkouts];
 
-    // Szűrjük a kiválasztott küzdősport szerint
     if (selectedSport) {
-      const sportId = sports.indexOf(selectedSport) + 1; // 1-től indexelve, mert a sport_id 1-től kezdődik
+      const sportId = sports.indexOf(selectedSport) + 1; // 1-től indexelve
       filteredWorkouts = filteredWorkouts.filter(workout => workout.sport_id === sportId);
     }
 
-    // Szűrjük a kiválasztott dátum szerint (ha van)
     if (selectedDate) {
       filteredWorkouts = filteredWorkouts.filter(workout => workout.idonap === selectedDate);
     }
@@ -119,11 +132,17 @@ const EdzesNaplo = () => {
                       <li 
                         key={workout.sprotklub_id} 
                         className="workout-item"
-                        onClick={handleWorkoutView} // Edzés megtekintésekor növeli a számlálót
+                        onClick={handleWorkoutView}
                       >
                         <strong>{sports[workout.sport_id - 1]}</strong> - {workout.hely}, {workout.idonap} {workout.ido} <br />
                         Klub: {workout.klubbnev} <br />
                         Leírás: {workout.leiras}
+                        <button 
+                          onClick={() => handleApply(workout.sprotklub_id)} 
+                          className="apply-button"
+                        >
+                          Jelentkezem
+                        </button>
                       </li>
                     ))}
                   </ul>
