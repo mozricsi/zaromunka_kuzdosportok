@@ -546,6 +546,22 @@ app.post('/apply-workout', (req, res) => {
   });
 });
 
+//------------------------------------------------------------------------------
+
+//edzésnapló hozzáadott edzések
+app.get("/klubbok/all/:userId", (req, res) => {
+  const { userId } = req.params;
+ 
+  db.query("SELECT * FROM klubbok WHERE user_id = ?", [userId], (error, results) => {
+      if (error) {
+          console.error("Hiba az edzések lekérdezésekor:", error);
+          return res.status(500).json({ message: "Hiba történt az edzések lekérdezésekor." });
+      }
+      res.json(results);
+  });
+});
+//---------------------------------------------------------------------------------------
+
 // **Szerver indítása**
 const PORT = 5000;
 app.listen(PORT, () => {
