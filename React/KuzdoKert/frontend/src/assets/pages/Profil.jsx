@@ -1,37 +1,43 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
 import "../Styles/profil.css";
 import Axios from "axios";
 
 const Profil = () => {
-  const [loginStatus, setLoginStatus] = useState(false);
-  const [userRole, setUserRole] = useState(null);
-  Axios.defaults.withCredentials = true;
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    Axios.get("http://localhost:5000/login").then((response) => {
-      if (response.data.loggedIn === true) {
-        setLoginStatus(response.data.user[0].felhasznalonev);
-        setUserRole(response.data.user[0].role);
-        setUserData({
-          vnev: response.data.user[0].vnev,
-          knev: response.data.user[0].knev,
-          knev2: response.data.user[0].knev2,
-          email: response.data.user[0].email,
-          szul: response.data.user[0].szul_ido,
-          lakhely: response.data.user[0].lakhelyvaros,
-          tel: response.data.user[0].telefonszam,
-          username: response.data.user[0].felhasznalonev,
-          password: response.data.user[0].jelszo,
-          role: response.data.user[0].role,
+
+
+
+
+      // be vagy e jelentkezve lekérdezés-------------------------------
+      const [loginStatus, setLoginStatus] = useState(false);
+      Axios.defaults.withCredentials = true;
+      
+      useEffect(() => {
+        Axios.get("http://localhost:5000/login").then((response) => {
+          if (response.data.loggedIn === true) {
+            setLoginStatus(response.data.user[0].felhasznalonev);
+            setUserData({
+              vnev: response.data.user[0].vnev,
+              knev: response.data.user[0].knev,
+              knev2: response.data.user[0].knev2,
+              email: response.data.user[0].email,
+              szul: response.data.user[0].szul_ido,
+              lakhely: response.data.user[0].lakhelyvaros,
+              tel: response.data.user[0].telefonszam,
+              username: response.data.user[0].felhasznalonev,
+              password: response.data.user[0].jelszo,
+            });
+          } else {
+            console.log("Nem vagy bejelentkezve");
+          }
         });
-      } else {
-        navigate("/login");
-      }
-    });
-  }, [navigate]);
+      }, [loginStatus]);
+ 
+   //--------------------------------------------------------------------
 
+
+  // konstansok a felhasználó adataival
   const [userData, setUserData] = useState({
     vnev: undefined,
     knev: undefined,
@@ -42,23 +48,25 @@ const Profil = () => {
     tel: undefined,
     username: undefined,
     password: undefined,
-    role: undefined,
     profilePicture: undefined,
   });
+  
+
 
   const [editMode, setEditMode] = useState(false);
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setUserData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  //input change
+//--------------------------------------------------------------
+const handleInputChange = (e) => {
+  const { name, value } = e.target;
+  setUserData((prevState) => ({
+    ...prevState,
+    [name]: value,
+  }));
+};
+  //profilkép?
+//--------------------------------------------------------------
   const handleProfilePictureChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -69,65 +77,36 @@ const Profil = () => {
       reader.readAsDataURL(file);
     }
   };
-
+//--------------------------------------------------------------
   const handlePasswordChange = () => {
-    if (!oldPassword || !newPassword || !confirmPassword) {
-      alert("Minden mezőt ki kell tölteni!");
-      return;
+    if (newPassword === confirmPassword) {
+      setUserData({ ...userData, password: newPassword });
+      setNewPassword('');
+      setConfirmPassword('');
+      alert('Jelszó sikeresen megváltoztatva!');
+    } else {
+      alert('A jelszavak nem egyeznek!');
     }
-
-    if (newPassword.length < 6) {
-      alert("Az új jelszónak legalább 6 karakter hosszúnak kell lennie!");
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      alert("A megadott jelszavak nem egyeznek!");
-      return;
-    }
-
-    Axios.post("http://localhost:5000/changePassword", {
-      username: userData.username,
-      oldPassword: oldPassword,
-      newPassword: newPassword,
+  };
+//--------------------------------------------------------------
+const handleSaveChanges = () => {
+  Axios.post("http://localhost:5000/updateUser", userData)
+    .then((response) => {
+      console.log("Sikeresen frissítve:", response.data);
+      alert("Profil frissítve!");
+      setEditMode(false);
     })
-      .then((response) => {
-        alert(response.data.message);
-        setOldPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-      })
-      .catch((error) => {
-        if (error.response) {
-          alert(error.response.data.message || "Hiba történt a jelszóváltoztatás során.");
-        } else {
-          alert("Nem sikerült csatlakozni a szerverhez. Próbáld újra később.");
-        }
-        console.error("Hiba:", error);
-      });
-  };
+    .catch((error) => {
+      console.error("Hiba az adatok mentésekor:", error);
+      alert("Hiba történt a mentés közben.");
+    });
+    
+};
 
-  const handleSaveChanges = () => {
-    const requiredFields = ["vnev", "knev", "email", "szul", "lakhely", "username"];
+  //---------------------------------------------------
 
-    const emptyFields = requiredFields.filter((field) => !userData[field] || userData[field].trim() === "");
-
-    if (emptyFields.length > 0) {
-      alert("A *-al jelölt mezőket ki kell tölteni!");
-      return;
-    }
-
-    Axios.post("http://localhost:5000/updateUser", userData)
-      .then((response) => {
-        console.log("Sikeresen frissítve:", response.data);
-        alert("Profil frissítve!");
-        setEditMode(false);
-      })
-      .catch((error) => {
-        console.error("Hiba az adatok mentésekor:", error);
-        alert("Hiba történt a mentés közben.");
-      });
-  };
+  
+//---------------------------------------------------
 
   return (
     <div className="profile-page">
@@ -137,18 +116,19 @@ const Profil = () => {
         <table className="profile-table">
           <tbody>
             <tr>
-              <th>*Vezetéknév:</th>
+              <th>Vezetéknév:</th>
               <td>
                 <input
                   type="text"
                   name="vnev"
+                  
                   value={userData.vnev || ""}
                   onChange={handleInputChange}
                 />
               </td>
             </tr>
             <tr>
-              <th>*Keresztnév:</th>
+              <th>Keresztnév:</th>
               <td>
                 <input
                   type="text"
@@ -170,7 +150,7 @@ const Profil = () => {
               </td>
             </tr>
             <tr>
-              <th>*Email cím:</th>
+              <th>Email cím:</th>
               <td>
                 <input
                   type="email"
@@ -181,7 +161,7 @@ const Profil = () => {
               </td>
             </tr>
             <tr>
-              <th>*Születési dátum:</th>
+              <th>Születési dátum:</th>
               <td>
                 <input
                   type="date"
@@ -192,7 +172,7 @@ const Profil = () => {
               </td>
             </tr>
             <tr>
-              <th>*Lakhely:</th>
+              <th>Lakhely:</th>
               <td>
                 <input
                   type="text"
@@ -214,7 +194,7 @@ const Profil = () => {
               </td>
             </tr>
             <tr>
-              <th>*Felhasználónév:</th>
+              <th>Felhasználónév:</th>
               <td>
                 <input
                   type="text"
@@ -223,10 +203,6 @@ const Profil = () => {
                   onChange={handleInputChange}
                 />
               </td>
-            </tr>
-            <tr>
-              <th>Szerepkör:</th>
-              <td>{userData.role === "visitor" ? "Látogató" : "Edző"}</td>
             </tr>
             <tr>
               <th>Profilkép:</th>
@@ -240,91 +216,84 @@ const Profil = () => {
             </tr>
           </tbody>
         </table>
+
       ) : (
-        <>
-          <table className="profile-table">
-            <tbody>
-              <tr>
-                <th>Vezetéknév:</th>
-                <td>{userData.vnev}</td>
-              </tr>
-              <tr>
-                <th>Keresztnév:</th>
-                <td>{userData.knev}</td>
-              </tr>
+
+        <table className="profile-table">
+          <tbody>
+            <tr>
+              <th>Vezetéknév:</th>
+              <td>{userData.vnev}</td>
+            </tr>
+            <tr>
+              <th>Keresztnév:</th>
+              <td>{userData.knev}</td>
+            </tr>
+            
               {userData.knev2 && (
                 <tr>
                   <th>Harmadik név:</th>
                   <td>{userData.knev2}</td>
                 </tr>
               )}
-              <tr>
-                <th>Email cím:</th>
-                <td>{userData.email}</td>
-              </tr>
-              <tr>
-                <th>Születési dátum:</th>
-                <td>{userData.szul}</td>
-              </tr>
-              <tr>
-                <th>Lakhely:</th>
-                <td>{userData.lakhely}</td>
-              </tr>
-              <tr>
-                <th>Telefonszám:</th>
-                <td>{userData.tel}</td>
-              </tr>
-              <tr>
-                <th>Felhasználónév:</th>
-                <td>{userData.username}</td>
-              </tr>
-              <tr>
-                <th>Szerepkör:</th>
-                <td>{userData.role === "visitor" ? "Látogató" : "Edző"}</td>
-              </tr>
-              <tr>
-                <th>Profilkép:</th>
-                <td>
-                  {userData.profilePicture && (
-                    <div className="profile-picture">
-                      <img src={userData.profilePicture} alt="Profilkép" />
-                    </div>
-                  )}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div className="password-change">
-            <h2>Jelszó változtatása</h2>
-            <label>Régi jelszó:</label>
-            <input
-              type="password"
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
-            />
-            <label>Új jelszó:</label>
-            <input
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <label>Jelszó megerősítése:</label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <button onClick={handlePasswordChange}>Jelszó változtatása</button>
-          </div>
-        </>
+            <tr>
+              <th>Email cím:</th>
+              <td>{userData.email}</td>
+            </tr>
+            <tr>
+              <th>Születési dátum:</th>
+              <td>{userData.szul}</td>
+            </tr>
+            <tr>
+              <th>Lakhely:</th>
+              <td>{userData.lakhely}</td>
+            </tr>
+            <tr>
+              <th>Telefonszám:</th>
+              <td>{userData.tel}</td>
+            </tr>
+            <tr>
+              <th>Felhasználónév:</th>
+              <td>{userData.username}</td>
+            </tr>
+            <tr>
+              <th>Profilkép:</th>
+              <td>
+                {userData.profilePicture && (
+                  <div className="profile-picture">
+                    <img src={userData.profilePicture} alt="Profilkép" />
+                  </div>
+                )}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       )}
+
+      <div className="password-change">
+        <h2>Jelszó változtatása</h2>
+        <label>Új jelszó:</label>
+        <input
+          type="password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
+        <label>Jelszó megerősítése:</label>
+        <input
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <button onClick={handlePasswordChange}>Jelszó változtatása</button>
+      </div>
 
       <button onClick={editMode ? handleSaveChanges : () => setEditMode(true)}>
         {editMode ? 'Mentés' : 'Szerkesztés'}
       </button>
     </div>
+    
   );
+  
 };
-
-export default Profil;
+  
+  export default Profil;
