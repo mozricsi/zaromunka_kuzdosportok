@@ -563,34 +563,6 @@ app.get("/klubbok/all/:userId", (req, res) => {
 //---------------------------------------------------------------------------------------
 
 
-// Események lekérdezése
-app.get('/events/:sport_id', (req, res) => {
-  const sport_id = req.params.sport_id;
-
-  const query = `
-    SELECT 
-      esemeny_id,
-      pontos_cim AS helyszin,
-      ido,
-      verseny_neve,
-      leiras,
-      szervezo_neve,
-      szervezo_tel,
-      szervezo_email,
-      esemeny_weboldal
-    FROM esemenyek
-    WHERE sport_id = ? AND ido >= CURDATE()
-    ORDER BY ido ASC
-  `;
-
-  db.query(query, [sport_id], (err, results) => {
-    if (err) {
-      console.error('Hiba az események lekérdezésekor:', err);
-      return res.status(500).json({ message: 'Hiba történt az események lekérdezésekor.' });
-    }
-    res.json(results);
-  });
-});
 
 
 
