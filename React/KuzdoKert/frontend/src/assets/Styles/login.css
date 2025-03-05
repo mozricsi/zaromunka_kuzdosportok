@@ -1,0 +1,135 @@
+.login-container {
+  font-family: 'Roboto', Arial, sans-serif;
+  max-width: 500px; /* Alapértelmezett szélesség */
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #1a1a1a;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+/* Bejelentkezett állapot */
+.logged-in h1 {
+  color: #ff4500;
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.logged-in p {
+  font-size: 1.2rem;
+  color: #ccc;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* Bejelentkezési űrlap */
+.login-form h2 {
+  color: #ff4500;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.login-form p {
+  font-size: 1.1rem;
+  color: #ccc;
+  margin-bottom: 15px;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  background-color: #2c2c2c;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.login-form input:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
+  background-color: #333;
+}
+
+.login-form input::placeholder {
+  color: #888;
+  opacity: 0.8;
+}
+
+.login-form button {
+  background-color: #ff4500;
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%; /* Mobil nézetben teljes szélesség */
+}
+
+.login-form button:hover {
+  background-color: #ff5722;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Reszponzív dizájn */
+@media (max-width: 768px) {
+  .login-container {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .logged-in h1 {
+    font-size: 2rem;
+  }
+
+  .logged-in p {
+    font-size: 1rem;
+  }
+
+  .login-form h2 {
+    font-size: 1.7rem;
+  }
+
+  .login-form input {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .login-form button {
+    font-size: 1rem;
+    padding: 10px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 10px;
+    margin: 5px;
+  }
+
+  .login-form h2 {
+    font-size: 1.5rem;
+  }
+
+  .login-form input {
+    padding: 6px;
+  }
+
+  .login-form button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+}

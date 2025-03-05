@@ -1,0 +1,121 @@
+/* navbar.css */
+.custom-navbar {
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #545353; /* Világosabb szürke háttér */
+    padding: 15px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Navigációs elemek */
+.nav-item {
+    color: #fff; /* Fehér szöveg a jobb láthatóságért */
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 15px;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+    color: #ff4500; /* Narancssárga hoverkor */
+    transform: translateY(-3px);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Aktív link kiemelése */
+.nav-item.active {
+    color: #ff4500; /* Narancssárga az aktív linknek */
+    font-weight: bold;
+    background-color: rgba(255, 69, 0, 0.2); /* Enyhe narancssárga háttér az aktív linknek */
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+/* Dropdown konténer és ikon */
+.dropdown-container {
+    position: relative;
+}
+
+.nav-icon {
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.nav-icon:hover {
+    transform: scale(1.1); /* Nagyítás hoverkor */
+}
+
+.dropdown-logo {
+    width: 30px;
+    height: 30px;
+    display: block;
+    filter: brightness(1.5); /* A logó világosítása a jobb láthatóságért */
+}
+
+/* Dropdown menü */
+.dropdown-menu {
+    background-color: #444; /* Világosabb szürke a dropdownhoz */
+    border: 1px solid #555; /* Világosabb szürke szegély */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+    padding: 5px 0;
+    right: 0; /* Jobb oldalra igazítás */
+    left: auto;
+    min-width: 180px;
+    max-width: 250px;
+    overflow: hidden;
+}
+
+/* Dropdown elemek */
+.dropdown-item {
+    background-color: transparent;
+    color: #fff; /* Fehér szöveg */
+    font-size: 1rem;
+    padding: 8px 15px;
+    transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #ff4500; /* Narancssárga háttér hoverkor */
+    color: #fff;
+    transform: translateX(5px); /* Jobbra mozdulás */
+}
+
+.dropdown-item:focus,
+.dropdown-item:active {
+    background-color: transparent !important;
+    color: #fff !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.dropdown-item.active {
+    background-color: #ff4500; /* Narancssárga az aktív dropdown elemnél */
+    color: #fff;
+}
+
+/* Reszponzív dizájn */
+@media (max-width: 991px) {
+    .custom-navbar {
+        padding: 10px 15px;
+    }
+
+    .nav-item {
+        font-size: 1rem;
+        margin: 10px 0;
+    }
+
+    .nav-item.active {
+        padding: 5px;
+    }
+
+    .dropdown-menu {
+        width: 100%;
+        text-align: right; /* Jobb oldali szöveg igazítás */
+    }
+
+    .dropdown-logo {
+        margin: 0 auto;
+    }
+}
