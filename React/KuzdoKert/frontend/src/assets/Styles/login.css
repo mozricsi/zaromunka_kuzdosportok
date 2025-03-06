@@ -128,7 +128,7 @@
     padding: 6px;
   }
 
-  .login-form button {
+  .login-form button {align-self: start;
     padding: 8px 12px;
     font-size: 0.9rem;
   }

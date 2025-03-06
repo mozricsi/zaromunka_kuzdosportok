@@ -40,7 +40,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root", // MySQL felhasználónév
   password: "", // MySQL jelszó (ha van)
-  port: "3307",
+  port: "3306",
   database: "kuzdosportok",
 });
 
@@ -562,6 +562,21 @@ app.get("/klubbok/all/:userId", (req, res) => {
 });
 //---------------------------------------------------------------------------------------
 
+app.get('/applied-workouts/:userId', (req, res) => {
+  const userId = req.params.userId;
+  db.query(`
+    SELECT k.sport_id 
+    FROM applied_workouts a 
+    JOIN sportklubbok k ON a.sportklub_id = k.sprotklub_id 
+    WHERE a.user_id = ?
+  `, [userId], (err, result) => {
+    if (err) {
+      res.status(500).json({ message: "Hiba a lekérdezés során" });
+    } else {
+      res.json(result); // [{ sport_id: 1 }, { sport_id: 2 }, ...]
+    }
+  });
+});
 
 
 

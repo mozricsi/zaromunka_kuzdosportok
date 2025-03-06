@@ -2,16 +2,22 @@ import React, { useState, useEffect } from 'react';
 import '../Styles/EdzesNaplo.css';
 import Axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { Bar } from 'react-chartjs-2'; // Bar chart importálása
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+
+// Chart.js komponensek regisztrálása
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const EdzesNaplo = () => {
-  const [coachWorkouts, setCoachWorkouts] = useState([]); // Csak az edzők edzései
+  const [coachWorkouts, setCoachWorkouts] = useState([]); // Edzők edzései
   const [selectedDate, setSelectedDate] = useState(''); // Kiválasztott dátum
   const [selectedSport, setSelectedSport] = useState(''); // Kiválasztott küzdősport
   const [loginStatus, setLoginStatus] = useState(false);
   const [userRole, setUserRole] = useState(null);
-  const [userId, setUserId] = useState(null); // Hozzáadjuk a userId-t a jelentkezéshez
+  const [userId, setUserId] = useState(null);
   const [viewedWorkoutsCount, setViewedWorkoutsCount] = useState(0); // Megtekintett edzések száma
-  const [showMotivation, setShowMotivation] = useState(false); // Motiváló üzenet megjelenítése
+  const [showMotivation, setShowMotivation] = useState(false); // Motiváló üzenet
+  const [appliedWorkouts, setAppliedWorkouts] = useState([]); // Jelentkezett edzések
   const navigate = useNavigate();
 
   const sports = [
@@ -24,7 +30,7 @@ const EdzesNaplo = () => {
       if (response.data.loggedIn === true) {
         setLoginStatus(response.data.user[0].felhasznalonev);
         setUserRole(response.data.user[0].role);
-        setUserId(response.data.user[0].user_id); // User ID beállítása
+        setUserId(response.data.user[0].user_id);
         if (response.data.user[0].role !== "visitor") {
           navigate("/profil");
         } else {
@@ -34,6 +40,12 @@ const EdzesNaplo = () => {
           }).catch((err) => {
             console.error("Hiba az edzések lekérésekor:", err);
           });
+          // Jelentkezett edzések lekérése
+          Axios.get(`http://localhost:5000/applied-workouts/${response.data.user[0].user_id}`).then((res) => {
+            setAppliedWorkouts(res.data);
+          }).catch((err) => {
+            console.error("Hiba a jelentkezett edzések lekérésekor:", err);
+          });
         }
       } else {
         navigate("/login");
@@ -41,20 +53,20 @@ const EdzesNaplo = () => {
     });
   }, [navigate]);
 
-  // Küzdősport kiválasztása a listáról
+  // Küzdősport kiválasztása
   const handleSportClick = (sport) => {
-    setSelectedSport(sport === selectedSport ? '' : sport); // Kattintás toggle-álja a szűrést
-    setSelectedDate(''); // Dátum alaphelyzetbe
+    setSelectedSport(sport === selectedSport ? '' : sport);
+    setSelectedDate('');
   };
 
   // Dátum kiválasztása
   const handleDateChange = (e) => {
     const newDate = e.target.value;
     setSelectedDate(newDate);
-    setSelectedSport(''); // Sport szűrés alaphelyzetbe
+    setSelectedSport('');
   };
 
-  // Edzés megtekintésének követése
+  // Edzés megtekintése
   const handleWorkoutView = () => {
     const newCount = viewedWorkoutsCount + 1;
     setViewedWorkoutsCount(newCount);
@@ -71,6 +83,9 @@ const EdzesNaplo = () => {
         sportklub_id,
       });
       alert(response.data.message);
+      // Frissítjük a jelentkezett edzéseket
+      const updatedApplied = await Axios.get(`http://localhost:5000/applied-workouts/${userId}`);
+      setAppliedWorkouts(updatedApplied.data);
     } catch (error) {
       console.error("Hiba a jelentkezés során:", error);
       alert("Hiba történt a jelentkezés során.");
@@ -80,17 +95,43 @@ const EdzesNaplo = () => {
   // Szűrt edzések lekérése
   const getFilteredCoachWorkouts = () => {
     let filteredWorkouts = [...coachWorkouts];
-
     if (selectedSport) {
-      const sportId = sports.indexOf(selectedSport) + 1; // 1-től indexelve
+      const sportId = sports.indexOf(selectedSport) + 1;
       filteredWorkouts = filteredWorkouts.filter(workout => workout.sport_id === sportId);
     }
-
     if (selectedDate) {
       filteredWorkouts = filteredWorkouts.filter(workout => workout.idonap === selectedDate);
     }
-
     return filteredWorkouts;
+  };
+
+  // Grafikon adatok előkészítése (jelentkezett edzések sportok szerint)
+  const chartData = {
+    labels: sports, // X-tengely: küzdősportok
+    datasets: [
+      {
+        label: "Jelentkezett edzések",
+        data: sports.map(sport => {
+          const sportId = sports.indexOf(sport) + 1;
+          return appliedWorkouts.filter(workout => workout.sport_id === sportId).length;
+        }),
+        backgroundColor: "#ff4500",
+        borderColor: "#cc3700",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: { position: "top", labels: { color: "#fff" } },
+      title: { display: true, text: "Jelentkezett edzések sportok szerint", color: "#fff" },
+    },
+    scales: {
+      x: { ticks: { color: "#ccc" } },
+      y: { ticks: { color: "#ccc" }, beginAtZero: true },
+    },
   };
 
   return (
@@ -150,6 +191,14 @@ const EdzesNaplo = () => {
                   <p>{selectedDate || selectedSport ? 'Ezen a napon vagy ehhez a sporthez nincsenek edzések.' : 'Válassz egy dátumot vagy küzdősportot!'}</p>
                 )}
               </div>
+            </div>
+          </div>
+
+          {/* Statisztika szekció */}
+          <div className="stats-section">
+            <h2>Statisztikák</h2>
+            <div className="chart-container">
+              <Bar data={chartData} options={chartOptions} />
             </div>
           </div>
 

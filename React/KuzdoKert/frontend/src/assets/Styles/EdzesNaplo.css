@@ -210,6 +210,26 @@ h1 {
   margin-right: 10px;
 }
 
+/* Statisztika szekció */
+.stats-section {
+  background: #2c2c2c;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  margin-bottom: 40px;
+}
+
+.stats-section h2 {
+  font-size: 2rem;
+  color: #ff4500;
+  margin-bottom: 20px;
+}
+
+.chart-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 /* Motivációs üzenet */
 .motivation-message {
   background: #2c2c2c;
@@ -313,6 +333,18 @@ h1 {
     font-size: 0.9rem;
   }
 
+  .stats-section {
+    padding: 15px;
+  }
+
+  .stats-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .chart-container {
+    max-width: 100%;
+  }
+
   .motivation-message {
     padding: 15px;
   }
@@ -368,6 +400,10 @@ h1 {
   .workout-item {
     padding: 8px;
     font-size: 0.8rem;
+  }
+
+  .stats-section h2 {
+    font-size: 1.2rem;
   }
 
   .motivation-message {

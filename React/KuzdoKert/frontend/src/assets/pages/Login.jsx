@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Axios from 'axios';
 import { useNavigate } from "react-router-dom";
+
 import "../Styles/login.css";
 
 const Login = () => {
@@ -8,7 +9,6 @@ const Login = () => {
   const [jelszo, setJelszo] = useState(null);
   const [info, setInfo] = useState(null);
   const navigate = useNavigate();
-
   const [loginStatus, setLoginStatus] = useState(false);
   const [userRole, setUserRole] = useState(null); // Szerepkör tárolása
   Axios.defaults.withCredentials = true;
@@ -52,6 +52,11 @@ const Login = () => {
 
   return (
     <div className="login-container">
+      <div className="background-animation">
+        <div className="rotating-logo logo1"></div>
+        <div className="rotating-logo logo2"></div>
+        <div className="rotating-logo logo3"></div>
+      </div>
       {loginStatus ? (
         <div className="logged-in">
           <h1>Be vagy jelentkezve</h1>
