@@ -578,7 +578,21 @@ app.get('/applied-workouts/:userId', (req, res) => {
   });
 });
 
+//-------------------------------------------------------------------------------------------------------
 
+// Összes edzés lekérdezése sport_id alapján (minden edzőtől)
+app.get("/klubbok/sport/:sportId", (req, res) => {
+  const sportId = req.params.sportId;
+  const query = "SELECT * FROM klubbok WHERE sport_id = ?";
+
+  db.query(query, [sportId], (err, results) => {
+    if (err) {
+      console.error("Hiba az edzések lekérdezésekor:", err);
+      return res.status(500).json({ message: "Hiba történt az edzések lekérdezésekor." });
+    }
+    res.json(results);
+  });
+});
 
 
 // **Szerver indítása**
