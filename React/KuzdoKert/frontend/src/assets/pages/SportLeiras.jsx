@@ -209,7 +209,6 @@ const SportLeiras = () => {
   }
 
   const handleClubClick = (id) => {
-    console.log(id)
     navigate(`/Klub/${id}`);
   };
 

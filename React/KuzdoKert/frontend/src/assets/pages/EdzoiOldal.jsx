@@ -14,6 +14,8 @@ const EdzoiOldal = () => {
   const navigate = useNavigate();
 
   const [sportId, setSportId] = useState("");
+  const [klubbNev, setKlubbNev] = useState("");
+  const [szabalyok, setSzabalyok] = useState("");
   const [hely, setHely] = useState("");
   const [idonap, setIdonap] = useState("");
   const [ido, setIdo] = useState("");
@@ -85,7 +87,7 @@ const EdzoiOldal = () => {
         leiras: leiras || "Nincs leírás megadva",
         vnev: userVnev,
         knev: userKnev,
-        klubbnev: `${loginStatus} Klubja` || "Edző Klubbja",
+        klubbnev: klubbNev,
       });
 
       const response = await Axios.post("http://localhost:5000/coach/add-workout", {
@@ -97,15 +99,17 @@ const EdzoiOldal = () => {
         leiras: leiras || "Nincs leírás megadva",
         vnev: userVnev,
         knev: userKnev,
-        klubbnev: `${loginStatus} Klubja` || "Edző Klubbja",
+        klubbnev: klubbNev,
       });
 
       setMessage(response.data.message);
       loadWorkouts(userId); // Frissítjük az edzéseket az adatbázisból
       setSportId("");
+      setKlubbNev("");
       setHely("");
       setIdonap("");
       setIdo("");
+      setSzabalyok("");
       setLeiras("");
     } catch (error) {
       console.error("Hiba az edzés hozzáadásakor:", error.response ? error.response.data : error.message);
@@ -122,6 +126,73 @@ const EdzoiOldal = () => {
 
       {loginStatus && userRole === "coach" && (
         <>
+
+<form onSubmit={addWorkout} className="workout-form">
+            <div className="form-group">
+              <label>Sport: <span className="required">*</span></label>
+              <select
+                value={sportId}
+                onChange={(e) => setSportId(e.target.value)}
+                required
+              >
+                <option value="">Válassz klubbot</option>
+                {sports.map((sport) => (
+                  <option key={sport.id} value={sport.id}>
+                    {sport.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Klubb név <span className="required">*</span></label>
+              <input
+                type="text"
+                placeholder="Pl. Szolonki boxklub"
+                value={hely}
+                onChange={(e) => setKlubbNev(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Város: <span className="required">*</span></label>
+              <input
+                type="text"
+                placeholder="Pl. Szolnok"
+                value={hely}
+                onChange={(e) => setHely(e.target.value)}
+                required
+              />
+            </div>
+
+                
+            <div className="form-group">
+              <label>Szabályok:</label>
+              <textarea
+                placeholder="Klubb szabályzat, Pl. sportcipő..."
+                value={szabalyok}
+                onChange={(e) => setLeiras(e.target.value)}
+              />
+            </div>
+
+
+            <div className="form-group">
+              <label>Leírás (opcionális):</label>
+              <textarea
+                placeholder="Pl. Kezdőknek szóló edzés..."
+                value={leiras}
+                onChange={(e) => setLeiras(e.target.value)}
+              />
+            </div>
+
+            <button type="submit" className="add-button">Edzés hozzáadása</button>
+          </form>
+
+
+      {/*edzés hozzáadása*/}
+        
+
           <form onSubmit={addWorkout} className="workout-form">
             <div className="form-group">
               <label>Sport: <span className="required">*</span></label>
@@ -130,7 +201,7 @@ const EdzoiOldal = () => {
                 onChange={(e) => setSportId(e.target.value)}
                 required
               >
-                <option value="">Válassz sportot</option>
+                <option value="">Válassz klubbot</option>
                 {sports.map((sport) => (
                   <option key={sport.id} value={sport.id}>
                     {sport.name}

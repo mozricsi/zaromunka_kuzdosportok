@@ -14,7 +14,6 @@ const Klub = () => {
       .then((response) => {
         setKlub(response.data.klub);
         setEdzesek(response.data.edzesek);
-        console.log(response)
       })
       .catch((error) => {
         console.error('Hiba történt a klub adatok lekérésekor:', error);
@@ -34,6 +33,7 @@ const Klub = () => {
         {edzesek.map((edzes) => (
           <li key={edzes.edzes_id}>
             <strong>{edzes.nap}</strong>: {edzes.pontoscim}, {edzes.ido}
+            <button>Jelentkezés</button>
           </li>
         ))}
       </ul>
