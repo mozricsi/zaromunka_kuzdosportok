@@ -4,7 +4,6 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const saltRounds = 10
 require("dotenv").config();
-const jwt = require("jsonwebtoken");
 
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
@@ -636,6 +635,9 @@ app.get('/api/klub/:id', (req, res) => {
       if (err) {
         return res.status(500).json({ error: 'Hiba történt az edzések lekérésekor.' });
       }
+      console.log(klubResult); // Klub adatok
+console.log(edzesResult); // Edzés adatok
+
 
       // Válasz visszaadása
       res.json({ klub: klubResult[0], edzesek: edzesResult });

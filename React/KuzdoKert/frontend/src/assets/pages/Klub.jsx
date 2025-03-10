@@ -10,7 +10,7 @@ const Klub = () => {
   useEffect(() => {
     // API hívás az adatbázisból való lekérdezéshez
     axios
-      .get(`/api/klub/${id}`)
+      .get(`http://localhost:5000/api/klub/${id}`)
       .then((response) => {
         setKlub(response.data.klub);
         setEdzesek(response.data.edzesek);
