@@ -233,7 +233,6 @@ const SportLeiras = () => {
                     <h3>{club.klubbnev}</h3>
                     <p><strong>Helyszín:</strong> {club.hely}</p>
                     <p><strong>Edző:</strong> {club.vnev} {club.knev}</p>
-                    <p><strong>Időpont:</strong> {club.idonap} {club.ido}</p>
                     <p><strong>Leírás:</strong> {club.leiras || 'Nincs megadva'}</p>
                     <p><strong>Szabályok:</strong> {club.szabalyok || 'Nincs megadva'}</p>
 
