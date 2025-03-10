@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import "../Styles/login.css";
 
@@ -79,6 +79,12 @@ const Login = () => {
             required
           />
           <button onClick={login}>Bejelentkezés</button>
+          <p>
+            <br />
+            Nem regisztráltál még? <br />
+            <Link to="/register">Akkor regisztrálj itt!</Link>
+          </p>
+
         </div>
       )}
     </div>

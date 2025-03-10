@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from 'axios';
 import '../Styles/regisztracio.css';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
   const [loginStatus, setLoginStatus] = useState("");
@@ -203,7 +203,10 @@ const Register = () => {
             <p>{reg}</p>
             <button type="submit" onClick={register}>Regisztráció</button>
           </div>
-          <h1>{loginStatus}</h1>
+          <p>
+            Van már fiókód? <br />
+            <Link to="/login">Jelentkezz be itt!</Link>
+          </p>
         </div>
       </main>
     </div>

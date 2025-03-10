@@ -39,7 +39,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root", // MySQL felhasználónév
   password: "", // MySQL jelszó (ha van)
-  port: "3306",
+  port: "3307",
   database: "kuzdosportok",
 });
 
@@ -327,13 +327,13 @@ app.post("/changePassword", (req, res) => {
 //----------------------------------------------------------------------------------------------
 
 // Edzés hozzáadása az edző által
-app.post("/coach/add-workout", (req, res) => {
-  const { user_id, sport_id, hely, idonap, ido, leiras, vnev, knev, klubbnev } = req.body;
+app.post("/coach/add-club", (req, res) => {
+  const { user_id, sport_id, hely, szabalyok, leiras, vnev, knev, klubbnev } = req.body;
 
-  console.log("Küldött adatok:", { user_id, sport_id, hely, idonap, ido, leiras, vnev, knev, klubbnev });
+  console.log("Küldött adatok:", { user_id, sport_id, hely, szabalyok, leiras, vnev, knev, klubbnev });
 
   // Ellenőrizzük, hogy minden szükséges mező meg van adva
-  if (!user_id || !sport_id || !hely || !idonap || !ido) {
+  if (!user_id || !sport_id || !hely) {
     return res.status(400).json({ error: "Minden kötelező mezőt ki kell tölteni!" });
   }
 
@@ -363,11 +363,11 @@ app.post("/coach/add-workout", (req, res) => {
       }
 
       const sql = `
-        INSERT INTO klubbok (sport_id, user_id, vnev, knev, klubbnev, hely, idonap, ido, leiras, szabalyok)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)
+        INSERT INTO klubbok (sport_id, user_id, vnev, knev, klubbnev, hely, leiras, szabalyok)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
-      db.query(sql, [sport_id, user_id, vnev, knev, klubbnev, hely, idonap, ido, leiras], (err, result) => {
+      db.query(sql, [sport_id, user_id, vnev, knev, klubbnev, hely, leiras, szabalyok], (err, result) => {
         if (err) {
           console.error("Hiba az edzés hozzáadásakor:", err.message);
           if (err.code === 'ER_DUP_ENTRY') {

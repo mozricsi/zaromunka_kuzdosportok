@@ -186,7 +186,7 @@ const Profil = () => {
                 <input
                   type="date"
                   name="szul"
-                  value={userData.szul || ""}
+                  value={new Date(userData.szul).toLocaleDateString("hu-HU") || ""}
                   onChange={handleInputChange}
                 />
               </td>
@@ -264,7 +264,7 @@ const Profil = () => {
               </tr>
               <tr>
                 <th>Születési dátum:</th>
-                <td>{userData.szul}</td>
+                <td>{new Date(userData.szul).toLocaleDateString("hu-HU")}</td>
               </tr>
               <tr>
                 <th>Lakhely:</th>

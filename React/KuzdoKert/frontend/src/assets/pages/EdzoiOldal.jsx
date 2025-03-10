@@ -17,7 +17,8 @@ const EdzoiOldal = () => {
   const [klubbNev, setKlubbNev] = useState("");
   const [szabalyok, setSzabalyok] = useState("");
   const [hely, setHely] = useState("");
-  const [idonap, setIdonap] = useState("");
+  const [pontosCim, setPontosCim] = useState("");
+  const [nap, setNap] = useState("");
   const [ido, setIdo] = useState("");
   const [leiras, setLeiras] = useState("");
 
@@ -69,10 +70,14 @@ const EdzoiOldal = () => {
 };
 
 
-  const addWorkout = async (e) => {
+
+//klubb hozzáadása
+
+
+  const addClub = async (e) => {
     e.preventDefault();
 
-    if (!sportId || !hely || !idonap || !ido) {
+    if (!sportId || !hely) {
       setMessage("Minden kötelező mezőt ki kell tölteni!");
       return;
     }
@@ -82,21 +87,19 @@ const EdzoiOldal = () => {
         user_id: userId,
         sport_id: parseInt(sportId, 10),
         hely,
-        idonap,
-        ido,
         leiras: leiras || "Nincs leírás megadva",
+        szabalyok: szabalyok,
         vnev: userVnev,
         knev: userKnev,
         klubbnev: klubbNev,
       });
 
-      const response = await Axios.post("http://localhost:5000/coach/add-workout", {
+      const response = await Axios.post("http://localhost:5000/coach/add-club", {
         user_id: userId,
         sport_id: parseInt(sportId, 10),
         hely,
-        idonap,
-        ido,
         leiras: leiras || "Nincs leírás megadva",
+        szabalyok: szabalyok || "Nincs szabály megadva",
         vnev: userVnev,
         knev: userKnev,
         klubbnev: klubbNev,
@@ -107,7 +110,7 @@ const EdzoiOldal = () => {
       setSportId("");
       setKlubbNev("");
       setHely("");
-      setIdonap("");
+      setNap("");
       setIdo("");
       setSzabalyok("");
       setLeiras("");
@@ -116,6 +119,57 @@ const EdzoiOldal = () => {
       setMessage(`Hiba történt az edzés hozzáadása során: ${error.message}`);
     }
   };
+
+  //-------------------------------------------------------------------------------------
+
+
+  //edzés hozzáadása
+
+  const addWorkout = async (e) => {
+    e.preventDefault();
+
+    if (!sportId || !hely) {
+      setMessage("Minden kötelező mezőt ki kell tölteni!");
+      return;
+    }
+
+    try {
+      console.log("Küldött adatok:", {
+        user_id: userId,
+        sport_id: parseInt(sportId, 10),
+        pontosCim,
+        vnev: userVnev,
+        knev: userKnev,
+        klubbnev: klubbNev,
+      });
+
+      const response = await Axios.post("http://localhost:5000/coach/add-workout", {
+        user_id: userId,
+        sport_id: parseInt(sportId, 10),
+        pontosCim,
+        nap: nap,
+        ido: ido,
+        vnev: userVnev,
+        knev: userKnev,
+        klubbnev: klubbNev,
+      });
+
+      setMessage(response.data.message);
+      loadWorkouts(userId); // Frissítjük az edzéseket az adatbázisból
+      setSportId("");
+      setKlubbNev("");
+      setPontosCim("");
+      setNap("");
+      setIdo("");
+    } catch (error) {
+      console.error("Hiba az edzés hozzáadásakor:", error.response ? error.response.data : error.message);
+      setMessage(`Hiba történt az edzés hozzáadása során: ${error.message}`);
+    }
+  };
+  
+  //-----------------------------------------------------------------------------------------
+
+
 
   return (
     <div className="coach-container">
@@ -127,7 +181,9 @@ const EdzoiOldal = () => {
       {loginStatus && userRole === "coach" && (
         <>
 
-<form onSubmit={addWorkout} className="workout-form">
+        {/**klubb hozzáadása */}
+
+        <form onSubmit={addClub} className="workout-form">
             <div className="form-group">
               <label>Sport: <span className="required">*</span></label>
               <select
@@ -135,7 +191,7 @@ const EdzoiOldal = () => {
                 onChange={(e) => setSportId(e.target.value)}
                 required
               >
-                <option value="">Válassz klubbot</option>
+                <option value="">Válassz sportot</option>
                 {sports.map((sport) => (
                   <option key={sport.id} value={sport.id}>
                     {sport.name}
@@ -149,7 +205,7 @@ const EdzoiOldal = () => {
               <input
                 type="text"
                 placeholder="Pl. Szolonki boxklub"
-                value={hely}
+                value={klubbNev}
                 onChange={(e) => setKlubbNev(e.target.value)}
                 required
               />
@@ -172,7 +228,7 @@ const EdzoiOldal = () => {
               <textarea
                 placeholder="Klubb szabályzat, Pl. sportcipő..."
                 value={szabalyok}
-                onChange={(e) => setLeiras(e.target.value)}
+                onChange={(e) => setSzabalyok(e.target.value)}
               />
             </div>
 
@@ -186,16 +242,16 @@ const EdzoiOldal = () => {
               />
             </div>
 
-            <button type="submit" className="add-button">Edzés hozzáadása</button>
+            <button type="submit" className="add-button">Klubb hozzáadása</button>
           </form>
 
 
-      {/*edzés hozzáadása*/}
+      {/*edzés hozzáadása--------------------------------------------------------------------------------------------------------*/}
         
 
           <form onSubmit={addWorkout} className="workout-form">
             <div className="form-group">
-              <label>Sport: <span className="required">*</span></label>
+              <label>Klubb: <span className="required">*</span></label>
               <select
                 value={sportId}
                 onChange={(e) => setSportId(e.target.value)}
@@ -211,21 +267,21 @@ const EdzoiOldal = () => {
             </div>
 
             <div className="form-group">
-              <label>Helyszín: <span className="required">*</span></label>
+              <label>Pontos cím: <span className="required">*</span></label>
               <input
                 type="text"
                 placeholder="Pl. Szolnok, Sportcsarnok"
-                value={hely}
-                onChange={(e) => setHely(e.target.value)}
+                value={pontosCim}
+                onChange={(e) => setPontosCim(e.target.value)}
                 required
               />
             </div>
 
             <div className="form-group">
-              <label>Időnap: <span className="required">*</span></label>
+              <label>Nap: <span className="required">*</span></label>
               <select
-                value={idonap}
-                onChange={(e) => setIdonap(e.target.value)}
+                value={nap}
+                onChange={(e) => setNap(e.target.value)}
                 required
               >
                 <option value="">Válassz napot</option>
@@ -249,27 +305,20 @@ const EdzoiOldal = () => {
               />
             </div>
 
-            <div className="form-group">
-              <label>Leírás (opcionális):</label>
-              <textarea
-                placeholder="Pl. Kezdőknek szóló edzés..."
-                value={leiras}
-                onChange={(e) => setLeiras(e.target.value)}
-              />
-            </div>
-
             <button type="submit" className="add-button">Edzés hozzáadása</button>
           </form>
 
           <div className="workout-list">
-            <h2>Feltöltött edzéseid</h2>
+            <h2>Feltöltött klubbjaid</h2>
             {workouts.length === 0 ? (
-              <p>Még nem adtál fel edzést.</p>
+              <p>Még nem adtál hozzá klubbot.</p>
             ) : (
               <ul>
                 {workouts.map((workout) => (
                   <li key={workout.sprotklub_id} className="workout-item">
-                    <strong>{sports.find(s => s.id === workout.sport_id)?.name}</strong> - {workout.hely}, {workout.idonap} {workout.ido} <br />
+                    <strong>{workout.klubbnev}</strong> <br />
+                    <strong>{sports.find(s => s.id === workout.sport_id)?.name}</strong> - {workout.hely}<br />
+                    Szabályok: {workout.szabalyok} <br />
                     Leírás: {workout.leiras}
                   </li>
                 ))}
