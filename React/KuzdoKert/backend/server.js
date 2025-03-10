@@ -595,6 +595,59 @@ app.get("/klubbok/sport/:sportId", (req, res) => {
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Klub és edzés lekérdezés végpont
+app.get('/api/klub/:id', (req, res) => {
+  const klubId = req.params.id;
+
+  // Klub adatainak lekérése
+  const klubQuery = `
+    SELECT * FROM klubbok WHERE sprotklub_id = ?;
+  `;
+  db.query(klubQuery, [klubId], (err, klubResult) => {
+    if (err) {
+      return res.status(500).json({ error: 'Hiba történt a klub adatainak lekérésekor.' });
+    }
+
+    // Edzés adatok lekérése
+    const edzesQuery = `
+      SELECT * FROM klub_edzesek WHERE sportklub_id = ?;
+    `;
+    db.query(edzesQuery, [klubId], (err, edzesResult) => {
+      if (err) {
+        return res.status(500).json({ error: 'Hiba történt az edzések lekérésekor.' });
+      }
+
+      // Válasz visszaadása
+      res.json({ klub: klubResult[0], edzesek: edzesResult });
+    });
+  });
+});
+
+
+
+
+
+
 // **Szerver indítása**
 const PORT = 5000;
 app.listen(PORT, () => {

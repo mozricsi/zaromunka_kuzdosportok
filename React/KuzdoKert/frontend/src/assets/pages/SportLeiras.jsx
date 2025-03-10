@@ -66,6 +66,7 @@ const SportLeiras = () => {
       Axios.get(`http://localhost:5000/klubbok/${id}`)
         .then((response) => {
           setClubs(response.data);
+          
         })
         .catch((error) => {
           console.error("Hiba történt a klubok lekérésekor:", error);
@@ -207,6 +208,11 @@ const SportLeiras = () => {
     return <div>Nem található sport.</div>;
   }
 
+  const handleClubClick = (id) => {
+    console.log(id)
+    navigate(`/Klub/${id}`);
+  };
+
   return (
     <div>
       {loginStatus ? (
@@ -235,6 +241,8 @@ const SportLeiras = () => {
                     <p><strong>Edző:</strong> {club.vnev} {club.knev}</p>
                     <p><strong>Leírás:</strong> {club.leiras || 'Nincs megadva'}</p>
                     <p><strong>Szabályok:</strong> {club.szabalyok || 'Nincs megadva'}</p>
+                    <button  onClick={() => handleClubClick(club.sprotklub_id)}>További információk...</button>
+                    
 
                     {/* Értékelések megjelenítése */}
                     <div className="ratings-section">
