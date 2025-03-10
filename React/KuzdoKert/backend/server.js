@@ -40,7 +40,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root", // MySQL felhasználónév
   password: "", // MySQL jelszó (ha van)
-  port: "3307",
+  port: "3306",
   database: "kuzdosportok",
 });
 
