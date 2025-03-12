@@ -8,3 +8,4 @@ export { default as SportLeiras} from './SportLeiras';
 export {default as EdzesNaplo} from './EdzesNaplo';
 export {default as Logout} from './Logout';
 export {default as Klub} from './Klub'
+export {default as Terms} from './Terms'

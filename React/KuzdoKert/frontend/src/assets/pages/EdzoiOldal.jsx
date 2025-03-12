@@ -14,6 +14,7 @@ const EdzoiOldal = () => {
   const navigate = useNavigate();
 
   const [sportId, setSportId] = useState("");
+  const [sprotklub_id, setSportKlubId] = useState("");
   const [klubbNev, setKlubbNev] = useState("");
   const [szabalyok, setSzabalyok] = useState("");
   const [hely, setHely] = useState("");
@@ -128,39 +129,33 @@ const EdzoiOldal = () => {
   const addWorkout = async (e) => {
     e.preventDefault();
 
-    if (!sportId || !hely) {
+    if (klubbNev || !pontosCim || !nap || !ido) {
       setMessage("Minden kötelező mezőt ki kell tölteni!");
       return;
     }
 
     try {
       console.log("Küldött adatok:", {
-        user_id: userId,
-        sport_id: parseInt(sportId, 10),
-        pontosCim,
-        vnev: userVnev,
-        knev: userKnev,
-        klubbnev: klubbNev,
-      });
-
-      const response = await Axios.post("http://localhost:5000/coach/add-workout", {
-        user_id: userId,
-        sport_id: parseInt(sportId, 10),
         pontosCim,
         nap: nap,
         ido: ido,
-        vnev: userVnev,
-        knev: userKnev,
-        klubbnev: klubbNev,
+        sprotklub_id,
+      });
+
+      const response = await Axios.post("http://localhost:5000/coach/add-workout", {
+        pontosCim,
+        nap: nap,
+        ido: ido,
+        sprotklub_id: sprotklub_id,
       });
 
       setMessage(response.data.message);
       loadWorkouts(userId); // Frissítjük az edzéseket az adatbázisból
-      setSportId("");
       setKlubbNev("");
       setPontosCim("");
       setNap("");
       setIdo("");
+      setSportKlubId("");
     } catch (error) {
       console.error("Hiba az edzés hozzáadásakor:", error.response ? error.response.data : error.message);
       setMessage(`Hiba történt az edzés hozzáadása során: ${error.message}`);
@@ -250,21 +245,22 @@ const EdzoiOldal = () => {
         
 
           <form onSubmit={addWorkout} className="workout-form">
-            <div className="form-group">
-              <label>Klubb: <span className="required">*</span></label>
-              <select
-                value={sportId}
-                onChange={(e) => setSportId(e.target.value)}
-                required
-              >
-                <option value="">Válassz klubbot</option>
-                {sports.map((sport) => (
-                  <option key={sport.id} value={sport.id}>
-                    {sport.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="form-group">
+          <label>Klubb: <span className="required">*</span></label>
+          <select
+            value={sprotklub_id}
+            onChange={(e) => setSportKlubId(e.target.value)} // Az ID-t tároljuk
+            required
+          >
+            <option value="">Válassz klubot</option>
+            {workouts.map((workout) => (
+              <option key={workout.sportklub_id} value={workout.sportklub_id}>
+                {workout.klubbnev}
+              </option>
+            ))}
+          </select>
+        </div>
+
 
             <div className="form-group">
               <label>Pontos cím: <span className="required">*</span></label>
@@ -325,6 +321,29 @@ const EdzoiOldal = () => {
               </ul>
             )}
           </div>
+
+            <br />
+
+          <div className="workout-list">
+            <h2>Feltöltött edzéseid</h2>
+            {workouts.length === 0 ? (
+              <p>Még nem adtál hozzá egy klubbhoz sem edzést.</p>
+            ) : (
+              <ul>
+                {workouts.map((workout) => (
+                  <li key={workout.sprotklub_id} className="workout-item">
+                    <strong>{workout.klubbnev}</strong> <br />
+                    <strong>{sports.find(s => s.id === workout.sport_id)?.name}</strong> - {workout.hely}<br />
+                    Szabályok: {workout.szabalyok} <br />
+                    Leírás: {workout.leiras}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+
+
           {message && <p className="message">{message}</p>}
         </>
       )}

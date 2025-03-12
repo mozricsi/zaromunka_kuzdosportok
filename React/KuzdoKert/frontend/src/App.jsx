@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Home, EdzoiOldal, Login, Register, Profil, SportKartyak, SportLeiras, EdzesNaplo, Logout, Klub,} from './assets/pages/routes';
+import { Home, EdzoiOldal, Login, Register, Profil, SportKartyak, SportLeiras, EdzesNaplo, Logout, Klub, Terms,} from './assets/pages/routes';
 import Navbar from './Navbar';
 import { Axios } from 'axios';
 import { useState, useEffect } from 'react';
@@ -29,6 +29,7 @@ function App() {
         <Route path="/SportLeiras/:id" element={<SportLeiras/>} />
         <Route path="/Klub" element={<Klub/>} />
         <Route path="/Klub/:id" element={<Klub/>} />
+        <Route path="/Terms" element={<Terms/>} />
         
 
         
