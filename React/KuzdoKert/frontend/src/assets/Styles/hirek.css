@@ -27,6 +27,7 @@ header p {
 
 /* Bevezető szekció */
 .intro-section {
+  position: relative; /* Relatív pozíció a kép jobb felső sarokba helyezéséhez */
   margin-bottom: 40px;
   padding: 20px;
   background: #2c2c2c; /* Enyhén világosabb háttér */
@@ -42,8 +43,11 @@ header p {
 }
 
 .intro-image {
+  position: absolute; /* Abszolút pozíció a jobb felső sarokhoz */
+  top: 20px;
+  right: 20px;
   width: 100%;
-  max-width: 400px;
+  max-width: 100px; /* Még kisebb méret */
   height: auto;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -176,75 +180,90 @@ button:hover {
 footer {
   text-align: center;
   padding: 20px;
-  background: #2c2c2c;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  margin-top: 40px;
-}
-
-footer p {
-  font-size: 1rem;
+  background-color: #1a1a1a;
   color: #ccc;
-  margin-bottom: 10px;
 }
 
 .social-icons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
+  margin-top: 10px; /* Visszaállítva az eredeti pozícióba, a szöveg alatt */
+}
+
+.social-icons a {
+  margin: 0 10px;
 }
 
 .social-icons img {
-  width: 30px;
+  width: 30px; /* Eredeti méret visszaállítva */
   height: 30px;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease; /* Átmenet az ikonokhoz */
 }
 
 .social-icons img:hover {
-  transform: scale(1.2);
+  transform: scale(1.05); /* Ikonok emelkedése és nagyítása hover állapotban */
 }
 
-/* Bevezető szekció */
-.intro-section {
-  margin-bottom: 40px;
-  padding: 20px;
-  background: #2c2c2c; /* Enyhén világosabb háttér */
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  position: relative; /* Pozicionáláshoz szükséges */
+.terms-btn {
+  margin-top: 40px; /* Lejjebb helyezve az ikonoktól */
+  padding: 10px 20px;
+  background-color: #ff4500; /* Helyes narancssárga szín */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.intro-content {
-  display: flex;
-  flex-direction: column; /* Tartalom egymás alatt */
-  align-items: flex-start; /* Tartalom balra igazítva */
-  gap: 20px;
-}
-
-.intro-image {
-  width: 150px; /* Kisebb méret */
-  height: auto;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease;
-  position: absolute; /* Abszolút pozicionálás */
-  top: 20px; /* Felső margó */
-  right: 20px; /* Jobb margó */
-}
-
-.intro-image:hover {
+.terms-btn:hover {
+  background-color: #cc3700; /* Helyes hover szín */
   transform: scale(1.05);
 }
 
-.intro-section h2 {
-  font-size: 2rem;
-  color: #ff4500;
-  margin-bottom: 10px;
+/* Reszponzív dizájn */
+@media (max-width: 768px) {
+  .terms-btn {
+    margin-top: 30px;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    background-color: #ff4500;
+  }
+
+  .terms-btn:hover {
+    background-color: #cc3700;
+  }
+
+  .social-icons img {
+    width: 25px; /* Kisebb méret reszponzív nézetben */
+    height: 25px;
+  }
+
+  .intro-image {
+    top: 15px;
+    right: 15px;
+    max-width: 75px; /* Még kisebb méret reszponzív nézetben */
+  }
 }
 
-.intro-section p {
-  font-size: 1rem;
-  color: #ccc;
-  line-height: 1.6;
-  max-width: 80%; /* Szöveg szélességének korlátozása */
+@media (max-width: 480px) {
+  .terms-btn {
+    margin-top: 25px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    background-color: #ff4500;
+  }
+
+  .terms-btn:hover {
+    background-color: #cc3700;
+  }
+
+  .social-icons img {
+    width: 20px; /* Még kisebb méret kisebb képernyőn */
+    height: 20px;
+  }
+
+  .intro-image {
+    top: 10px;
+    right: 10px;
+    max-width: 50px; /* Még kisebb méret kisebb képernyőn */
+  }
 }
