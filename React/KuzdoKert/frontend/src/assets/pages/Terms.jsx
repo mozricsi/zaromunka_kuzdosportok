@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, } from "react";
 import { useNavigate } from "react-router-dom";
-import "../Styles/Terms.css"; // Ugyanazt a stílusfájlt használjuk
+import "../Styles/Terms.css"; 
 
 const Terms = () => {
   const [accepted, setAccepted] = useState(false);
