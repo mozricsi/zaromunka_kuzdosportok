@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import '../Styles/sportleiras.css';
 
 const SportLeiras = () => {
@@ -22,7 +22,7 @@ const SportLeiras = () => {
   useEffect(() => {
     Axios.defaults.withCredentials = true;
     const checkLoginStatus = () => {
-      Axios.get("http://localhost:5000/login")
+      Axios.get('http://localhost:5000/login')
         .then((response) => {
           if (response.data.loggedIn) {
             setLoginStatus(response.data.user[0].felhasznalonev);
@@ -33,12 +33,12 @@ const SportLeiras = () => {
             setUserId(null);
             setUserRole(null);
             setTimeout(() => {
-              navigate("/login");
+              navigate('/login');
             }, 1000);
           }
         })
         .catch((error) => {
-          console.error("Hiba történt:", error);
+          console.error('Hiba történt:', error);
         });
     };
 
@@ -55,7 +55,7 @@ const SportLeiras = () => {
         setLoading(false);
       })
       .catch((error) => {
-        setError("Hiba történt a sport adatainak lekérésekor.");
+        setError('Hiba történt a sport adatainak lekérésekor.');
         setLoading(false);
       });
   }, [id]);
@@ -66,10 +66,9 @@ const SportLeiras = () => {
       Axios.get(`http://localhost:5000/klubbok/${id}`)
         .then((response) => {
           setClubs(response.data);
-          
         })
         .catch((error) => {
-          console.error("Hiba történt a klubok lekérésekor:", error);
+          console.error('Hiba történt a klubok lekérésekor:', error);
         });
     }
   }, [id]);
@@ -236,12 +235,19 @@ const SportLeiras = () => {
                 {clubs.map((club) => (
                   <div key={club.sprotklub_id} className="club-card">
                     <h3>{club.klubbnev}</h3>
-                    <p><strong>Helyszín:</strong> {club.hely}</p>
-                    <p><strong>Edző:</strong> {club.vnev} {club.knev}</p>
-                    <p><strong>Leírás:</strong> {club.leiras || 'Nincs megadva'}</p>
-                    <p><strong>Szabályok:</strong> {club.szabalyok || 'Nincs megadva'}</p>
-                    <button  onClick={() => handleClubClick(club.sprotklub_id)}>További információk...</button>
-                    
+                    <p>
+                      <strong>Helyszín:</strong> {club.hely}
+                    </p>
+                    <p>
+                      <strong>Edző:</strong> {club.vnev} {club.knev}
+                    </p>
+                    <p>
+                      <strong>Leírás:</strong> {club.leiras || 'Nincs megadva'}
+                    </p>
+                    <p>
+                      <strong>Szabályok:</strong> {club.szabalyok || 'Nincs megadva'}
+                    </p>
+                    <button onClick={() => handleClubClick(club.sprotklub_id)}>További információk...</button>
 
                     {/* Értékelések megjelenítése */}
                     <div className="ratings-section">
@@ -290,8 +296,8 @@ const SportLeiras = () => {
           </div>
         </>
       ) : (
-        <> 
-               <p>Jelentkezz be kérlek</p>
+        <>
+          <p>Jelentkezz be kérlek</p>
         </>
       )}
     </div>

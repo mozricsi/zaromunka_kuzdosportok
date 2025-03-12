@@ -83,24 +83,29 @@ const Home = () => {
             className="intro-image"
           />
           <p>
-            Weboldalunkon különböző küzdősportokkal ismerkedhetsz meg, mint például a box, MMA, judo, karate és még sok más...
+          Weboldalunkon különböző küzdősportokkal ismerkedhetsz meg, mint például a box, MMA, judo, karate és még sok
+            más. Legyen szó kezdőkről vagy haladókról, nálunk mindenki megtalálja a számára megfelelő edzéseket és
+            információkat.
           </p>
         </div>
       </section>
 
       <section className="coach-section">
         <h2>Edzőként regisztrálj!</h2>
-        <p>Ha edző vagy, regisztrálj és töltsd fel a saját klubod adatait...</p>
+        <p>Ha edző vagy, regisztrálj és töltsd fel a saját klubod adatait, valamint az edzéseid időpontjait és helyszíneit.
+        Így a felhasználók könnyen megtalálhatják és csatlakozhatnak az edzéseidhez.</p>
       </section>
 
       <section className="training-log-section">
         <h2>Edzésnapló</h2>
-        <p>A sima felhasználók számára elérhető az edzésnapló funkció...</p>
+        <p> A sima felhasználók számára elérhető az edzésnapló funkció, ahol a saját edzéseidet tudod vezetni. Kövesd
+        nyomon a fejlődésedet, és maradj motivált!</p>
       </section>
 
       <section className="profile-section">
         <h2>Profil</h2>
-        <p>A profil oldalon módosíthatod a saját adataidat...</p>
+        <p>A profil oldalon módosíthatod a saját adataidat, és beállíthatod, hogy milyen típusú edzések érdekelnek téged.
+        Így személyre szabott ajánlatokat kaphatsz.</p>
       </section>
 
       <section className="news-section">
