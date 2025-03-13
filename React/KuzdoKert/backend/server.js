@@ -593,10 +593,34 @@ app.get("/klubbok/sport/:sportId", (req, res) => {
   });
 });
 
+//-----------------------------------------------------------------------------------
 
 
 
+// Edzés hozzáadása
+app.post("/coach/add-workout", async (req, res) => {
+  try {
+    const { pontosCim, nap, ido, sportklub_id } = req.body;
+    console.log({ pontosCim, nap, ido, sportklub_id })
 
+    // Validáció: minden mező kitöltése kötelező
+    if (!pontosCim || !nap || !ido || !sportklub_id) {
+      return res.status(400).json({ message: "Minden mező kitöltése kötelező!" });
+    }
+
+    // Adatbázisba mentés
+    const query = `
+      INSERT INTO klub_edzesek (sportklub_id, pontosCim, nap, ido)
+      VALUES (?, ?, ?, ?)
+    `;
+    db.query(query, [sportklub_id, pontosCim, nap, ido]);
+
+    res.status(201).json({ message: "Edzés sikeresen hozzáadva!" });
+  } catch (error) {
+    console.error("Hiba az edzés hozzáadásakor:", error);
+    res.status(500).json({ message: "Szerverhiba az edzés hozzáadása során." });
+  }
+});
 
 
 

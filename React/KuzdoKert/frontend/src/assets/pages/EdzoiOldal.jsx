@@ -139,14 +139,14 @@ const EdzoiOldal = () => {
         pontosCim,
         nap: nap,
         ido: ido,
-        sprotklub_id,
+        sprotklub_id: parseInt(sprotklub_id, 10),
       });
 
       const response = await Axios.post("http://localhost:5000/coach/add-workout", {
         pontosCim,
         nap: nap,
         ido: ido,
-        sprotklub_id: sprotklub_id,
+        sportklub_id: parseInt(sprotklub_id, 10),
       });
 
       setMessage(response.data.message);
@@ -246,20 +246,20 @@ const EdzoiOldal = () => {
 
           <form onSubmit={addWorkout} className="workout-form">
           <div className="form-group">
-          <label>Klubb: <span className="required">*</span></label>
-          <select
-            value={sprotklub_id}
-            onChange={(e) => setSportKlubId(e.target.value)} // Az ID-t tároljuk
-            required
-          >
-            <option value="">Válassz klubot</option>
-            {workouts.map((workout) => (
-              <option key={workout.sportklub_id} value={workout.sportklub_id}>
-                {workout.klubbnev}
-              </option>
-            ))}
-          </select>
-        </div>
+           <label>Klubb: <span className="required">*</span></label>
+            <select
+              value={sprotklub_id}
+              onChange={(e) => setSportKlubId(e.target.value)}
+              required
+            >
+              <option value="">Válassz klubot</option>
+              {workouts.map((workout) => (
+                <option key={workout.sprotklub_id} value={workout.sprotklub_id}> {/* Itt az ID-t küldjük */}
+                  {workout.klubbnev}
+                </option>
+              ))}
+            </select>
+          </div>
 
 
             <div className="form-group">
