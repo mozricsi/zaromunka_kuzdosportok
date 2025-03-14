@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Calendar from 'react-calendar';
-import "../Styles/esemeneyek.css";
+import "../Styles/esemenyek.css";
 
 function Esemenyek() {
   const [events, setEvents] = useState([]);

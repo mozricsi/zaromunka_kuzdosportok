@@ -2,44 +2,41 @@ const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-const saltRounds = 10
+const saltRounds = 10;
 require("dotenv").config();
 
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
-const session = require('express-session')
-const { Server } = require('socket.io'); // Socket.IO import
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const { Server } = require('socket.io');
 
 const app = express();
-
 
 app.use(express.json());
 app.use(cors({
   origin: ["http://localhost:5173"],
-  methods: ["GET","POST"],
+  methods: ["GET", "POST"],
   credentials: true
 }));
 
-app.use(cookieParser())
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(session({
   key: "userId",
   secret: "secret",
   resave: false,
   saveUninitialized: false,
-  cookie:{
+  cookie: {
     expires: 1000000
   },
-}))
-
-//--------------------------------------------------------
+}));
 
 // **MySQL adatbázis kapcsolat**
 const db = mysql.createConnection({
   host: "localhost",
-  user: "root", // MySQL felhasználónév
-  password: "", // MySQL jelszó (ha van)
+  user: "root",
+  password: "",
   port: "3306",
   database: "kuzdosportok",
 });
@@ -52,45 +49,41 @@ db.connect((err) => {
   }
 });
 
-//----------------------------------------------------
+// Regisztráció
+app.post('/register', (req, res) => {
+  const vnev = req.body.vnev;
+  const knev = req.body.knev;
+  const knev2 = req.body.knev2;
+  const email = req.body.email;
+  const szul = req.body.szul;
+  const lakhely = req.body.lakhely;
+  const tel = req.body.tel;
+  const felhasznalonev = req.body.username;
+  const jelszo = req.body.password;
+  const role = req.body.role || "visitor";
 
-  // Regisztráció
-  app.post('/register', (req, res) => {
-    const vnev = req.body.vnev;
-    const knev = req.body.knev;
-    const knev2 = req.body.knev2;
-    const email = req.body.email;
-    const szul = req.body.szul;
-    const lakhely = req.body.lakhely;
-    const tel = req.body.tel;
-    const felhasznalonev = req.body.username;
-    const jelszo = req.body.password;
-    const role = req.body.role || "visitor"; // Alapértelmezett: látogató
-  
-    bcrypt.hash(jelszo, saltRounds, (err, hash) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).send("Hiba a jelszó hash-elése közben.");
-      }
-  
-      db.query(
-        "INSERT INTO latogatok (vnev, knev, knev2, lakhelyvaros, email, telefonszam, szul_ido, felhasznalonev, jelszo, role, regisztracio_datum) VALUES (?,?,?,?,?,?,?,?,?,?, NOW())",
-        [vnev, knev, knev2, lakhely, email, tel, szul, felhasznalonev, hash, role],
-        (err, result) => {
-          if (err) {
-            console.log("Hibák:" + err);
-            return res.status(500).send("Hiba a regisztráció során.");
-          }
-          console.log("Az insert (regisztráció) sikeresen lefutott.");
-          res.send({ message: "Sikeres regisztráció!" });
+  bcrypt.hash(jelszo, saltRounds, (err, hash) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send("Hiba a jelszó hash-elése közben.");
+    }
+
+    db.query(
+      "INSERT INTO latogatok (vnev, knev, knev2, lakhelyvaros, email, telefonszam, szul_ido, felhasznalonev, jelszo, role, regisztracio_datum) VALUES (?,?,?,?,?,?,?,?,?,?, NOW())",
+      [vnev, knev, knev2, lakhely, email, tel, szul, felhasznalonev, hash, role],
+      (err, result) => {
+        if (err) {
+          console.log("Hibák:" + err);
+          return res.status(500).send("Hiba a regisztráció során.");
         }
-      );
-    });
+        console.log("Az insert (regisztráció) sikeresen lefutott.");
+        res.send({ message: "Sikeres regisztráció!" });
+      }
+    );
   });
-//----------------------------------------------------------------
+});
 
-//felhasználónév check
-
+// Felhasználónév ellenőrzés
 app.post("/checkUsername", (req, res) => {
   const felhasznalonev = req.body.username;
 
@@ -101,95 +94,81 @@ app.post("/checkUsername", (req, res) => {
       if (err) {
         res.status(500).send({ error: "Database error" });
       } else {
-        console.log("SQL result:", result); // Ellenőrizd a szerveren
+        console.log("SQL result:", result);
         res.send({ exists: result.length > 0 });
       }
     }
   );
 });
 
+// Bejelentkezés ellenőrzés
+app.get("/login", (req, res) => {
+  if (req.session.user) {
+    res.send({ loggedIn: true, user: req.session.user });
+  } else {
+    res.send({ loggedIn: false, user: null });
+  }
+});
 
-//-----------------------------------------------------------------------------------
+// Bejelentkezés
+app.post('/login', (req, res) => {
+  const felhasznalonev = req.body.username;
+  const jelszo = req.body.password;
 
-
-  //login check (be vagy e jelentkezve)
-
-  app.get("/login", (req, res) => {
-    if (req.session.user) {
-      res.send({loggedIn: true, user: req.session.user})
-    }
-    else{
-      res.send({loggedIn: false, user: null})
-    }
-  })
-
-//bejelentkezés
-  app.post('/login', (req, res) => {
-    const felhasznalonev = req.body.username;
-    const jelszo = req.body.password;
-  
-    db.query(
-      "SELECT * FROM latogatok WHERE felhasznalonev = ?",
-      [felhasznalonev],
-      (err, result) => {
-        if (err) {
-          res.send({ err: err });
-        }
-  
-        if (result.length > 0) {
-          bcrypt.compare(jelszo, result[0].jelszo, (error, response) => {
-            if (response) {
-              req.session.user = result;
-              console.log(req.session.user);
-              res.send(result); // A result tartalmazza a vnev, knev, role stb. értékeket
-
-              db.query(
-                "INSERT INTO latogatobejelentkezesek (user_id, bejelentkezes_ido) VALUES (?, NOW())",
-                [req.session.user[0].user_id],
-                (err,) => {
-                  if (err) {
-                    console.log("Hibák:" + err);
-                    return res.status(500).send("Hiba a beszúrás során");
-                  }
-                  console.log("Az insert sikeresen lefutott.");
-                }
-              );
-
-            } else {
-              res.send({ message: "Rossz felhasználó/jelszó kombináció!" });
-            }
-          });
-        } else {
-          res.send({ message: "Nem létező felhasználó!" });
-        }
+  db.query(
+    "SELECT * FROM latogatok WHERE felhasznalonev = ?",
+    [felhasznalonev],
+    (err, result) => {
+      if (err) {
+        res.send({ err: err });
       }
-    );
-  });
 
-//-----------------------------------------------------------------------------
+      if (result.length > 0) {
+        bcrypt.compare(jelszo, result[0].jelszo, (error, response) => {
+          if (response) {
+            req.session.user = result;
+            console.log(req.session.user);
+            res.send(result);
 
+            db.query(
+              "INSERT INTO latogatobejelentkezesek (user_id, bejelentkezes_ido) VALUES (?, NOW())",
+              [req.session.user[0].user_id],
+              (err) => {
+                if (err) {
+                  console.log("Hibák:" + err);
+                  return res.status(500).send("Hiba a beszúrás során");
+                }
+                console.log("Az insert sikeresen lefutott.");
+              }
+            );
+          } else {
+            res.send({ message: "Rossz felhasználó/jelszó kombináció!" });
+          }
+        });
+      } else {
+        res.send({ message: "Nem létező felhasználó!" });
+      }
+    }
+  );
+});
 
-//kijelentkezés
+// Kijelentkezés
 app.post("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error("Hiba a kijelentkezés során:", err);
       return res.status(500).json({ error: "Nem sikerült kijelentkezni" });
     }
-    
+
     res.clearCookie("userId");
     res.json({ loggedIn: false, user: null, message: "Sikeres kijelentkezés!" });
-    
   });
 });
 
-//-------------------------------------------------------
-
-
-//felhasználói adat frissítés
+// Felhasználói adatok frissítése
 app.post("/updateUser", (req, res) => {
   const { vnev, knev, knev2, email, szul, lakhely, tel, username, password } = req.body;
-  
+
   const sql = `
     UPDATE latogatok 
     SET vnev = ?, knev = ?, knev2 = ?, email = ?, szul_ido = ?, lakhelyvaros = ?, telefonszam = ?, jelszo = ?
@@ -199,35 +178,77 @@ app.post("/updateUser", (req, res) => {
   db.query(sql, [vnev, knev, knev2, email, szul, lakhely, tel, password, username], (err, result) => {
     if (err) {
       console.error("Hiba az adatbázis frissítésekor:", err);
-      return res.status(500).send("Hiba történt az adatok frissítése közben."); // 🔹 FONTOS: return, hogy ne fusson tovább!
+      return res.status(500).send("Hiba történt az adatok frissítése közben.");
     }
 
     console.log("✅ Profil sikeresen frissítve!");
 
-    // **Süti törlése és újra létrehozása**
     res.clearCookie("userId");
     res.cookie("userId", username, {
       maxAge: 1000000
     });
-
-
     req.session.user = [{
       vnev, knev, knev2, email, szul_ido: szul, lakhelyvaros: lakhely, telefonszam: tel, felhasznalonev: username, jelszo: password
     }];
 
-
     res.send({ message: "Profil sikeresen frissítve!", user: req.session.user });
-
-    
   });
 });
 
-//jelszó még nem fix h működik
-//--------------------------------------------------------------------------------------
+// Jelszóváltoztatás
+app.post("/changePassword", (req, res) => {
+  const { username, oldPassword, newPassword } = req.body;
 
+  if (newPassword.length < 6) {
+    return res.status(400).json({ message: "Az új jelszónak legalább 6 karakter hosszúnak kell lennie!" });
+  }
 
+  const query = "SELECT jelszo FROM latogatok WHERE felhasznalonev = ?";
+  db.query(query, [username], (err, result) => {
+    if (err) {
+      return res.status(500).json({ message: "Hiba történt az adatbázisban." });
+    }
+    if (result.length === 0) {
+      return res.status(404).json({ message: "Felhasználó nem található." });
+    }
 
-//sportok lekérése
+    const hashedPassword = result[0].jelszo;
+
+    bcrypt.compare(oldPassword, hashedPassword, (err, match) => {
+      if (err) {
+        return res.status(500).json({ message: "Hiba történt az ellenőrzés során." });
+      }
+      if (!match) {
+        return res.status(400).json({ message: "A régi jelszó helytelen!" });
+      }
+
+      bcrypt.compare(newPassword, hashedPassword, (err, same) => {
+        if (err) {
+          return res.status(500).json({ message: "Hiba történt az ellenőrzés során." });
+        }
+        if (same) {
+          return res.status(400).json({ message: "Az új jelszó nem lehet ugyanaz, mint a régi!" });
+        }
+
+        bcrypt.hash(newPassword, 10, (err, newHashedPassword) => {
+          if (err) {
+            return res.status(500).json({ message: "Hiba történt a jelszó hash-elésekor." });
+          }
+
+          const updateQuery = "UPDATE latogatok SET jelszo = ? WHERE felhasznalonev = ?";
+          db.query(updateQuery, [newHashedPassword, username], (err, result) => {
+            if (err) {
+              return res.status(500).json({ message: "Hiba történt a jelszó frissítésekor." });
+            }
+            res.json({ message: "Jelszó sikeresen megváltoztatva!" });
+          });
+        });
+      });
+    });
+  });
+});
+
+// Sportok lekérése
 app.get("/sports/:id", (req, res) => {
   const sportId = req.params.id;
 
@@ -247,10 +268,7 @@ app.get("/sports/:id", (req, res) => {
   });
 });
 
-
-//----------------------------------------------------------------------------------------
-
-//klubbok lekérése
+// Klubok lekérése sport ID alapján
 app.get("/klubbok/:sportId", (req, res) => {
   const sportId = req.params.sportId;
   const query = `SELECT * FROM klubbok WHERE sport_id = ?`;
@@ -264,86 +282,21 @@ app.get("/klubbok/:sportId", (req, res) => {
     }
   });
 });
-//-----------------------------------------------------------------------------------------------
 
-
-//Jelszóváltoztatás
-app.post("/changePassword", (req, res) => {
-  const { username, oldPassword, newPassword } = req.body;
-
-  if (newPassword.length < 6) {
-    return res.status(400).json({ message: "Az új jelszónak legalább 6 karakter hosszúnak kell lennie!" });
-  }
-
-  const query = "SELECT jelszo FROM latogatok WHERE felhasznalonev = ?";
-  db.query(query, [username], (err, result) => {
-    if (err) {
-      return res.status(500).json({ message: "Hiba történt az adatbázisban." });
-    }
-    if (result.length === 0) {
-      return res.status(404).json({ message: "Felhasználó nem található." });
-    }
-
-    const hashedPassword = result[0].jelszo;
-
-    // Ellenőrizzük a régi jelszót
-    bcrypt.compare(oldPassword, hashedPassword, (err, match) => {
-      if (err) {
-        return res.status(500).json({ message: "Hiba történt az ellenőrzés során." });
-      }
-      if (!match) {
-        return res.status(400).json({ message: "A régi jelszó helytelen!" });
-      }
-
-      // Ellenőrizzük, hogy az új jelszó nem egyezik-e a jelenlegi hash-elt jelszóval
-      bcrypt.compare(newPassword, hashedPassword, (err, same) => {
-        if (err) {
-          return res.status(500).json({ message: "Hiba történt az ellenőrzés során." });
-        }
-        if (same) {
-          return res.status(400).json({ message: "Az új jelszó nem lehet ugyanaz, mint a régi!" });
-        }
-
-        // Ha minden rendben van, akkor hash-eljük az új jelszót
-        bcrypt.hash(newPassword, 10, (err, newHashedPassword) => {
-          if (err) {
-            return res.status(500).json({ message: "Hiba történt a jelszó hash-elésekor." });
-          }
-
-          const updateQuery = "UPDATE latogatok SET jelszo = ? WHERE felhasznalonev = ?";
-          db.query(updateQuery, [newHashedPassword, username], (err, result) => {
-            if (err) {
-              return res.status(500).json({ message: "Hiba történt a jelszó frissítésekor." });
-            }
-            res.json({ message: "Jelszó sikeresen megváltoztatva!" });
-          });
-        });
-      });
-    });
-  });
-});
-
-
-
-//----------------------------------------------------------------------------------------------
-
-// Edzés hozzáadása az edző által
+// Edzés hozzáadása az edző által (klub)
 app.post("/coach/add-club", (req, res) => {
   const { user_id, sport_id, hely, szabalyok, leiras, vnev, knev, klubbnev } = req.body;
 
   console.log("Küldött adatok:", { user_id, sport_id, hely, szabalyok, leiras, vnev, knev, klubbnev });
 
-  // Ellenőrizzük, hogy minden szükséges mező meg van adva
   if (!user_id || !sport_id || !hely) {
     return res.status(400).json({ error: "Minden kötelező mezőt ki kell tölteni!" });
   }
 
-  // Ellenőrizzük, hogy sport_id és user_id számok
   if (isNaN(user_id) || isNaN(sport_id)) {
     return res.status(400).json({ error: "A user_id és sport_id számnak kell lennie!" });
   }
 
-  // Ellenőrizzük, hogy a user_id létezik-e a latogatok táblában
   db.query("SELECT user_id FROM latogatok WHERE user_id = ?", [user_id], (err, userResult) => {
     if (err) {
       console.error("Hiba a felhasználó ellenőrzésekor:", err.message);
@@ -353,7 +306,6 @@ app.post("/coach/add-club", (req, res) => {
       return res.status(400).json({ error: "A felhasználó nem létezik!" });
     }
 
-    // Ellenőrizzük, hogy a sport_id létezik-e a sport táblában
     db.query("SELECT sport_id FROM sport WHERE sport_id = ?", [sport_id], (err, sportResult) => {
       if (err) {
         console.error("Hiba a sport ellenőrzésekor:", err.message);
@@ -377,7 +329,6 @@ app.post("/coach/add-club", (req, res) => {
           return res.status(500).json({ error: "Adatbázis hiba", details: err.message });
         }
 
-        // Az újonnan hozzáadott edzés lekérdezése (visszaküldéshez)
         db.query(
           "SELECT * FROM klubbok WHERE sprotklub_id = LAST_INSERT_ID()",
           (err, newWorkout) => {
@@ -393,6 +344,7 @@ app.post("/coach/add-club", (req, res) => {
   });
 });
 
+// Értékelések lekérdezése
 app.get('/ertekelesek/:sportklub_id', (req, res) => {
   const sportklub_id = req.params.sportklub_id;
   const query = `
@@ -404,8 +356,8 @@ app.get('/ertekelesek/:sportklub_id', (req, res) => {
   
   db.query(query, [sportklub_id], (err, results) => {
     if (err) {
-      console.error('Hiba az értékelések lekérésekor:', err);
-      return res.status(500).json({ message: 'Hiba történt az értékelések lekérésekor.' });
+      console.error('Hiba az értékelések lekérdezésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt az értékelések lekérdezésekor.' });
     }
     res.json(results);
   });
@@ -415,7 +367,6 @@ app.get('/ertekelesek/:sportklub_id', (req, res) => {
 app.post('/ertekelesek', (req, res) => {
   const { user_id, sportklub_id, szoveges_ertekeles, csillagos_ertekeles } = req.body;
 
-  // Ellenőrizzük, hogy a felhasználó létezik-e és visitor szerepköre van-e
   const checkUserQuery = `SELECT role FROM latogatok WHERE user_id = ?`;
   db.query(checkUserQuery, [user_id], (err, results) => {
     if (err) {
@@ -432,7 +383,6 @@ app.post('/ertekelesek', (req, res) => {
       return res.status(403).json({ message: 'Csak látogatók adhatnak értékelést!' });
     }
 
-    // Értékelés beszúrása
     const insertQuery = `
       INSERT INTO ertekelesek (user_id, sportklub_id, szoveges_ertekeles, csillagos_ertekeles)
       VALUES (?, ?, ?, ?)
@@ -447,14 +397,12 @@ app.post('/ertekelesek', (req, res) => {
   });
 });
 
-
-
-// Jelentkezés hozzáadása (ha még nincs ilyen endpoint)
+// Jelentkezés hozzáadása
 app.post('/apply-workout', (req, res) => {
   const { user_id, sportklub_id } = req.body;
 
   const query = `
-    INSERT INTO jelentkezes (user_id, sportkulb_id, jelentkezes_ido, elfogadasi_ido, elfogadva)
+    INSERT INTO jelentkezes (user_id, sportklub_id, jelentkezes_ido, elfogadasi_ido, elfogadva)
     VALUES (?, ?, NOW(), NOW(), 1)
   `;
 
@@ -464,6 +412,37 @@ app.post('/apply-workout', (req, res) => {
       return res.status(500).json({ message: 'Hiba történt a jelentkezés során.' });
     }
     res.json({ message: 'Sikeres jelentkezés!' });
+  });
+});
+
+// Értesítések lekérdezése a látogató számára
+app.get('/notifications/:user_id', (req, res) => {
+  const user_id = req.params.user_id;
+
+  const query = `
+    SELECT 
+      j.jelentkezes_id,
+      k.klubbnev,
+      k.hely,
+      e.nap,
+      e.ido,
+      l.vnev AS coach_vnev,
+      l.knev AS coach_knev
+    FROM jelentkezes j
+    JOIN klubbok k ON j.sportklub_id = k.sprotklub_id
+    JOIN latogatok l ON k.user_id = l.user_id
+    JOIN klub_edzesek e ON k.sprotklub_id = e.sportklub_id
+    WHERE j.user_id = ?
+      AND e.nap = DAYNAME(CURDATE())
+      AND j.elfogadva = 1
+  `;
+
+  db.query(query, [user_id], (err, results) => {
+    if (err) {
+      console.error('Hiba az értesítések lekérdezésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt az értesítések lekérdezésekor.' });
+    }
+    res.json(results);
   });
 });
 
@@ -477,12 +456,13 @@ app.get('/coach-notifications/:user_id', (req, res) => {
       l.felhasznalonev AS visitor_username,
       k.klubbnev,
       k.hely,
-      k.idonap,
-      k.ido,
+      e.nap,
+      e.ido,
       j.jelentkezes_ido
     FROM jelentkezes j
     JOIN latogatok l ON j.user_id = l.user_id
-    JOIN klubbok k ON j.sportkulb_id = k.sprotklub_id
+    JOIN klubbok k ON j.sportklub_id = k.sprotklub_id
+    JOIN klub_edzesek e ON k.sprotklub_id = e.sportklub_id
     WHERE k.user_id = ?
       AND j.elfogadva = 1
     ORDER BY j.jelentkezes_ido DESC
@@ -498,89 +478,20 @@ app.get('/coach-notifications/:user_id', (req, res) => {
   });
 });
 
-// Értesítések lekérdezése a látogató számára
-app.get('/notifications/:user_id', (req, res) => {
-  const user_id = req.params.user_id;
+// Edzésnapló - edző által hozzáadott edzések lekérdezése
+app.get("/klubbok/all/:userId", (req, res) => {
+  const { userId } = req.params;
 
-  const query = `
-    SELECT 
-      j.jelentkezes_id,
-      k.klubbnev,
-      k.hely,
-      k.idonap,
-      k.ido,
-      l.vnev AS coach_vnev,
-      l.knev AS coach_knev
-    FROM jelentkezes j
-    JOIN klubbok k ON j.sportkulb_id = k.sprotklub_id
-    JOIN latogatok l ON k.user_id = l.user_id
-    WHERE j.user_id = ?
-      AND k.idonap = DAYNAME(CURDATE())
-      AND j.elfogadva = 1
-  `;
-
-  db.query(query, [user_id], (err, results) => {
-    if (err) {
-      console.error('Hiba az értesítések lekérdezésekor:', err);
-      return res.status(500).json({ message: 'Hiba történt az értesítések lekérdezésekor.' });
+  db.query("SELECT * FROM klubbok WHERE user_id = ?", [userId], (error, results) => {
+    if (error) {
+      console.error("Hiba az edzések lekérdezésekor:", error);
+      return res.status(500).json({ message: "Hiba történt az edzések lekérdezésekor." });
     }
     res.json(results);
   });
 });
 
-// Jelentkezés hozzáadása (ha még nincs ilyen endpoint)
-app.post('/apply-workout', (req, res) => {
-  const { user_id, sportklub_id } = req.body;
-
-  const query = `
-    INSERT INTO jelentkezes (user_id, sportkulb_id, jelentkezes_ido, elfogadasi_ido, elfogadva)
-    VALUES (?, ?, NOW(), NOW(), 1)
-  `;
-
-  db.query(query, [user_id, sportklub_id], (err, result) => {
-    if (err) {
-      console.error('Hiba a jelentkezés hozzáadásakor:', err);
-      return res.status(500).json({ message: 'Hiba történt a jelentkezés során.' });
-    }
-    res.json({ message: 'Sikeres jelentkezés!' });
-  });
-});
-
-//------------------------------------------------------------------------------
-
-//edzésnapló hozzáadott edzések
-app.get("/klubbok/all/:userId", (req, res) => {
-  const { userId } = req.params;
- 
-  db.query("SELECT * FROM klubbok WHERE user_id = ?", [userId], (error, results) => {
-      if (error) {
-          console.error("Hiba az edzések lekérdezésekor:", error);
-          return res.status(500).json({ message: "Hiba történt az edzések lekérdezésekor." });
-      }
-      res.json(results);
-  });
-});
-//---------------------------------------------------------------------------------------
-
-app.get('/applied-workouts/:userId', (req, res) => {
-  const userId = req.params.userId;
-  db.query(`
-    SELECT k.sport_id 
-    FROM applied_workouts a 
-    JOIN sportklubbok k ON a.sportklub_id = k.sprotklub_id 
-    WHERE a.user_id = ?
-  `, [userId], (err, result) => {
-    if (err) {
-      res.status(500).json({ message: "Hiba a lekérdezés során" });
-    } else {
-      res.json(result); // [{ sport_id: 1 }, { sport_id: 2 }, ...]
-    }
-  });
-});
-
-//-------------------------------------------------------------------------------------------------------
-
-// Összes edzés lekérdezése sport_id alapján (minden edzőtől)
+// Összes edzés lekérdezése sport_id alapján
 app.get("/klubbok/sport/:sportId", (req, res) => {
   const sportId = req.params.sportId;
   const query = "SELECT * FROM klubbok WHERE sport_id = ?";
@@ -594,22 +505,16 @@ app.get("/klubbok/sport/:sportId", (req, res) => {
   });
 });
 
-//-----------------------------------------------------------------------------------
-
-
-
 // Edzés hozzáadása
 app.post("/coach/add-workout", async (req, res) => {
   try {
     const { pontosCim, nap, ido, sportklub_id } = req.body;
-    console.log({ pontosCim, nap, ido, sportklub_id })
+    console.log({ pontosCim, nap, ido, sportklub_id });
 
-    // Validáció: minden mező kitöltése kötelező
     if (!pontosCim || !nap || !ido || !sportklub_id) {
       return res.status(400).json({ message: "Minden mező kitöltése kötelező!" });
     }
 
-    // Adatbázisba mentés
     const query = `
       INSERT INTO klub_edzesek (sportklub_id, pontosCim, nap, ido)
       VALUES (?, ?, ?, ?)
@@ -623,27 +528,10 @@ app.post("/coach/add-workout", async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Klub és edzés lekérdezés végpont
+// Klub és edzés lekérdezése
 app.get('/api/klub/:id', (req, res) => {
   const klubId = req.params.id;
 
-  // Klub adatainak lekérése
   const klubQuery = `
     SELECT * FROM klubbok WHERE sprotklub_id = ?;
   `;
@@ -652,29 +540,110 @@ app.get('/api/klub/:id', (req, res) => {
       return res.status(500).json({ error: 'Hiba történt a klub adatainak lekérésekor.' });
     }
 
-    // Edzés adatok lekérése
     const edzesQuery = `
       SELECT * FROM klub_edzesek WHERE sportklub_id = ?;
     `;
     db.query(edzesQuery, [klubId], (err, edzesResult) => {
       if (err) {
-        return res.status(500).json({ error: 'Hiba történt az edzések lekérésekor.' });
+        return res.status(500).json({ error: 'Hiba történt az edzések lekérdezésekor.' });
       }
-      console.log(klubResult); // Klub adatok
-console.log(edzesResult); // Edzés adatok
 
-
-      // Válasz visszaadása
       res.json({ klub: klubResult[0], edzesek: edzesResult });
     });
   });
 });
 
-
+// Ranglista lekérdezése
 app.get('/api/ranglista', (req, res) => {
   db.query('SELECT felhasznalonev, COUNT(*) as edzesek FROM klub_edzesek JOIN latogatok ON klub_edzesek.sportklub_id = latogatok.user_id GROUP BY user_id ORDER BY edzesek DESC', (err, results) => {
     if (err) return res.status(500).send('Error');
     res.json(results);
+  });
+});
+
+// Események lekérdezése
+app.get('/api/esemenyek', (req, res) => {
+  const query = `
+    SELECT e.*, s.sportnev 
+    FROM esemenyek e 
+    JOIN sport s ON e.sport_id = s.sport_id
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Hiba az események lekérdezésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt az események lekérdezésekor.' });
+    }
+    res.json(results);
+  });
+});
+
+// Edzésstatisztikák lekérdezése a Dashboardhoz
+app.get('/api/edzesek/stat', (req, res) => {
+  const query = `
+    SELECT DAYNAME(nap) as day, COUNT(*) as count 
+    FROM klub_edzesek 
+    WHERE nap IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')
+    GROUP BY DAYNAME(nap)
+    ORDER BY FIELD(DAYNAME(nap), 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Hiba a statisztikák lekérdezésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt a statisztikák lekérdezésekor.' });
+    }
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    const stats = days.map(day => {
+      const found = results.find(r => r.day === day);
+      return { day, count: found ? found.count : 0 };
+    });
+    res.json(stats);
+  });
+});
+
+// Üzenetek lekérdezése
+app.get('/api/uzenetek', (req, res) => {
+  const query = `
+    SELECT u.uzenet_id, u.user_id, u.felhasznalonev, u.uzenet, u.ido
+    FROM uzenetek u
+    ORDER BY u.ido DESC
+    LIMIT 50
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Hiba az üzenetek lekérdezésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt az üzenetek lekérdezésekor.' });
+    }
+    res.json(results);
+  });
+});
+
+// Üzenet küldése
+app.post('/api/uzenetek', (req, res) => {
+  const { user_id, felhasznalonev, uzenet } = req.body;
+
+  if (!user_id || !felhasznalonev || !uzenet) {
+    return res.status(400).json({ message: 'Minden mező kitöltése kötelező!' });
+  }
+
+  const query = `
+    INSERT INTO uzenetek (user_id, felhasznalonev, uzenet, ido)
+    VALUES (?, ?, ?, NOW())
+  `;
+  db.query(query, [user_id, felhasznalonev, uzenet], (err, result) => {
+    if (err) {
+      console.error('Hiba az üzenet mentésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt az üzenet mentésekor.' });
+    }
+
+    const newMessage = {
+      uzenet_id: result.insertId,
+      user_id,
+      felhasznalonev,
+      uzenet,
+      ido: new Date(),
+    };
+    io.emit('message', newMessage); // Socket.IO-n keresztül értesítjük a klienseket
+    res.json(newMessage);
   });
 });
 
@@ -693,13 +662,6 @@ io.on('connection', (socket) => {
     console.log('Felhasználó lecsatlakozott:', socket.id);
   });
 });
-
-
-
-
-
-
-
 
 // **Szerver indítása**
 const PORT = 5000;
