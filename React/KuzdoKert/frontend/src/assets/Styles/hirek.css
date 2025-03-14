@@ -267,3 +267,113 @@ footer {
     max-width: 50px; /* Még kisebb méret kisebb képernyőn */
   }
 }
+
+.toggle-section {
+  display: flex;
+  gap: 10px;
+  padding: 20px;
+}
+
+.toggle-btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.toggle-btn:hover {
+  background-color: #0056b3;
+}
+
+.dashboard-section, .events-section {
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  clear: both; /* Elkerüli az aláhúzást */
+}
+
+/* Eredeti hirek.css tartalom megmarad, csak kiegészítem */
+
+/* Toggle gombok */
+.toggle-section {
+  display: flex;
+  gap: 10px;
+  padding: 20px;
+  justify-content: center;
+}
+
+.toggle-btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.toggle-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Dashboard szekció */
+.dashboard-section {
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  clear: both;
+  background-color: #f9f9f9;
+}
+
+.chart-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Események szekció */
+.events-section {
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  clear: both;
+  background-color: #f9f9f9;
+}
+
+.events-list {
+  margin-top: 20px;
+}
+
+.event-item {
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+}
+
+/* Élő stream szekció */
+.stream-section {
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  clear: both;
+  background-color: #f9f9f9;
+}
+
+.stream-video {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  display: block;
+}
+
+/* Gamification pontok */
+.points {
+  font-weight: bold;
+  color: #28a745;
+}

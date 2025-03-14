@@ -8,6 +8,7 @@ require("dotenv").config();
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
+const { Server } = require('socket.io'); // Socket.IO import
 
 const app = express();
 
@@ -39,7 +40,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root", // MySQL felhasználónév
   password: "", // MySQL jelszó (ha van)
-  port: "3307",
+  port: "3306",
   database: "kuzdosportok",
 });
 
@@ -668,6 +669,32 @@ console.log(edzesResult); // Edzés adatok
     });
   });
 });
+
+
+app.get('/api/ranglista', (req, res) => {
+  db.query('SELECT felhasznalonev, COUNT(*) as edzesek FROM klub_edzesek JOIN latogatok ON klub_edzesek.sportklub_id = latogatok.user_id GROUP BY user_id ORDER BY edzesek DESC', (err, results) => {
+    if (err) return res.status(500).send('Error');
+    res.json(results);
+  });
+});
+
+// Chat Socket.IO integráció
+const io = new Server(5001, { cors: { origin: "http://localhost:5173" } });
+
+io.on('connection', (socket) => {
+  console.log('Új felhasználó csatlakozott:', socket.id);
+
+  socket.on('message', ({ user_id, message }) => {
+    console.log(`Üzenet ${user_id}-tól: ${message}`);
+    io.emit('message', { user_id, message, timestamp: new Date() });
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Felhasználó lecsatlakozott:', socket.id);
+  });
+});
+
+
 
 
 
