@@ -1,11 +1,24 @@
-/* Profil oldal általános stílusai */
+/* profil.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #1a1a1a; /* Sötét háttér az egységes dizájnhoz */
+  color: #fff;
+  margin: 0; /* Eltávolítjuk a margót, hogy ne maradjon fehér terület */
+  min-height: 100vh; /* Biztosítjuk, hogy a body kitöltse a képernyőt */
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
 .profile-page {
   padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-  background: #2c2c2c;
+  min-height: 100vh; /* Teljes képernyő magasság */
+  width: 100%; /* Teljes szélesség */
+  background: #2c2c2c; /* Sötét háttér */
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box; /* Padding ne növelje a szélességet */
 }
 
 /* Címsorok */

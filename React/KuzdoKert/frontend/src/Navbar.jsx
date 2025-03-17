@@ -6,12 +6,12 @@ import logo from './assets/kepek/fiok.png';
 import Axios from "axios";
 import './assets/Styles/navbar.css';
 
-const Navbar = ({ setShowDashboard, setShowEvents, setShowStream }) => {
+const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
   const [loginStatus, setLoginStatus] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [visitorNotifications, setVisitorNotifications] = useState([]); // Látogatói értesítések
-  const [coachNotifications, setCoachNotifications] = useState([]); // Edzői értesítések
+  const [visitorNotifications, setVisitorNotifications] = useState([]);
+  const [coachNotifications, setCoachNotifications] = useState([]);
   const [isVisitorNotifOpen, setIsVisitorNotifOpen] = useState(false);
   const [isCoachNotifOpen, setIsCoachNotifOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -42,7 +42,6 @@ const Navbar = ({ setShowDashboard, setShowEvents, setShowStream }) => {
     return () => clearInterval(interval);
   }, []);
 
-  // Látogatói értesítések lekérése
   useEffect(() => {
     if (userId && userRole === "visitor") {
       const fetchVisitorNotifications = async () => {
@@ -55,12 +54,11 @@ const Navbar = ({ setShowDashboard, setShowEvents, setShowStream }) => {
       };
 
       fetchVisitorNotifications();
-      const interval = setInterval(fetchVisitorNotifications, 300000); // 5 percenként
+      const interval = setInterval(fetchVisitorNotifications, 300000);
       return () => clearInterval(interval);
     }
   }, [userId, userRole]);
 
-  // Edzői értesítések lekérése
   useEffect(() => {
     if (userId && userRole === "coach") {
       const fetchCoachNotifications = async () => {
@@ -73,7 +71,7 @@ const Navbar = ({ setShowDashboard, setShowEvents, setShowStream }) => {
       };
 
       fetchCoachNotifications();
-      const interval = setInterval(fetchCoachNotifications, 60000); // 1 percenként
+      const interval = setInterval(fetchCoachNotifications, 60000);
       return () => clearInterval(interval);
     }
   }, [userId, userRole]);
@@ -95,44 +93,13 @@ const Navbar = ({ setShowDashboard, setShowEvents, setShowStream }) => {
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <NavLink className="navbar-brand nav-item" to="/SportKartyak">Sportok</NavLink>
-
-          {/* Toggle gombok a navbarban */}
-          <div className="nav-item">
-            <button
-              className="nav-link toggle-btn"
-              onClick={() => {
-                setShowDashboard(true);
-                setShowEvents(false);
-                setShowStream(false);
-              }}
-            >
-              Dashboard
-            </button>
-          </div>
-          <div className="nav-item">
-            <button
-              className="nav-link toggle-btn"
-              onClick={() => {
-                setShowDashboard(false);
-                setShowEvents(true);
-                setShowStream(false);
-              }}
-            >
-              Események
-            </button>
-          </div>
-          <div className="nav-item">
-            <button
-              className="nav-link toggle-btn"
-              onClick={() => {
-                setShowDashboard(false);
-                setShowEvents(false);
-                setShowStream(true);
-              }}
-            >
-              Élő Stream
-            </button>
-          </div>
+          
+          {/* NavLink-ek az útvonalakhoz */}
+          
+          <NavLink className="navbar-brand nav-item" to="/esemenyek">Események</NavLink>
+          <NavLink className="navbar-brand nav-item" to="/LiveStream">Élő Stream</NavLink>
+         
+          <NavLink className="navbar-brand nav-item" to="/ranglista">Ranglista</NavLink>
 
           <div className="d-flex justify-content-end w-100">
             {loginStatus ? (
@@ -188,7 +155,7 @@ const Navbar = ({ setShowDashboard, setShowEvents, setShowStream }) => {
                         <strong>Emlékeztető:</strong> Ma edzésed van!<br />
                         Klub: {notif.klubbnev}<br />
                         Helyszín: {notif.hely}<br />
-                        Idő: {notif.idonap} {notif.ido}<br />
+                        Idő: {notif.nap} {notif.ido}<br />
                         Edző: {notif.coach_vnev} {notif.coach_knev}
                       </li>
                     ))
@@ -237,7 +204,7 @@ const Navbar = ({ setShowDashboard, setShowEvents, setShowStream }) => {
                         Látogató: {notif.visitor_username}<br />
                         Klub: {notif.klubbnev}<br />
                         Helyszín: {notif.hely}<br />
-                        Idő: {notif.idonap} {notif.ido}<br />
+                        Idő: {notif.nap} {notif.ido}<br />
                         Jelentkezés időpontja: {new Date(notif.jelentkezes_ido).toLocaleString()}
                       </li>
                     ))

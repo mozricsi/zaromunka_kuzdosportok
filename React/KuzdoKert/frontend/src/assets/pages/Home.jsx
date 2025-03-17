@@ -8,7 +8,7 @@ const Home = () => {
   const navigate = useNavigate();
   const NEWS_API_KEY = '6ed9be5621794199b9b943fbb1a4febf';
   const TRANSLATE_API_KEY = 'YOUR_GOOGLE_TRANSLATE_KEY';
-  const TOPIC = 'boxing OR MMA';
+  const TOPIC = 'Boxing OR MMA ';
 
   const fetchNews = async () => {
     try {

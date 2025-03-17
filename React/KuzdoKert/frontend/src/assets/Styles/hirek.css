@@ -1,10 +1,21 @@
-/* Általános stílusok */
-.App {
+/* hirek.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #1a1a1a; /* Sötét háttér az egységes dizájnhoz */
+  color: #fff;
+  margin: 0; /* Eltávolítjuk a margót, hogy ne maradjon fehér terület */
+  min-height: 100vh; /* Biztosítjuk, hogy a body kitöltse a képernyőt */
   font-family: 'Roboto', Arial, sans-serif;
+}
+
+.App {
   padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: #1a1a1a; /* Sötét háttér */
+  min-height: 100vh; /* Teljes képernyő magasság */
+  width: 100%; /* Teljes szélesség */
+  background-color: #1a1a1a; /* Egységes háttérszín */
   color: #fff; /* Világos szöveg */
 }
 
@@ -27,10 +38,10 @@ header p {
 
 /* Bevezető szekció */
 .intro-section {
-  position: relative; /* Relatív pozíció a kép jobb felső sarokba helyezéséhez */
+  position: relative;
   margin-bottom: 40px;
   padding: 20px;
-  background: #2c2c2c; /* Enyhén világosabb háttér */
+  background: #2c2c2c; /* Sötét háttér */
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
@@ -43,11 +54,11 @@ header p {
 }
 
 .intro-image {
-  position: absolute; /* Abszolút pozíció a jobb felső sarokhoz */
+  position: absolute;
   top: 20px;
   right: 20px;
   width: 100%;
-  max-width: 100px; /* Még kisebb méret */
+  max-width: 100px;
   height: auto;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -76,7 +87,7 @@ header p {
 .profile-section {
   margin-bottom: 40px;
   padding: 20px;
-  background: #2c2c2c;
+  background: #2c2c2c; /* Sötét háttér */
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
@@ -116,7 +127,7 @@ header p {
 }
 
 .news-item {
-  background: #333;
+  background: #333; /* Sötét háttér */
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -149,14 +160,14 @@ header p {
 }
 
 .news-item a {
-  color: #007bff;
+  color: #ff4500; /* Egységes narancssárga link */
   text-decoration: none;
   font-weight: bold;
   transition: color 0.3s ease;
 }
 
 .news-item a:hover {
-  color: #ff4500;
+  color: #cc3700;
 }
 
 /* Gombok */
@@ -185,7 +196,7 @@ footer {
 }
 
 .social-icons {
-  margin-top: 10px; /* Visszaállítva az eredeti pozícióba, a szöveg alatt */
+  margin-top: 10px;
 }
 
 .social-icons a {
@@ -193,19 +204,19 @@ footer {
 }
 
 .social-icons img {
-  width: 30px; /* Eredeti méret visszaállítva */
+  width: 30px;
   height: 30px;
-  transition: transform 0.3s ease; /* Átmenet az ikonokhoz */
+  transition: transform 0.3s ease;
 }
 
 .social-icons img:hover {
-  transform: scale(1.05); /* Ikonok emelkedése és nagyítása hover állapotban */
+  transform: scale(1.05);
 }
 
 .terms-btn {
-  margin-top: 40px; /* Lejjebb helyezve az ikonoktól */
+  margin-top: 40px;
   padding: 10px 20px;
-  background-color: #ff4500; /* Helyes narancssárga szín */
+  background-color: #ff4500;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -215,8 +226,94 @@ footer {
 }
 
 .terms-btn:hover {
-  background-color: #cc3700; /* Helyes hover szín */
+  background-color: #cc3700;
   transform: scale(1.05);
+}
+
+/* Toggle gombok */
+.toggle-section {
+  display: flex;
+  gap: 10px;
+  padding: 20px;
+  justify-content: center;
+}
+
+.toggle-btn {
+  padding: 10px 20px;
+  background-color: #ff4500; /* Egységes narancssárga */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background-color: #cc3700;
+  transform: scale(1.05);
+}
+
+/* Dashboard szekció */
+.dashboard-section {
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  clear: both;
+  background-color: #2c2c2c; /* Sötét háttér */
+  color: #ccc; /* Világos szöveg */
+}
+
+.chart-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Események szekció */
+.events-section {
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  clear: both;
+  background-color: #2c2c2c; /* Sötét háttér */
+  color: #ccc; /* Világos szöveg */
+}
+
+.events-list {
+  margin-top: 20px;
+}
+
+.event-item {
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #333; /* Sötét háttér */
+  border-radius: 5px;
+  color: #ccc; /* Világos szöveg */
+}
+
+/* Élő stream szekció */
+.stream-section {
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  clear: both;
+  background-color: #2c2c2c; /* Sötét háttér */
+  color: #ccc; /* Világos szöveg */
+}
+
+.stream-video {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  display: block;
+}
+
+/* Gamification pontok */
+.points {
+  font-weight: bold;
+  color: #ff4500; /* Narancssárga kiemelés az egységes dizájnhoz */
 }
 
 /* Reszponzív dizájn */
@@ -233,14 +330,14 @@ footer {
   }
 
   .social-icons img {
-    width: 25px; /* Kisebb méret reszponzív nézetben */
+    width: 25px;
     height: 25px;
   }
 
   .intro-image {
     top: 15px;
     right: 15px;
-    max-width: 75px; /* Még kisebb méret reszponzív nézetben */
+    max-width: 75px;
   }
 }
 
@@ -257,123 +354,13 @@ footer {
   }
 
   .social-icons img {
-    width: 20px; /* Még kisebb méret kisebb képernyőn */
+    width: 20px;
     height: 20px;
   }
 
   .intro-image {
     top: 10px;
     right: 10px;
-    max-width: 50px; /* Még kisebb méret kisebb képernyőn */
+    max-width: 50px;
   }
-}
-
-.toggle-section {
-  display: flex;
-  gap: 10px;
-  padding: 20px;
-}
-
-.toggle-btn {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.toggle-btn:hover {
-  background-color: #0056b3;
-}
-
-.dashboard-section, .events-section {
-  padding: 20px;
-  margin-top: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  clear: both; /* Elkerüli az aláhúzást */
-}
-
-/* Eredeti hirek.css tartalom megmarad, csak kiegészítem */
-
-/* Toggle gombok */
-.toggle-section {
-  display: flex;
-  gap: 10px;
-  padding: 20px;
-  justify-content: center;
-}
-
-.toggle-btn {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.toggle-btn:hover {
-  background-color: #0056b3;
-}
-
-/* Dashboard szekció */
-.dashboard-section {
-  padding: 20px;
-  margin-top: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  clear: both;
-  background-color: #f9f9f9;
-}
-
-.chart-container {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-/* Események szekció */
-.events-section {
-  padding: 20px;
-  margin-top: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  clear: both;
-  background-color: #f9f9f9;
-}
-
-.events-list {
-  margin-top: 20px;
-}
-
-.event-item {
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #e0e0e0;
-  border-radius: 5px;
-}
-
-/* Élő stream szekció */
-.stream-section {
-  padding: 20px;
-  margin-top: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  clear: both;
-  background-color: #f9f9f9;
-}
-
-.stream-video {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  display: block;
-}
-
-/* Gamification pontok */
-.points {
-  font-weight: bold;
-  color: #28a745;
 }
