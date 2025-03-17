@@ -35,14 +35,9 @@ app.use(session({
 // **MySQL adatbázis kapcsolat**
 const db = mysql.createConnection({
   host: "localhost",
-<<<<<<< HEAD
   user: "root", // MySQL felhasználónév
   password: "", // MySQL jelszó (ha van)
-=======
-  user: "root",
-  password: "",
->>>>>>> bc2a653b8cf7341abacc276070f65b88371ef436
-  port: "3306",
+  port: "3307",
   database: "kuzdosportok",
 });
 
