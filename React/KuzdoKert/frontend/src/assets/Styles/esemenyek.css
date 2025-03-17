@@ -1,0 +1,26 @@
+
+.App {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  .events-section {
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    border: 1px solid #ccc; /* hirek.css-ből */
+    border-radius: 5px;
+    background-color: #f9f9f9; /* hirek.css-ből */
+  }
+  
+  .events-list {
+    margin-top: 20px;
+  }
+  
+  .event-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #e0e0e0; /* hirek.css-ből */
+    border-radius: 5px;
+    text-align: left;
+  }

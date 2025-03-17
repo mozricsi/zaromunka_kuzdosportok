@@ -6,7 +6,7 @@ import logo from './assets/kepek/fiok.png';
 import Axios from "axios";
 import './assets/Styles/navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ setShowDashboard, setShowEvents, setShowStream }) => {
   const [loginStatus, setLoginStatus] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -95,6 +95,45 @@ const Navbar = () => {
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <NavLink className="navbar-brand nav-item" to="/SportKartyak">Sportok</NavLink>
+
+          {/* Toggle gombok a navbarban */}
+          <div className="nav-item">
+            <button
+              className="nav-link toggle-btn"
+              onClick={() => {
+                setShowDashboard(true);
+                setShowEvents(false);
+                setShowStream(false);
+              }}
+            >
+              Dashboard
+            </button>
+          </div>
+          <div className="nav-item">
+            <button
+              className="nav-link toggle-btn"
+              onClick={() => {
+                setShowDashboard(false);
+                setShowEvents(true);
+                setShowStream(false);
+              }}
+            >
+              Események
+            </button>
+          </div>
+          <div className="nav-item">
+            <button
+              className="nav-link toggle-btn"
+              onClick={() => {
+                setShowDashboard(false);
+                setShowEvents(false);
+                setShowStream(true);
+              }}
+            >
+              Élő Stream
+            </button>
+          </div>
+
           <div className="d-flex justify-content-end w-100">
             {loginStatus ? (
               <>

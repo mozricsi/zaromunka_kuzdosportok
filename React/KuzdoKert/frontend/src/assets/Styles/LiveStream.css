@@ -1,0 +1,29 @@
+
+.App {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  .ranglista-section {
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    border: 1px solid #ccc; 
+    border-radius: 5px;
+    background-color: #f9f9f9; 
+  }
+  
+  .ranglista-list {
+    margin-top: 20px;
+  }
+  
+  .ranglista-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #e0e0e0; 
+    text-align: left;
+  }
+  
+  .ranglista-item strong {
+    color: #28a745; 
+  }
