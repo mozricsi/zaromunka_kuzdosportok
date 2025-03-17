@@ -8,7 +8,6 @@ require("dotenv").config();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const { Server } = require('socket.io');
 
 const app = express();
 
@@ -402,8 +401,8 @@ app.post('/apply-workout', (req, res) => {
   const { user_id, edzes_id } = req.body;
 
   const query = `
-    INSERT INTO jelentkezes (user_id, edzes_id, jelentkezes_ido, elfogadasi_ido, elfogadva)
-    VALUES (?, ?, NOW(), NOW(), 1)
+    INSERT INTO jelentkezes (user_id, edzes_id, jelentkezes_ido)
+    VALUES (?, ?, NOW())
   `;
 
   db.query(query, [user_id, edzes_id], (err, result) => {

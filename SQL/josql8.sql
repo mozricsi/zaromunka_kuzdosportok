@@ -155,18 +155,17 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- Table `kuzdosportok`.`jelentkezes`
 -- -----------------------------------------------------
 -- Létező tábla módosítása (ha már létezik, DROP és CREATE helyett ALTER használható)
-DROP TABLE IF EXISTS `kuzdosportok`.`jelentkezes`;
 CREATE TABLE IF NOT EXISTS `kuzdosportok`.`jelentkezes` (
   `jelentkezes_id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11) NOT NULL,
-  `sportklub_id` INT(11) NOT NULL, -- Javítva: sprotklub_id helyett sportklub_id
+  `edzes_id` INT(11) NOT NULL, -- Javítva: sprotklub_id helyett sportklub_id
   `jelentkezes_ido` DATETIME NOT NULL,
   PRIMARY KEY (`jelentkezes_id`),
   INDEX `fk_user_id_idx` (`user_id` ASC),
-  INDEX `fk_sportklub_id_idx` (`sportklub_id` ASC),
+  INDEX `fk_sportklub_id_idx` (`edzes_id` ASC),
   CONSTRAINT `fk_sportklub_id`
-    FOREIGN KEY (`sportklub_id`)
-    REFERENCES `kuzdosportok`.`klubbok` (`sprotklub_id`)
+    FOREIGN KEY (`edzes_id`)
+    REFERENCES `kuzdosportok`.`klub_edzesek` (`edzes_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk1_user_id`
@@ -234,6 +233,18 @@ CREATE TABLE IF NOT EXISTS `kuzdosportok`.`klub_edzesek` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+
+CREATE TABLE streams (
+  stream_id int(11) NOT NULL AUTO_INCREMENT,
+  user_id int(11) NOT NULL,
+  stream_url varchar(255) NOT NULL,
+  status enum('online','offline') DEFAULT 'offline',
+  created_at timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (stream_id),
+  KEY fk_stream_user_id_idx (user_id),
+  CONSTRAINT fk_stream_user_id FOREIGN KEY (user_id) REFERENCES latogatok (user_id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
 -- látogatók insertje: abból 3 edző
 -- Jelszavak:
 -- 1: kispeti
@@ -250,6 +261,10 @@ INSERT INTO `latogatok` (`user_id`, `vnev`, `knev`, `knev2`, `telefonszam`, `ema
 (6, 'kovacs', 'jeno', NULL, NULL, 'kovacsjeno@gmail.com', '2025-03-19', 'Saab', '2025-03-03 12:58:26', 'kjeno', '$2b$10$E4uY7aLRJ4uCeMCXKvDOj.Z6MzmiHVAm4mZKRLqhMcNywp8ihg8ou', 'visitor'),
 (7, 'bela', 'feri', NULL, NULL, 'belaferi@gmail.com', '2025-03-14', 'Budapest', '2025-03-03 14:09:27', 'bferi', '$2b$10$I/6jCKKXuCCqpoPBu7Qcy.fLhOjeaCYOpgTx267Eu3/Rzv7CyHTZu', 'coach'),
 (8, 'kati', 'bela', NULL, NULL, 'katibela@gmail.com', '2025-03-27', 'Szeged', '2025-03-03 14:10:52', 'kbela', '$2b$10$fBN1L4viZ4imJqPtzm61vOSBHLbyeLwsJsjv45h0sda/u7QTr2PSy', 'visitor');
+
+
+--stream insertek
+INSERT INTO streams VALUES (1,1,'https://www.youtube.com/embed/dQw4w9WgXcQ','offline','2025-03-17 12:14:52'),(2,2,'https://www.youtube.com/embed/xyz123','offline','2025-03-17 12:14:52'),(3,7,'https://www.youtube.com/embed/dQw4w9WgXcQ','offline','2025-03-17 12:15:57');
 
 
 -- sportok hozzáadása

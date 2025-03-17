@@ -368,7 +368,8 @@ const EdzoiOldal = () => {
                     <strong>{workout.klubbnev}</strong> <br />
                     <strong>{sports.find(s => s.id === workout.sport_id)?.name}</strong> - {workout.hely}<br />
                     Szabályok: {workout.szabalyok} <br />
-                    Leírás: {workout.leiras}
+                    Leírás: {workout.leiras} <br />
+                    <button>Törlés</button>
                   </li>
                 ))}
               </ul>
