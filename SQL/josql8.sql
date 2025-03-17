@@ -263,7 +263,7 @@ INSERT INTO `latogatok` (`user_id`, `vnev`, `knev`, `knev2`, `telefonszam`, `ema
 (8, 'kati', 'bela', NULL, NULL, 'katibela@gmail.com', '2025-03-27', 'Szeged', '2025-03-03 14:10:52', 'kbela', '$2b$10$fBN1L4viZ4imJqPtzm61vOSBHLbyeLwsJsjv45h0sda/u7QTr2PSy', 'visitor');
 
 
---stream insertek
+-- stream insertek
 INSERT INTO streams VALUES (1,1,'https://www.youtube.com/embed/dQw4w9WgXcQ','offline','2025-03-17 12:14:52'),(2,2,'https://www.youtube.com/embed/xyz123','offline','2025-03-17 12:14:52'),(3,7,'https://www.youtube.com/embed/dQw4w9WgXcQ','offline','2025-03-17 12:15:57');
 
 
