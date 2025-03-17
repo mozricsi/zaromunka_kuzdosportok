@@ -95,10 +95,10 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
           <NavLink className="navbar-brand nav-item" to="/SportKartyak">Sportok</NavLink>
           
           {/* NavLink-ek az útvonalakhoz */}
-          <NavLink className="navbar-brand nav-item" to="/DashBoard">Dashboard</NavLink>
+          
           <NavLink className="navbar-brand nav-item" to="/esemenyek">Események</NavLink>
-          <NavLink className="navbar-brand nav-item" to="/livestream">Élő Stream</NavLink>
-          <NavLink className="navbar-brand nav-item" to="/chat">Chat</NavLink>
+          <NavLink className="navbar-brand nav-item" to="/LiveStream">Élő Stream</NavLink>
+         
           <NavLink className="navbar-brand nav-item" to="/ranglista">Ranglista</NavLink>
 
           <div className="d-flex justify-content-end w-100">

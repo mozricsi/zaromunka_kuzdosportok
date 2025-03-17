@@ -564,14 +564,14 @@ app.get('/api/ranglista', (req, res) => {
 // Események lekérdezése
 app.get('/api/esemenyek', (req, res) => {
   const query = `
-    SELECT e.*, s.sportnev 
-    FROM esemenyek e 
-    JOIN sport s ON e.sport_id = s.sport_id
+    SELECT esemeny_id, user_id, latogato_resztvevo, pontos_cim, ido, sportneve, 
+           leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal
+    FROM esemenyek
   `;
   db.query(query, (err, results) => {
     if (err) {
-      console.error('Hiba az események lekérdezésekor:', err);
-      return res.status(500).json({ message: 'Hiba történt az események lekérdezésekor.' });
+      console.error('Lekérdezési hiba:', err.message); // Részletes hibaüzenet
+      return res.status(500).json({ error: 'Lekérdezési hiba: ' + err.message });
     }
     res.json(results);
   });
@@ -617,51 +617,7 @@ app.get('/api/uzenetek', (req, res) => {
   });
 });
 
-// Üzenet küldése
-app.post('/api/uzenetek', (req, res) => {
-  const { user_id, felhasznalonev, uzenet } = req.body;
 
-  if (!user_id || !felhasznalonev || !uzenet) {
-    return res.status(400).json({ message: 'Minden mező kitöltése kötelező!' });
-  }
-
-  const query = `
-    INSERT INTO uzenetek (user_id, felhasznalonev, uzenet, ido)
-    VALUES (?, ?, ?, NOW())
-  `;
-  db.query(query, [user_id, felhasznalonev, uzenet], (err, result) => {
-    if (err) {
-      console.error('Hiba az üzenet mentésekor:', err);
-      return res.status(500).json({ message: 'Hiba történt az üzenet mentésekor.' });
-    }
-
-    const newMessage = {
-      uzenet_id: result.insertId,
-      user_id,
-      felhasznalonev,
-      uzenet,
-      ido: new Date(),
-    };
-    io.emit('message', newMessage); // Socket.IO-n keresztül értesítjük a klienseket
-    res.json(newMessage);
-  });
-});
-
-// Chat Socket.IO integráció
-const io = new Server(5001, { cors: { origin: "http://localhost:5173" } });
-
-io.on('connection', (socket) => {
-  console.log('Új felhasználó csatlakozott:', socket.id);
-
-  socket.on('message', ({ user_id, message }) => {
-    console.log(`Üzenet ${user_id}-tól: ${message}`);
-    io.emit('message', { user_id, message, timestamp: new Date() });
-  });
-
-  socket.on('disconnect', () => {
-    console.log('Felhasználó lecsatlakozott:', socket.id);
-  });
-});
 
 // **Szerver indítása**
 const PORT = 5000;
