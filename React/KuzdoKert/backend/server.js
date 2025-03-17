@@ -399,22 +399,44 @@ app.post('/ertekelesek', (req, res) => {
 
 // Jelentkezés hozzáadása
 app.post('/apply-workout', (req, res) => {
-  const { user_id, sportklub_id } = req.body;
+  const { user_id, edzes_id } = req.body;
 
   const query = `
-    INSERT INTO jelentkezes (user_id, sportklub_id, jelentkezes_ido, elfogadasi_ido, elfogadva)
+    INSERT INTO jelentkezes (user_id, edzes_id, jelentkezes_ido, elfogadasi_ido, elfogadva)
     VALUES (?, ?, NOW(), NOW(), 1)
   `;
 
-  db.query(query, [user_id, sportklub_id], (err, result) => {
+  db.query(query, [user_id, edzes_id], (err, result) => {
     if (err) {
       console.error('Hiba a jelentkezés hozzáadásakor:', err);
       return res.status(500).json({ message: 'Hiba történt a jelentkezés során.' });
     }
-    res.json({ message: 'Sikeres jelentkezés!' });
+    res.json({ message: 'Sikeres jelentkezés az edzésre!' });
   });
 });
 
+// Ellenőrző végpont: már jelentkezett-e a felhasználó
+app.get('/api/jelentkezes/check', (req, res) => {
+  const { user_id, edzes_id } = req.query;
+
+  const query = `
+    SELECT * FROM jelentkezes 
+    WHERE user_id = ? AND edzes_id = ?
+  `;
+
+  db.query(query, [user_id, edzes_id], (err, result) => {
+    if (err) {
+      console.error('Hiba a jelentkezés ellenőrzésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt az ellenőrzés során.' });
+    }
+
+    if (result.length > 0) {
+      res.json({ alreadyApplied: true });
+    } else {
+      res.json({ alreadyApplied: false });
+    }
+  });
+});
 // Értesítések lekérdezése a látogató számára
 app.get('/notifications/:user_id', (req, res) => {
   const user_id = req.params.user_id;
