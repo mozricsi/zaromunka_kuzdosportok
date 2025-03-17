@@ -1,30 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-.App {
-    font-family: Arial, sans-serif;
-    text-align: center;
+body {
+  background-color: #333; /* Teljes háttér kitöltése */
+  color: #ff4500;
+  margin: 0; /* Eltávolítjuk a margót, hogy ne maradjon fehér terület */
+  min-height: 100vh; /* Biztosítjuk, hogy a body is kitöltse a képernyőt */
+}
+
+.sport-page {
+  padding: 20px;
+  padding-top: 0;
+  background-color: #333;
+  min-height: 100vh; /* Teljes képernyő magasság */
+}
+
+.sport-page h1 {
+  text-align: center;
+  font-size: 2.5em;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #ff4500;
+  background-color: #333;
+  padding: 20px 0;
+}
+
+.sport-page table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.sport-page th,
+.sport-page td {
+  border-color: #ccc;
+}
+
+.sport-page .animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
   }
-  
-  .ranglista-section {
-    padding: 20px;
-    margin: 20px auto;
-    max-width: 800px;
-    border: 1px solid #ccc; 
-    border-radius: 5px;
-    background-color: #f9f9f9; 
+  50% {
+    opacity: 0.6;
   }
-  
-  .ranglista-list {
-    margin-top: 20px;
+}
+
+/* Responszív design */
+@media (max-width: 1024px) {
+  .max-w-1200 {
+    max-width: 90%;
   }
-  
-  .ranglista-item {
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #e0e0e0; 
-    border-radius: 5px;
-    text-align: left;
+  .sport-page th,
+  .sport-page td {
+    padding: 2px;
+    font-size: 0.95em;
   }
-  
-  .ranglista-item strong {
-    color: #28a745; 
+}
+
+@media (max-width: 768px) {
+  .max-w-1200 {
+    max-width: 100%;
   }
+  .sport-page table {
+    display: block;
+    overflow-x: auto;
+  }
+  .sport-page th,
+  .sport-page td {
+    min-width: 100px;
+    font-size: 0.9em;
+  }
+  .sport-page h1 {
+    font-size: 2em;
+  }
+}
+
+@media (max-width: 480px) {
+  .sport-page th,
+  .sport-page td {
+    font-size: 0.85em;
+  }
+  .sport-page .card-image {
+    height: 150px;
+  }
+  .sport-page h1 {
+    font-size: 1.5em;
+  }
+}

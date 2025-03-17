@@ -555,12 +555,28 @@ app.get('/api/klub/:id', (req, res) => {
 
 // Ranglista lekérdezése
 app.get('/api/ranglista', (req, res) => {
-  db.query('SELECT felhasznalonev, COUNT(*) as edzesek FROM klub_edzesek JOIN latogatok ON klub_edzesek.sportklub_id = latogatok.user_id GROUP BY user_id ORDER BY edzesek DESC', (err, results) => {
-    if (err) return res.status(500).send('Error');
+  const query = `
+    SELECT 
+      l.felhasznalonev,
+      COUNT(e.edzes_id) AS edzesek
+    FROM latogatok l
+    LEFT JOIN klubbok k 
+      ON l.user_id = k.user_id
+    LEFT JOIN klub_edzesek e 
+      ON k.sprotklub_id = e.sportklub_id
+    WHERE l.role = 'coach'
+    GROUP BY l.user_id, l.felhasznalonev
+    ORDER BY edzesek DESC
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Hiba a ranglista lekérdezésekor:', err.message);
+      return res.status(500).json({ error: 'Hiba történt: ' + err.message });
+    }
     res.json(results);
   });
 });
-
 // Események lekérdezése
 app.get('/api/esemenyek', (req, res) => {
   const query = `
@@ -577,28 +593,6 @@ app.get('/api/esemenyek', (req, res) => {
   });
 });
 
-// Edzésstatisztikák lekérdezése a Dashboardhoz
-app.get('/api/edzesek/stat', (req, res) => {
-  const query = `
-    SELECT DAYNAME(nap) as day, COUNT(*) as count 
-    FROM klub_edzesek 
-    WHERE nap IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')
-    GROUP BY DAYNAME(nap)
-    ORDER BY FIELD(DAYNAME(nap), 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')
-  `;
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Hiba a statisztikák lekérdezésekor:', err);
-      return res.status(500).json({ message: 'Hiba történt a statisztikák lekérdezésekor.' });
-    }
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-    const stats = days.map(day => {
-      const found = results.find(r => r.day === day);
-      return { day, count: found ? found.count : 0 };
-    });
-    res.json(stats);
-  });
-});
 
 // Üzenetek lekérdezése
 app.get('/api/uzenetek', (req, res) => {
@@ -614,6 +608,71 @@ app.get('/api/uzenetek', (req, res) => {
       return res.status(500).json({ message: 'Hiba történt az üzenetek lekérdezésekor.' });
     }
     res.json(results);
+  });
+});
+
+// Aktív stream lekérdezése
+app.get('/api/streams/active', (req, res) => {
+  const query = `
+    SELECT stream_url
+    FROM streams
+    WHERE status = 'online'
+    ORDER BY stream_id DESC
+    LIMIT 1
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Lekérdezési hiba:', err.message);
+      return res.status(500).json({ error: 'Hiba történt' });
+    }
+    res.json(results.length > 0 ? results[0] : []);
+  });
+});
+
+// Stream indítása
+app.post('/api/streams/start', (req, res) => {
+  const { userId, streamUrl } = req.body;
+  if (!userId || !streamUrl) {
+    return res.status(400).json({ error: 'Hiányzó paraméterek' });
+  }
+  const query = 'UPDATE streams SET status = ?, stream_url = ? WHERE user_id = ? AND status = ?';
+  db.query(query, ['online', streamUrl, userId, 'offline'], (err, result) => {
+    if (err) {
+      console.error('Hiba a stream indításakor:', err.message);
+      return res.status(500).json({ error: 'Hiba a stream indításakor' });
+    }
+    if (result.affectedRows === 0) {
+      // Ha nincs offline stream, hozz létre újat
+      const insertQuery = 'INSERT INTO streams (user_id, stream_url, status) VALUES (?, ?, ?)';
+      db.query(insertQuery, [userId, streamUrl, 'online'], (err) => {
+        if (err) {
+          console.error('Hiba az új stream létrehozásakor:', err.message);
+          return res.status(500).json({ error: 'Hiba az új stream létrehozásakor' });
+        }
+        res.json({ message: 'Stream elindítva' });
+      });
+    } else {
+      res.json({ message: 'Stream elindítva' });
+    }
+  });
+});
+
+// Stream leállítása
+app.post('/api/streams/stop', (req, res) => {
+  const { userId } = req.body;
+  if (!userId) {
+    return res.status(400).json({ error: 'Hiányzó paraméterek' });
+  }
+  const query = 'UPDATE streams SET status = ? WHERE user_id = ? AND status = ?';
+  db.query(query, ['offline', userId, 'online'], (err, result) => {
+    if (err) {
+      console.error('Hiba a stream leállításakor:', err.message);
+      return res.status(500).json({ error: 'Hiba a stream leállításakor' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Nincs aktív stream' });
+    }
+    res.json({ message: 'Stream leállítva' });
   });
 });
 

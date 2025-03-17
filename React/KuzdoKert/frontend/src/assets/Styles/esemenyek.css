@@ -1,26 +1,149 @@
+/* esemenyek.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-.App {
-    font-family: Arial, sans-serif;
-    text-align: center;
+body {
+  background-color: #1a1a1a; /* Sötét háttér az egységes dizájnhoz */
+  color: #fff;
+  margin: 0; /* Eltávolítjuk a margót, hogy ne maradjon fehér terület */
+  min-height: 100vh; /* Biztosítjuk, hogy a body kitöltse a képernyőt */
+  font-family: Arial, sans-serif;
+}
+
+.esemenyek-container {
+  padding: 20px;
+  min-height: 100vh; /* Teljes képernyő magasság */
+  width: 100%; /* Teljes szélesség */
+  background-color: #1a1a1a; /* Egységes háttérszín */
+  text-align: center;
+}
+
+.esemenyek-container h1 {
+  font-size: 2.5rem;
+  color: #ff4500; /* Narancssárga cím az egységes dizájnhoz */
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+.event-item {
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #2c2c2c; /* Sötét háttér az egységes dizájnhoz */
+  border-radius: 5px;
+  text-align: left;
+  color: #ccc; /* Világos szöveg a kontraszt miatt */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover effekt */
+}
+
+.event-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Emelkedő effekt */
+}
+
+.react-calendar {
+  margin: 20px auto;
+  width: 100%;
+  max-width: 800px;
+  background-color: #333; /* Sötét háttér a naptárnak */
+  border-radius: 5px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  color: #fff; /* Világos szöveg a kontraszt miatt */
+}
+
+/* Alapértelmezett gombok (napok) */
+.react-calendar__tile {
+  background-color: #2c2c2c; /* Fekete alapértelmezett napok */
+  color: #ccc;
+  border: none;
+  border-radius: 3px;
+  padding: 5px;
+}
+
+/* Napok, amelyeken van esemény */
+.react-calendar__tile.event-day {
+  background-color: #ff4500; /* Narancssárga, ha van esemény */
+  color: #fff;
+}
+
+/* Napok, amelyeken nincs esemény */
+.react-calendar__tile.no-event-day {
+  background-color: #2c2c2c; /* Fekete, ha nincs esemény */
+  color: #ccc;
+}
+
+/* Hover és fókusz állapot */
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: #ff4500; /* Narancssárga hover */
+  color: #fff;
+}
+
+/* Aktív nap (kiválasztott) */
+.react-calendar__tile--active {
+  background-color: #ff4500; /* Aktív nap kiemelése */
+  color: #fff;
+}
+
+/* Navigációs gombok (hónap váltás) */
+.react-calendar__navigation button {
+  background-color: #2c2c2c;
+  color: #ccc;
+  border: none;
+  padding: 5px;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: #ff4500;
+  color: #fff;
+}
+
+/* Reszponzív dizájn */
+@media (max-width: 1024px) {
+  .esemenyek-container {
+    padding: 15px;
   }
-  
-  .events-section {
-    padding: 20px;
-    margin: 20px auto;
-    max-width: 800px;
-    border: 1px solid #ccc; /* hirek.css-ből */
-    border-radius: 5px;
-    background-color: #f9f9f9; /* hirek.css-ből */
-  }
-  
-  .events-list {
-    margin-top: 20px;
-  }
-  
   .event-item {
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #e0e0e0; /* hirek.css-ből */
-    border-radius: 5px;
-    text-align: left;
+    padding: 8px;
   }
+  .react-calendar {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  .esemenyek-container {
+    padding: 10px;
+  }
+  .esemenyek-container h1 {
+    font-size: 2rem;
+  }
+  .event-item {
+    padding: 6px;
+    font-size: 0.9rem;
+  }
+  .react-calendar {
+    padding: 8px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .esemenyek-container {
+    padding: 8px;
+  }
+  .esemenyek-container h1 {
+    font-size: 1.5rem;
+  }
+  .event-item {
+    padding: 5px;
+    font-size: 0.8rem;
+  }
+  .react-calendar {
+    padding: 6px;
+    font-size: 0.9rem;
+  }
+}
