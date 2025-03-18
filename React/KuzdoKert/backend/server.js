@@ -8,6 +8,7 @@ require("dotenv").config();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const { Server } = require('socket.io');
 
 const app = express();
 
@@ -632,21 +633,14 @@ app.get('/api/uzenetek', (req, res) => {
   });
 });
 
+let currentStreamUrl = null;
+let currentStreamStatus = 'offline';
+
 // Aktív stream lekérdezése
 app.get('/api/streams/active', (req, res) => {
-  const query = `
-    SELECT stream_url
-    FROM streams
-    WHERE status = 'online'
-    ORDER BY stream_id DESC
-    LIMIT 1
-  `;
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Lekérdezési hiba:', err.message);
-      return res.status(500).json({ error: 'Hiba történt' });
-    }
-    res.json(results.length > 0 ? results[0] : []);
+  res.json({
+    stream_url: currentStreamUrl,
+    status: currentStreamStatus
   });
 });
 
@@ -656,26 +650,13 @@ app.post('/api/streams/start', (req, res) => {
   if (!userId || !streamUrl) {
     return res.status(400).json({ error: 'Hiányzó paraméterek' });
   }
-  const query = 'UPDATE streams SET status = ?, stream_url = ? WHERE user_id = ? AND status = ?';
-  db.query(query, ['online', streamUrl, userId, 'offline'], (err, result) => {
-    if (err) {
-      console.error('Hiba a stream indításakor:', err.message);
-      return res.status(500).json({ error: 'Hiba a stream indításakor' });
-    }
-    if (result.affectedRows === 0) {
-      // Ha nincs offline stream, hozz létre újat
-      const insertQuery = 'INSERT INTO streams (user_id, stream_url, status) VALUES (?, ?, ?)';
-      db.query(insertQuery, [userId, streamUrl, 'online'], (err) => {
-        if (err) {
-          console.error('Hiba az új stream létrehozásakor:', err.message);
-          return res.status(500).json({ error: 'Hiba az új stream létrehozásakor' });
-        }
-        res.json({ message: 'Stream elindítva' });
-      });
-    } else {
-      res.json({ message: 'Stream elindítva' });
-    }
-  });
+  if (!streamUrl.startsWith('https://www.youtube.com/embed/')) {
+    return res.status(400).json({ error: 'Érvénytelen YouTube embed link!' });
+  }
+  currentStreamUrl = streamUrl;
+  currentStreamStatus = 'online';
+  io.emit('stream-update', { streamUrl: currentStreamUrl, status: 'online' }); // Socket.IO-val szinkronizálás
+  res.json({ message: 'Stream elindítva' });
 });
 
 // Stream leállítása
@@ -684,20 +665,27 @@ app.post('/api/streams/stop', (req, res) => {
   if (!userId) {
     return res.status(400).json({ error: 'Hiányzó paraméterek' });
   }
-  const query = 'UPDATE streams SET status = ? WHERE user_id = ? AND status = ?';
-  db.query(query, ['offline', userId, 'online'], (err, result) => {
-    if (err) {
-      console.error('Hiba a stream leállításakor:', err.message);
-      return res.status(500).json({ error: 'Hiba a stream leállításakor' });
-    }
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'Nincs aktív stream' });
-    }
-    res.json({ message: 'Stream leállítva' });
-  });
+  currentStreamUrl = null;
+  currentStreamStatus = 'offline';
+  io.emit('stream-update', { streamUrl: null, status: 'offline' }); // Socket.IO-val szinkronizálás
+  res.json({ message: 'Stream leállítva' });
 });
 
+// [A többi végpont (klubok, edzések, ranglista, stb.) változatlan]
 
+// Socket.IO integráció
+const io = new Server(5001, { cors: { origin: "http://localhost:5173" } });
+
+io.on('connection', (socket) => {
+  console.log('Új felhasználó csatlakozott:', socket.id);
+
+  // Aktuális stream státusz küldése az új kliensnek
+  socket.emit('stream-update', { streamUrl: currentStreamUrl, status: currentStreamStatus });
+
+  socket.on('disconnect', () => {
+    console.log('Felhasználó lecsatlakozott:', socket.id);
+  });
+});
 
 
 

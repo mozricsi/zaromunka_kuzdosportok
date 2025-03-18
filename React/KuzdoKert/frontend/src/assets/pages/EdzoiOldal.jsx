@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Axios from 'axios';
-import Swal from 'sweetalert2'; // Importáljuk a SweetAlert2-t
+import Swal from 'sweetalert2';
 import '../Styles/EdzoiOldal.css';
 import { useNavigate } from "react-router-dom";
 
@@ -10,8 +10,8 @@ const EdzoiOldal = () => {
   const [userRole, setUserRole] = useState(null);
   const [userVnev, setUserVnev] = useState("");
   const [userKnev, setUserKnev] = useState("");
-  const [workouts, setWorkouts] = useState([]); // Klubbok tárolása
-  const [trainings, setTrainings] = useState([]); // Edzések tárolása
+  const [workouts, setWorkouts] = useState([]);
+  const [trainings, setTrainings] = useState([]);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -108,7 +108,6 @@ const EdzoiOldal = () => {
           .then((response) => {
             setMessage(response.data.message);
             setWorkouts(workouts.filter((workout) => workout.sprotklub_id !== sprotklubId));
-            // Opcionálisan frissíthetjük az edzéseket is, ha kaszkád törlés van
             loadTrainings(userId);
           })
           .catch((error) => {
@@ -162,7 +161,27 @@ const EdzoiOldal = () => {
   };
 
   const startStream = () => {
-    Axios.post('http://localhost:5000/api/streams/start', { userId, streamUrl })
+    let validStreamUrl = streamUrl.trim();
+    // Ellenőrizzük, hogy normál YouTube link-e, és alakítsuk embed linkké
+    if (validStreamUrl.includes('watch?v=')) {
+      const videoId = validStreamUrl.split('v=')[1];
+      const ampersandPosition = videoId ? videoId.indexOf('&') : -1;
+      validStreamUrl = `https://www.youtube.com/embed/${ampersandPosition !== -1 ? videoId.substring(0, ampersandPosition) : videoId}`;
+    } else if (validStreamUrl.includes('youtu.be/')) {
+      const videoId = validStreamUrl.split('youtu.be/')[1];
+      const ampersandPosition = videoId ? videoId.indexOf('&') : -1;
+      validStreamUrl = `https://www.youtube.com/embed/${ampersandPosition !== -1 ? videoId.substring(0, ampersandPosition) : videoId}`;
+    } else if (!validStreamUrl.startsWith('https://www.youtube.com/embed/')) {
+      setMessage('Kérlek, adj meg egy érvényes YouTube linket (watch vagy embed formátum)!');
+      return;
+    }
+
+    if (!validStreamUrl) {
+      setMessage('Kérlek, adj meg egy YouTube linket!');
+      return;
+    }
+
+    Axios.post('http://localhost:5000/api/streams/start', { userId, streamUrl: validStreamUrl })
       .then(response => {
         setStreamStatus('online');
         setMessage(response.data.message);
@@ -332,11 +351,21 @@ const EdzoiOldal = () => {
             <h2>Élő Stream Kezelése</h2>
             <p>Stream státusz: {streamStatus === 'online' ? 'Fut' : 'Leállítva'}</p>
             <div className="form-group">
-              <label>Stream URL (pl. YouTube embed link): <span className="required">*</span></label>
-              <input type="text" value={streamUrl} onChange={(e) => setStreamUrl(e.target.value)} placeholder="https://www.youtube.com/embed/..." required />
+              <label>Stream URL (pl. YouTube link): <span className="required">*</span></label>
+              <input
+                type="text"
+                value={streamUrl}
+                onChange={(e) => setStreamUrl(e.target.value)}
+                placeholder="https://www.youtube.com/watch?v=..."
+                required
+              />
             </div>
-            <button onClick={startStream} disabled={streamStatus === 'online'} className="stream-button">Stream indítása</button>
-            <button onClick={stopStream} disabled={streamStatus === 'offline'} className="stream-button">Stream leállítása</button>
+            <button onClick={startStream} disabled={streamStatus === 'online'} className="stream-button">
+              Stream indítása
+            </button>
+            <button onClick={stopStream} disabled={streamStatus === 'offline'} className="stream-button">
+              Stream leállítása
+            </button>
           </div>
 
           {/* Klubbok listája */}
