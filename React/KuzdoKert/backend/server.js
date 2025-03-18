@@ -780,7 +780,6 @@ app.delete("/workouts/:edzesId", (req, res) => {
 
 //-----------------------------------------EDZÉSNAPLÓ-----------------------------------------
 
-// Felhasználó edzésnaplójának lekérdezése
 app.get("/edzesnaplo/:userId", (req, res) => {
   const { userId } = req.params;
 
@@ -795,7 +794,7 @@ app.get("/edzesnaplo/:userId", (req, res) => {
       k.klubbnev,
       k.hely,
       s.sportnev
-    FROM jelentkezések j
+    FROM jelentkezes j
     JOIN klub_edzesek ke ON j.edzes_id = ke.edzes_id
     JOIN klubbok k ON ke.sportklub_id = k.sprotklub_id
     JOIN sport s ON k.sport_id = s.sport_id
@@ -811,6 +810,31 @@ app.get("/edzesnaplo/:userId", (req, res) => {
   });
 });
 
+
+
+//jelentkezés törlése
+
+
+app.delete("/jelentkezes/:jelentkezesId", (req, res) => {
+  const { jelentkezesId } = req.params;
+
+  const query = "DELETE FROM jelentkezes WHERE jelentkezes_id = ?";
+  db.query(query, [jelentkezesId], (error, result) => {
+    if (error) {
+      console.error("Hiba a jelentkezés törlésekor:", error.message);
+      return res.status(500).json({ 
+        message: "Hiba történt a jelentkezés törlésekor.", 
+        error: error.message 
+      });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "A jelentkezés nem található." });
+    }
+    res.json({ message: "Jelentkezés sikeresen törölve!" });
+  });
+});
+
+// -------------------
 
 
 
