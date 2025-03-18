@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS `kuzdosportok`.`adatmodositas` (
   CONSTRAINT `fr user_id`
     FOREIGN KEY (`user_id`)
     REFERENCES `kuzdosportok`.`latogatok` (`user_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
@@ -114,13 +114,13 @@ CREATE TABLE IF NOT EXISTS `kuzdosportok`.`ertekelesek` (
   CONSTRAINT `frsportklub`
     FOREIGN KEY (`sportklub_id`)
     REFERENCES `kuzdosportok`.`klubbok` (`sprotklub_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fruserid`
     FOREIGN KEY (`user_id`)
     REFERENCES `kuzdosportok`.`latogatok` (`user_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
@@ -145,8 +145,8 @@ CREATE TABLE IF NOT EXISTS `kuzdosportok`.`esemenyek` (
   CONSTRAINT `fr2_user_id`
     FOREIGN KEY (`user_id`)
     REFERENCES `kuzdosportok`.`latogatok` (`user_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
@@ -166,13 +166,13 @@ CREATE TABLE IF NOT EXISTS `kuzdosportok`.`jelentkezes` (
   CONSTRAINT `fk_sportklub_id`
     FOREIGN KEY (`edzes_id`)
     REFERENCES `kuzdosportok`.`klub_edzesek` (`edzes_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk1_user_id`
     FOREIGN KEY (`user_id`)
     REFERENCES `kuzdosportok`.`latogatok` (`user_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 ) ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
@@ -209,8 +209,8 @@ CREATE TABLE IF NOT EXISTS `kuzdosportok`.`sport` (
   CONSTRAINT `sportid`
     FOREIGN KEY (`sport_id`)
     REFERENCES `kuzdosportok`.`klubbok` (`sport_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
@@ -229,8 +229,8 @@ CREATE TABLE IF NOT EXISTS `kuzdosportok`.`klub_edzesek` (
   CONSTRAINT `fk_edzesek_klubbok`
     FOREIGN KEY (`sportklub_id`)
     REFERENCES `kuzdosportok`.`klubbok` (`sprotklub_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 

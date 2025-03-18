@@ -14,7 +14,7 @@ const app = express();
 app.use(express.json());
 app.use(cors({
   origin: ["http://localhost:5173"],
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST", "DELETE"],
   credentials: true
 }));
 
@@ -696,6 +696,85 @@ app.post('/api/streams/stop', (req, res) => {
     res.json({ message: 'Stream leállítva' });
   });
 });
+
+
+
+
+
+
+// Klub törlése
+app.delete("/clubs/:sprotklubId", (req, res) => {
+  const { sprotklubId } = req.params;
+
+  const query = "DELETE FROM klubbok WHERE sprotklub_id = ?";
+
+  db.query(query, [sprotklubId], (error, result) => {
+    if (error) {
+      console.error("Hiba a klub törlésekor:", error);
+      return res.status(500).json({ message: "Hiba történt a klub törlésekor." });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "A klub nem található." });
+    }
+    res.json({ message: "Klub sikeresen törölve!" });
+  });
+});
+
+
+
+
+
+
+// Edzések lekérdezése az edző számára
+app.get("/workouts/:userId", (req, res) => {
+  const { userId } = req.params;
+
+  const query = `
+    SELECT 
+      ke.edzes_id, 
+      ke.sportklub_id, 
+      ke.pontoscim, 
+      ke.nap, 
+      ke.ido, 
+      k.klubbnev, 
+      k.hely, 
+      k.sport_id,
+      s.sportnev
+    FROM klub_edzesek ke
+    JOIN klubbok k ON ke.sportklub_id = k.sprotklub_id
+    JOIN sport s ON k.sport_id = s.sport_id
+    WHERE k.user_id = ?
+  `;
+
+  db.query(query, [userId], (error, results) => {
+    if (error) {
+      console.error("Hiba az edzések lekérdezésekor:", error);
+      return res.status(500).json({ message: "Hiba történt az edzések lekérdezésekor." });
+    }
+    res.json(results);
+  });
+});
+
+
+
+// Edzés törlése
+app.delete("/workouts/:edzesId", (req, res) => {
+  const { edzesId } = req.params;
+
+  const query = "DELETE FROM klub_edzesek WHERE edzes_id = ?";
+
+  db.query(query, [edzesId], (error, result) => {
+    if (error) {
+      console.error("Hiba az edzés törlésekor:", error);
+      return res.status(500).json({ message: "Hiba történt az edzés törlésekor." });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Az edzés nem található." });
+    }
+    res.json({ message: "Edzés sikeresen törölve!" });
+  });
+});
+
 
 
 

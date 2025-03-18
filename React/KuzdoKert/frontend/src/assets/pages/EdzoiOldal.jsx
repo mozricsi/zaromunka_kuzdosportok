@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Axios from 'axios';
+import Swal from 'sweetalert2'; // Importáljuk a SweetAlert2-t
 import '../Styles/EdzoiOldal.css';
 import { useNavigate } from "react-router-dom";
 
@@ -9,7 +10,8 @@ const EdzoiOldal = () => {
   const [userRole, setUserRole] = useState(null);
   const [userVnev, setUserVnev] = useState("");
   const [userKnev, setUserKnev] = useState("");
-  const [workouts, setWorkouts] = useState([]);
+  const [workouts, setWorkouts] = useState([]); // Klubbok tárolása
+  const [trainings, setTrainings] = useState([]); // Edzések tárolása
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -23,7 +25,6 @@ const EdzoiOldal = () => {
   const [ido, setIdo] = useState("");
   const [leiras, setLeiras] = useState("");
 
-  // Stream kezeléshez szükséges állapotok
   const [streamStatus, setStreamStatus] = useState('offline');
   const [streamUrl, setStreamUrl] = useState('https://www.youtube.com/embed/dQw4w9WgXcQ');
 
@@ -53,7 +54,7 @@ const EdzoiOldal = () => {
           navigate("/profil");
         } else {
           loadWorkouts(user.user_id);
-          // Stream státusz ellenőrzése
+          loadTrainings(user.user_id);
           checkStreamStatus(user.user_id);
         }
       } else {
@@ -74,7 +75,77 @@ const EdzoiOldal = () => {
           setMessage("Hiba történt az edzések betöltésekor.");
         });
     }, 1000);
-    return () => clearInterval(intervalId); // Tisztítás
+    return () => clearInterval(intervalId);
+  };
+
+  const loadTrainings = (userId) => {
+    const intervalId = setInterval(() => {
+      Axios.get(`http://localhost:5000/workouts/${userId}`)
+        .then((response) => {
+          setTrainings(response.data);
+        })
+        .catch((error) => {
+          console.error("Hiba az edzések betöltésekor:", error);
+          setMessage("Hiba történt az edzések betöltésekor.");
+        });
+    }, 1000);
+    return () => clearInterval(intervalId);
+  };
+
+  const deleteClub = (sprotklubId) => {
+    Swal.fire({
+      title: 'Biztosan törölni szeretnéd ezt a klubbot?',
+      text: 'Ez a művelet nem vonható vissza, és a kapcsolódó edzések is törlődnek!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Igen, töröld!',
+      cancelButtonText: 'Mégse',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Axios.delete(`http://localhost:5000/clubs/${sprotklubId}`, { withCredentials: true })
+          .then((response) => {
+            setMessage(response.data.message);
+            setWorkouts(workouts.filter((workout) => workout.sprotklub_id !== sprotklubId));
+            // Opcionálisan frissíthetjük az edzéseket is, ha kaszkád törlés van
+            loadTrainings(userId);
+          })
+          .catch((error) => {
+            console.error("Hiba a klub törlésekor:", error.message, error.response);
+            setMessage(`Hiba történt a klub törlésekor: ${error.message}`);
+          });
+      } else {
+        setMessage("A törlés megszakítva.");
+      }
+    });
+  };
+
+  const deleteTraining = (edzesId) => {
+    Swal.fire({
+      title: 'Biztosan törölni szeretnéd ezt az edzést?',
+      text: 'Ez a művelet nem vonható vissza!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Igen, töröld!',
+      cancelButtonText: 'Mégse',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Axios.delete(`http://localhost:5000/workouts/${edzesId}`, { withCredentials: true })
+          .then((response) => {
+            setMessage(response.data.message);
+            setTrainings(trainings.filter((training) => training.edzes_id !== edzesId));
+          })
+          .catch((error) => {
+            console.error("Hiba az edzés törlésekor:", error.message, error.response);
+            setMessage(`Hiba történt az edzés törlésekor: ${error.message}`);
+          });
+      } else {
+        setMessage("A törlés megszakítva.");
+      }
+    });
   };
 
   const checkStreamStatus = (userId) => {
@@ -123,17 +194,6 @@ const EdzoiOldal = () => {
     }
 
     try {
-      console.log("Küldött adatok:", {
-        user_id: userId,
-        sport_id: parseInt(sportId, 10),
-        hely,
-        leiras: leiras || "Nincs leírás megadva",
-        szabalyok: szabalyok,
-        vnev: userVnev,
-        knev: userKnev,
-        klubbnev: klubbNev,
-      });
-
       const response = await Axios.post("http://localhost:5000/coach/add-club", {
         user_id: userId,
         sport_id: parseInt(sportId, 10),
@@ -169,13 +229,6 @@ const EdzoiOldal = () => {
     }
 
     try {
-      console.log("Küldött adatok:", {
-        pontosCim,
-        nap: nap,
-        ido: ido,
-        sprotklub_id: parseInt(sprotklub_id, 10),
-      });
-
       const response = await Axios.post("http://localhost:5000/coach/add-workout", {
         pontosCim,
         nap: nap,
@@ -184,7 +237,7 @@ const EdzoiOldal = () => {
       });
 
       setMessage(response.data.message);
-      loadWorkouts(userId);
+      loadTrainings(userId);
       setKlubbNev("");
       setPontosCim("");
       setNap("");
@@ -209,11 +262,7 @@ const EdzoiOldal = () => {
           <form onSubmit={addClub} className="workout-form">
             <div className="form-group">
               <label>Sport: <span className="required">*</span></label>
-              <select
-                value={sportId}
-                onChange={(e) => setSportId(e.target.value)}
-                required
-              >
+              <select value={sportId} onChange={(e) => setSportId(e.target.value)} required>
                 <option value="">Válassz sportot</option>
                 {sports.map((sport) => (
                   <option key={sport.id} value={sport.id}>
@@ -222,47 +271,22 @@ const EdzoiOldal = () => {
                 ))}
               </select>
             </div>
-
             <div className="form-group">
               <label>Klubb név <span className="required">*</span></label>
-              <input
-                type="text"
-                placeholder="Pl. Szolonki boxklub"
-                value={klubbNev}
-                onChange={(e) => setKlubbNev(e.target.value)}
-                required
-              />
+              <input type="text" placeholder="Pl. Szolonki boxklub" value={klubbNev} onChange={(e) => setKlubbNev(e.target.value)} required />
             </div>
-
             <div className="form-group">
               <label>Város: <span className="required">*</span></label>
-              <input
-                type="text"
-                placeholder="Pl. Szolnok"
-                value={hely}
-                onChange={(e) => setHely(e.target.value)}
-                required
-              />
+              <input type="text" placeholder="Pl. Szolnok" value={hely} onChange={(e) => setHely(e.target.value)} required />
             </div>
-
             <div className="form-group">
               <label>Szabályok:</label>
-              <textarea
-                placeholder="Klubb szabályzat, Pl. sportcipő..."
-                value={szabalyok}
-                onChange={(e) => setSzabalyok(e.target.value)}
-              />
+              <textarea placeholder="Klubb szabályzat, Pl. sportcipő..." value={szabalyok} onChange={(e) => setSzabalyok(e.target.value)} />
             </div>
-
             <div className="form-group">
               <label>Leírás (opcionális):</label>
-              <textarea
-                placeholder="Pl. Kezdőknek szóló edzés..."
-                value={leiras}
-                onChange={(e) => setLeiras(e.target.value)}
-              />
+              <textarea placeholder="Pl. Kezdőknek szóló edzés..." value={leiras} onChange={(e) => setLeiras(e.target.value)} />
             </div>
-
             <button type="submit" className="add-button">Klubb hozzáadása</button>
           </form>
 
@@ -270,11 +294,7 @@ const EdzoiOldal = () => {
           <form onSubmit={addWorkout} className="workout-form">
             <div className="form-group">
               <label>Klubb: <span className="required">*</span></label>
-              <select
-                value={sprotklub_id}
-                onChange={(e) => setSportKlubId(e.target.value)}
-                required
-              >
+              <select value={sprotklub_id} onChange={(e) => setSportKlubId(e.target.value)} required>
                 <option value="">Válassz klubot</option>
                 {workouts.map((workout) => (
                   <option key={workout.sprotklub_id} value={workout.sprotklub_id}>
@@ -283,25 +303,13 @@ const EdzoiOldal = () => {
                 ))}
               </select>
             </div>
-
             <div className="form-group">
               <label>Pontos cím: <span className="required">*</span></label>
-              <input
-                type="text"
-                placeholder="Pl. Szolnok, Sportcsarnok"
-                value={pontosCim}
-                onChange={(e) => setPontosCim(e.target.value)}
-                required
-              />
+              <input type="text" placeholder="Pl. Szolnok, Sportcsarnok" value={pontosCim} onChange={(e) => setPontosCim(e.target.value)} required />
             </div>
-
             <div className="form-group">
               <label>Nap: <span className="required">*</span></label>
-              <select
-                value={nap}
-                onChange={(e) => setNap(e.target.value)}
-                required
-              >
+              <select value={nap} onChange={(e) => setNap(e.target.value)} required>
                 <option value="">Válassz napot</option>
                 <option value="Hétfő">Hétfő</option>
                 <option value="Kedd">Kedd</option>
@@ -312,17 +320,10 @@ const EdzoiOldal = () => {
                 <option value="Vasárnap">Vasárnap</option>
               </select>
             </div>
-
             <div className="form-group">
               <label>Időpont: <span className="required">*</span></label>
-              <input
-                type="time"
-                value={ido}
-                onChange={(e) => setIdo(e.target.value)}
-                required
-              />
+              <input type="time" value={ido} onChange={(e) => setIdo(e.target.value)} required />
             </div>
-
             <button type="submit" className="add-button">Edzés hozzáadása</button>
           </form>
 
@@ -332,28 +333,10 @@ const EdzoiOldal = () => {
             <p>Stream státusz: {streamStatus === 'online' ? 'Fut' : 'Leállítva'}</p>
             <div className="form-group">
               <label>Stream URL (pl. YouTube embed link): <span className="required">*</span></label>
-              <input
-                type="text"
-                value={streamUrl}
-                onChange={(e) => setStreamUrl(e.target.value)}
-                placeholder="https://www.youtube.com/embed/..."
-                required
-              />
+              <input type="text" value={streamUrl} onChange={(e) => setStreamUrl(e.target.value)} placeholder="https://www.youtube.com/embed/..." required />
             </div>
-            <button
-              onClick={startStream}
-              disabled={streamStatus === 'online'}
-              className="stream-button"
-            >
-              Stream indítása
-            </button>
-            <button
-              onClick={stopStream}
-              disabled={streamStatus === 'offline'}
-              className="stream-button"
-            >
-              Stream leállítása
-            </button>
+            <button onClick={startStream} disabled={streamStatus === 'online'} className="stream-button">Stream indítása</button>
+            <button onClick={stopStream} disabled={streamStatus === 'offline'} className="stream-button">Stream leállítása</button>
           </div>
 
           {/* Klubbok listája */}
@@ -369,28 +352,28 @@ const EdzoiOldal = () => {
                     <strong>{sports.find(s => s.id === workout.sport_id)?.name}</strong> - {workout.hely}<br />
                     Szabályok: {workout.szabalyok} <br />
                     Leírás: {workout.leiras} <br />
-                    <button>Törlés</button>
+                    <button onClick={() => deleteClub(workout.sprotklub_id)}>Törlés</button>
                   </li>
                 ))}
               </ul>
             )}
           </div>
 
-          <br />
-
           {/* Edzések listája */}
           <div className="workout-list">
             <h2>Feltöltött edzéseid</h2>
-            {workouts.length === 0 ? (
-              <p>Még nem adtál hozzá egy klubbhoz sem edzést.</p>
+            {trainings.length === 0 ? (
+              <p>Még nem adtál hozzá edzést.</p>
             ) : (
               <ul>
-                {workouts.map((workout) => (
-                  <li key={workout.sprotklub_id} className="workout-item">
-                    <strong>{workout.klubbnev}</strong> <br />
-                    <strong>{sports.find(s => s.id === workout.sport_id)?.name}</strong> - {workout.hely}<br />
-                    Szabályok: {workout.szabalyok} <br />
-                    Leírás: {workout.leiras}
+                {trainings.map((training) => (
+                  <li key={training.edzes_id} className="workout-item">
+                    <strong>{training.klubbnev}</strong> <br />
+                    <strong>{training.sportnev}</strong> - {training.hely}<br />
+                    Pontos cím: {training.pontoscim} <br />
+                    Nap: {training.nap} <br />
+                    Idő: {training.ido} <br />
+                    <button onClick={() => deleteTraining(training.edzes_id)}>Törlés</button>
                   </li>
                 ))}
               </ul>
