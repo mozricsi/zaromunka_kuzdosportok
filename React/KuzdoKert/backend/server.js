@@ -778,6 +778,42 @@ app.delete("/workouts/:edzesId", (req, res) => {
 
 
 
+//-----------------------------------------EDZÉSNAPLÓ-----------------------------------------
+
+// Felhasználó edzésnaplójának lekérdezése
+app.get("/edzesnaplo/:userId", (req, res) => {
+  const { userId } = req.params;
+
+  const query = `
+    SELECT 
+      j.jelentkezes_id,
+      ke.edzes_id,
+      ke.pontoscim,
+      ke.nap,
+      ke.ido,
+      k.sprotklub_id,
+      k.klubbnev,
+      k.hely,
+      s.sportnev
+    FROM jelentkezések j
+    JOIN klub_edzesek ke ON j.edzes_id = ke.edzes_id
+    JOIN klubbok k ON ke.sportklub_id = k.sprotklub_id
+    JOIN sport s ON k.sport_id = s.sport_id
+    WHERE j.user_id = ?
+  `;
+
+  db.query(query, [userId], (error, results) => {
+    if (error) {
+      console.error("Hiba az edzésnapló lekérdezésekor:", error);
+      return res.status(500).json({ message: "Hiba történt az edzésnapló lekérdezésekor." });
+    }
+    res.json(results);
+  });
+});
+
+
+
+
 // **Szerver indítása**
 const PORT = 5000;
 app.listen(PORT, () => {

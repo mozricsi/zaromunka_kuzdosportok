@@ -4,52 +4,65 @@ import Axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
 const EdzesNaplo = () => {
-  const [clubs, setClubs] = useState([]);
-  const [selectedClub, setSelectedClub] = useState(null);
-  const [workouts, setWorkouts] = useState([]);
-  const [selectedSport, setSelectedSport] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
+  const [loginStatus, setLoginStatus] = useState("");
+  const [userId, setUserId] = useState(null);
+  const [trainings, setTrainings] = useState([]); // Jelentkezett edzések tárolása
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    Axios.get("http://localhost:5000/clubs").then((res) => {
-      setClubs(res.data);
-    }).catch((err) => {
-      console.error("Hiba a klubok lekérésekor:", err);
+    Axios.defaults.withCredentials = true;
+    Axios.get("http://localhost:5000/login").then((response) => {
+      if (response.data.loggedIn === true) {
+        const user = response.data.user[0];
+        setLoginStatus(user.felhasznalonev);
+        setUserId(user.user_id);
+        loadTrainings(user.user_id); // Edzések betöltése
+      } else {
+        setMessage("Kérlek, jelentkezz be az edzésnapló megtekintéséhez!");
+        navigate("/login");
+      }
     });
-  }, []);
+  }, [navigate]);
 
-  const handleClubSelect = (clubId) => {
-    setSelectedClub(clubId);
-    Axios.get(`http://localhost:5000/workouts?club_id=${clubId}`).then((res) => {
-      setWorkouts(res.data);
-    }).catch((err) => {
-      console.error("Hiba az edzések lekérésekor:", err);
-    });
+  const loadTrainings = (userId) => {
+    Axios.get(`http://localhost:5000/edzesnaplo/${userId}`)
+      .then((response) => {
+        setTrainings(response.data);
+      })
+      .catch((error) => {
+        console.error("Hiba az edzések betöltésekor:", error);
+        setMessage("Hiba történt az edzések betöltésekor.");
+      });
   };
 
   return (
-    <div className="container">
+    <div className="edzesnaplo-container">
       <h1>Edzésnapló</h1>
-      <h2>Válassz egy klubbot</h2>
-      <ul>
-        {clubs.map((club) => (
-          <li key={club.id} onClick={() => handleClubSelect(club.id)}>
-            {club.name}
-          </li>
-        ))}
-      </ul>
+      <p>Üdv, {loginStatus || "Vendég"}! Itt láthatod, hogy mely edzésekre jelentkeztél.</p>
 
-      {selectedClub && (
-        <div>
-          <h2>Edzések a kiválasztott klubban</h2>
-          <ul>
-            {workouts.map((workout) => (
-              <li key={workout.id}>
-                {workout.sport} - {workout.date} - {workout.time}
-              </li>
-            ))}
-          </ul>
+      {!loginStatus && <p className="warning">{message}</p>}
+
+      {loginStatus && (
+        <div className="training-list">
+          <h2>Jelentkezett edzéseid</h2>
+          {trainings.length === 0 ? (
+            <p>Még nem jelentkeztél egyetlen edzésre sem.</p>
+          ) : (
+            <ul>
+              {trainings.map((training) => (
+                <li key={training.jelentkezes_id} className="training-item">
+                  <strong>{training.klubbnev}</strong> <br />
+                  <strong>Sport:</strong> {training.sportnev} <br />
+                  <strong>Helyszín:</strong> {training.hely} <br />
+                  <strong>Pontos cím:</strong> {training.pontoscim} <br />
+                  <strong>Nap:</strong> {training.nap} <br />
+                  <strong>Idő:</strong> {training.ido} <br />
+                </li>
+              ))}
+            </ul>
+          )}
+          {message && <p className="message">{message}</p>}
         </div>
       )}
     </div>
