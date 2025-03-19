@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Axios from 'axios';
 import { useNavigate, Link } from "react-router-dom";
-
 import "../Styles/login.css";
 
 const Login = () => {
@@ -19,11 +18,11 @@ const Login = () => {
         setLoginStatus(response.data.user[0].felhasznalonev);
         setUserRole(response.data.user[0].role); // Szerepkör lekérdezése
         setTimeout(() => {
-          navigate("/profil");
+          navigate("/welcome"); // Módosítva: /welcome-re irányít
         }, 1000);
       }
     });
-  }, []);
+  }, [navigate]); // navigate hozzáadva a függőségekhez
 
   const login = () => {
     if (!felhasznalonev) {
@@ -42,7 +41,7 @@ const Login = () => {
             setLoginStatus(response.data[0].felhasznalonev);
             setUserRole(response.data[0].role); // Szerepkör beállítása
             setTimeout(() => {
-              navigate("/profil");
+              navigate("/WelcomeScreen"); // Módosítva: /welcome-re irányít
             }, 1000);
           }
         });
@@ -84,7 +83,6 @@ const Login = () => {
             Nem regisztráltál még? <br />
             <Link to="/register">Akkor regisztrálj itt!</Link>
           </p>
-
         </div>
       )}
     </div>

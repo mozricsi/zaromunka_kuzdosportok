@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Home, EdzoiOldal, Login, Register, Profil, SportKartyak, SportLeiras, EdzesNaplo, Logout, LiveStream, Klub, Terms,Ranglista,Esemenyek,} from './assets/pages/routes';
+import { Home, EdzoiOldal, Login, Register, Profil, SportKartyak, SportLeiras, EdzesNaplo, Logout, LiveStream, Klub, Terms,Ranglista,Esemenyek,WelcomeScreen} from './assets/pages/routes';
 import Navbar from './Navbar';
 import { Axios } from 'axios';
 import { useState, useEffect } from 'react';
@@ -33,6 +33,7 @@ function App() {
         <Route path="/Ranglista" element={<Ranglista/>} />
         <Route path="/Esemenyek" element={<Esemenyek/>} />
         <Route path="/LiveStream" element={<LiveStream/>} />
+        <Route path="/WelcomeScreen" element={<WelcomeScreen/>} />
         
         
 

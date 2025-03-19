@@ -824,6 +824,24 @@ app.delete("/jelentkezes/:jelentkezesId", (req, res) => {
 
 // -------------------
 
+// Események lekérése sportág alapján
+app.get('/esemenyek/sport/:sportnev', (req, res) => {
+  const sportnev = req.params.sportnev;
+  const query = `
+    SELECT * FROM esemenyek 
+    WHERE sportneve = ? AND ido >= NOW()
+    ORDER BY ido ASC
+  `;
+  db.query(query, [sportnev], (err, results) => {
+    if (err) {
+      console.error('Hiba az események lekérésekor:', err);
+      res.status(500).json({ message: 'Hiba történt az események lekérésekor.' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 
 
 // **Szerver indítása**
