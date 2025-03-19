@@ -77,11 +77,7 @@ const Home = () => {
       <section className="intro-section">
         <h2>Üdvözöllek a Küzdősportok Világában!</h2>
         <div className="intro-content">
-          <img
-            src="https://cdn.qwenlm.ai/output/36a0457c-ad32-4b7e-85de-9a8ab7eee151/t2i/ecd1e84f-c5ec-45d6-a496-0c5b5173ea5e/8c054a9d-01d9-4a9e-a389-8f41c70f9c31.png"
-            alt="Küzdősportok"
-            className="intro-image"
-          />
+         
           <p>
           Weboldalunkon különböző küzdősportokkal ismerkedhetsz meg, mint például a box, MMA, judo, karate és még sok
             más. Legyen szó kezdőkről vagy haladókról, nálunk mindenki megtalálja a számára megfelelő edzéseket és
