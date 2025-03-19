@@ -277,6 +277,81 @@ INSERT INTO `kuzdosportok`.`klub_edzesek` (`sportklub_id`, `pontoscim`, `nap`, `
 (3, 'Szeged, Harcművészeti Központ', 'Péntek', '17:00:00'),
 (1, 'Budapest, Sportcsarnok 1.', 'Kedd', '10:00:00');
 
+-- 1. esemény: Szolnoki Boxverseny 2025
+INSERT INTO esemenyek (user_id, latogato_resztvevo, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
+VALUES (
+    1, 
+    'Kovács János, Nagy Péter, Tóth Anna', 
+    'Szolnok, Sportcsarnok, Aréna utca 12.', 
+    '2025-04-15 10:00:00', 
+    'Box', 
+    'Kezdőknek és haladóknak szóló boxverseny, súlycsoportok szerint.', 
+    'Kovács Béla', 
+    '+36301234567', 
+    'kovacs.bela@example.com', 
+    'https://szolnokiboxverseny.hu'
+);
+
+-- 2. esemény: Budapesti Judo Bajnokság
+INSERT INTO esemenyek (user_id, latogato_resztvevo, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
+VALUES (
+    1, 
+    'Szabó Katalin, Horváth Gergő', 
+    'Budapest, Judo Aréna, Fő út 45.', 
+    '2025-05-20 14:00:00', 
+    'Judo', 
+    'Nyílt judo bajnokság minden korosztály számára.', 
+    'Kovács Béla', 
+    '+36301234567', 
+    'kovacs.bela@example.com', 
+    'https://budapestjudo.hu'
+);
+
+-- 3. esemény: Debreceni MMA Gála
+INSERT INTO esemenyek (user_id, latogato_resztvevo, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
+VALUES (
+    1, 
+    'Kiss Dávid, Molnár Eszter', 
+    'Debrecen, Főnix Csarnok, Sport tér 1.', 
+    '2025-06-10 18:00:00', 
+    'MMA', 
+    'Professzionális MMA gála, élő közvetítéssel.', 
+    'Kovács Béla', 
+    '+36301234567', 
+    'kovacs.bela@example.com', 
+    'https://debrecenmmagala.hu'
+);
+
+-- 4. esemény: Kecskeméti Kickbox Kupa
+INSERT INTO esemenyek (user_id, latogato_resztvevo, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
+VALUES (
+    1, 
+    'Fekete Zoltán, Varga Réka', 
+    'Kecskemét, Sportközpont, Bajnok utca 3.', 
+    '2025-07-05 09:00:00', 
+    'Kickbox', 
+    'Amatőr kickbox verseny, kezdőknek is.', 
+    'Kovács Béla', 
+    '+36301234567', 
+    'kovacs.bela@example.com', 
+    'https://kecskemetkickbox.hu'
+);
+
+-- 5. esemény: Pécsi Muay Thai Tábor és Verseny
+INSERT INTO esemenyek (user_id, latogato_resztvevo, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
+VALUES (
+    1, 
+    'Tóth Bence, Nagy Laura', 
+    'Pécs, Muay Thai Terem, Harcos utca 8.', 
+    '2025-08-15 08:00:00', 
+    'Muay Thai', 
+    '3 napos tábor, utolsó napon versennyel.', 
+    'Kovács Béla', 
+    '+36301234567', 
+    'kovacs.bela@example.com', 
+    'https://pecsimuaythai.hu'
+);
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
