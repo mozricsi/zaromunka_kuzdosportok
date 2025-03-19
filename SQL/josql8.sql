@@ -240,6 +240,155 @@ CREATE TABLE IF NOT EXISTS `kuzdosportok`.`streams` (
   DEFAULT CHARSET = utf8
   COLLATE = utf8_hungarian_ci;
 
+  CREATE TABLE IF NOT EXISTS `kuzdosportok`.`notifications` (
+  `notification_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11) NOT NULL,
+  `role` ENUM('visitor', 'coach') NOT NULL,
+  `message` VARCHAR(255) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`notification_id`),
+  INDEX `fk_user_id_idx` (`user_id`),
+  CONSTRAINT `fk_notification_user_id`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `kuzdosportok`.`latogatok` (`user_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE = InnoDB 
+  DEFAULT CHARACTER SET = utf8mb4 
+  COLLATE = utf8mb4_hungarian_ci;
+
+  DELIMITER //
+
+Szia, főnököm! Értem a kérést: most azt kell megoldanunk, hogy amikor egy látogató (visitor) jelentkezik egy edzésre, ő maga is kapjon egy értesítést a notifications táblában, amely megjelenik a Navbar-ban a csengő ikon alatt. Az értesítés tartalmazzon információt arról, hogy melyik edző edzésére jelentkezett, és hogy mennyi idő van még az edzés kezdetéig. Az előző lépésben már létrehoztunk egy triggert az edző értesítésére, most ezt bővítjük ki a látogató értesítésével.
+
+Lépések
+Logika megértése:
+Amikor egy új rekord kerül a jelentkezes táblába, a látogatónak is létre kell hozni egy értesítést.
+Az értesítésben szerepelnie kell:
+Az edző neve (a klubbok táblából a vnev és knev mezők).
+Az edzés időpontja (a klub_edzesek táblából a nap és ido mezők).
+Mennyi idő van még az edzésig (az edzés időpontja és a jelenlegi idő különbsége).
+Trigger módosítása:
+Módosítjuk az after_jelentkezes_insert triggert, hogy a látogató számára is beszúrjon egy értesítést.
+Az edzés időpontját a klub_edzesek táblából szerezzük be, és kiszámítjuk a hátralévő időt.
+Időszámítás:
+Mivel a MySQL-ben nem egyszerű a pontos időszámítás (pl. napok, órák, percek formátumban), a hátralévő időt a trigger-ben egyszerűbb formában számoljuk ki, vagy a frontend-re bízzuk a pontos formázást.
+Frontend ellenőrzése:
+Győződjünk meg róla, hogy a Navbar.jsx megfelelően megjeleníti az új értesítést a csengő alatt.
+1. Trigger módosítása
+Módosítjuk az after_jelentkezes_insert triggert, hogy a látogató számára is létrehozzon egy értesítést.
+
+Frissített Trigger SQL kód
+Először töröljük a meglévő triggert, majd létrehozzuk az újat:
+
+sql
+
+Collapse
+
+Wrap
+
+Copy
+DELIMITER //
+
+-- Először töröljük a meglévő triggert
+DROP TRIGGER IF EXISTS `kuzdosportok`.`after_jelentkezes_insert`//
+
+CREATE TRIGGER `after_jelentkezes_insert` 
+AFTER INSERT ON `kuzdosportok`.`jelentkezes`
+FOR EACH ROW
+BEGIN
+    DECLARE coach_id INT;
+    DECLARE visitor_username VARCHAR(255);
+    DECLARE club_name VARCHAR(255);
+    DECLARE club_location VARCHAR(255);
+    DECLARE training_day VARCHAR(50);
+    DECLARE training_time TIME;
+    DECLARE coach_vnev VARCHAR(255);
+    DECLARE coach_knev VARCHAR(255);
+    DECLARE time_until_training VARCHAR(255);
+
+    -- Lekérjük az edző adatait és az edzés részleteit
+    SELECT k.user_id, k.vnev, k.knev, k.klubbnev, k.hely, ke.nap, ke.ido
+    INTO coach_id, coach_vnev, coach_knev, club_name, club_location, training_day, training_time
+    FROM `kuzdosportok`.`klub_edzesek` ke
+    JOIN `kuzdosportok`.`klubbok` k ON ke.sportklub_id = k.sprotklub_id
+    WHERE ke.edzes_id = NEW.edzes_id;
+
+    -- Lekérjük a jelentkező felhasználónevét
+    SELECT felhasznalonev 
+    INTO visitor_username
+    FROM `kuzdosportok`.`latogatok`
+    WHERE user_id = NEW.user_id;
+
+    -- Kiszámítjuk, mennyi idő van az edzésig
+    -- Az edzés időpontját a nap és idő alapján állítjuk össze
+    -- Feltételezzük, hogy az edzés a következő ilyen napon lesz
+    SET time_until_training = (
+        SELECT TIMESTAMPDIFF(MINUTE, NOW(), 
+            STR_TO_DATE(
+                CONCAT(
+                    DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 
+                        (7 + WEEKDAY(CURDATE()) - 
+                        CASE training_day 
+                            WHEN 'Hétfő' THEN 0 
+                            WHEN 'Kedd' THEN 1 
+                            WHEN 'Szerda' THEN 2 
+                            WHEN 'Csütörtök' THEN 3 
+                            WHEN 'Péntek' THEN 4 
+                            WHEN 'Szombat' THEN 5 
+                            WHEN 'Vasárnap' THEN 6 
+                        END) % 7 DAY), '%Y-%m-%d'), 
+                    ' ', training_time
+                ), 
+                '%Y-%m-%d %H:%i:%s'
+            )
+        )
+    );
+
+    -- Ha az idő negatív (az edzés már elmúlt ezen a héten), akkor a következő hétre számoljuk
+    IF time_until_training < 0 THEN
+        SET time_until_training = time_until_training + (7 * 24 * 60); -- 7 nap percekben
+    END IF;
+
+    -- Formázzuk az időt (napok, órák, percek)
+    SET time_until_training = CONCAT(
+        FLOOR(time_until_training / (24 * 60)), ' nap ',
+        FLOOR((time_until_training % (24 * 60)) / 60), ' óra ',
+        time_until_training % 60, ' perc'
+    );
+
+    -- Értesítés az edző számára
+    INSERT INTO `kuzdosportok`.`notifications` (`user_id`, `role`, `message`, `created_at`)
+    VALUES (
+        coach_id,
+        'coach',
+        CONCAT(
+            'Új jelentkezés: ', visitor_username, ' jelentkezett az edzésedre!\n',
+            'Klub: ', club_name, '\n',
+            'Helyszín: ', club_location, '\n',
+            'Idő: ', training_day, ' ', training_time
+        ),
+        NOW()
+    );
+
+    -- Értesítés a látogató számára
+    INSERT INTO `kuzdosportok`.`notifications` (`user_id`, `role`, `message`, `created_at`)
+    VALUES (
+        NEW.user_id,
+        'visitor',
+        CONCAT(
+            'Sikeresen jelentkeztél ', coach_vnev, ' ', coach_knev, ' edzésére!\n',
+            'Klub: ', club_name, '\n',
+            'Helyszín: ', club_location, '\n',
+            'Idő: ', training_day, ' ', training_time, '\n',
+            'Hátralévő idő az edzésig: ', time_until_training
+        ),
+        NOW()
+    );
+END //
+
+DELIMITER ;
+
 -- Adatok feltöltése (INSERT-ek változatlanok, de a sport_id-kat AUTO_INCREMENT-hez igazítom)
 INSERT INTO `kuzdosportok`.`latogatok` (`user_id`, `vnev`, `knev`, `knev2`, `telefonszam`, `email`, `szul_ido`, `lakhelyvaros`, `regisztracio_datum`, `felhasznalonev`, `jelszo`, `role`) VALUES
 (1, 'Kiss', 'Péter', NULL, 1, 'kiss.peter@example.com', '1990-05-12', 'Budapest', '2025-02-22 00:00:00', 'kpeter', '$2b$10$Ye0uo3ffgRUMuM1rX369V.6di9clKRXre7/vjxOz5u3QlYDUxWlIW', 'coach'),

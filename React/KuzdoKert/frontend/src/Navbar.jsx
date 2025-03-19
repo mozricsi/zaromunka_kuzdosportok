@@ -6,7 +6,7 @@ import logo from './assets/kepek/fiok.png';
 import Axios from "axios";
 import './assets/Styles/navbar.css';
 
-const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
+const Navbar = () => {
   const [loginStatus, setLoginStatus] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -18,6 +18,7 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
 
   Axios.defaults.withCredentials = true;
 
+  // Bejelentkezés ellenőrzése
   useEffect(() => {
     const checkLoginStatus = () => {
       Axios.get("http://localhost:5000/login")
@@ -33,7 +34,7 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
           }
         })
         .catch((error) => {
-          console.error("Hiba történt:", error);
+          console.error("Hiba történt a bejelentkezés ellenőrzésekor:", error);
         });
     };
 
@@ -42,36 +43,54 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
     return () => clearInterval(interval);
   }, []);
 
+  // Látogatói értesítések lekérése
   useEffect(() => {
     if (userId && userRole === "visitor") {
       const fetchVisitorNotifications = async () => {
         try {
-          const response = await Axios.get(`http://localhost:5000/notifications/${userId}`);
+          const response = await Axios.get(`http://localhost:5000/notifications/visitor/${userId}`);
           setVisitorNotifications(response.data);
         } catch (error) {
           console.error("Hiba a látogatói értesítések lekérdezésekor:", error);
+          if (error.response) {
+            console.log('Szerver válasz:', error.response.data);
+            console.log('Státusz:', error.response.status);
+          } else if (error.request) {
+            console.log('Nem érkezett válasz a szervertől:', error.request);
+          } else {
+            console.log('Hiba a kérés beállításakor:', error.message);
+          }
         }
       };
 
       fetchVisitorNotifications();
-      const interval = setInterval(fetchVisitorNotifications, 300000);
+      const interval = setInterval(fetchVisitorNotifications, 300000); // 5 percenként frissít
       return () => clearInterval(interval);
     }
   }, [userId, userRole]);
 
+  // Edzői értesítések lekérése
   useEffect(() => {
     if (userId && userRole === "coach") {
       const fetchCoachNotifications = async () => {
         try {
-          const response = await Axios.get(`http://localhost:5000/coach-notifications/${userId}`);
+          const response = await Axios.get(`http://localhost:5000/notifications/coach/${userId}`);
           setCoachNotifications(response.data);
         } catch (error) {
           console.error("Hiba az edzői értesítések lekérdezésekor:", error);
+          if (error.response) {
+            console.log('Szerver válasz:', error.response.data);
+            console.log('Státusz:', error.response.status);
+          } else if (error.request) {
+            console.log('Nem érkezett válasz a szervertől:', error.request);
+          } else {
+            console.log('Hiba a kérés beállításakor:', error.message);
+          }
         }
       };
 
       fetchCoachNotifications();
-      const interval = setInterval(fetchCoachNotifications, 60000);
+      const interval = setInterval(fetchCoachNotifications, 60000); // 1 percenként frissít
       return () => clearInterval(interval);
     }
   }, [userId, userRole]);
@@ -93,12 +112,8 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <NavLink className="navbar-brand nav-item" to="/SportKartyak">Sportok</NavLink>
-          
-          {/* NavLink-ek az útvonalakhoz */}
-          
           <NavLink className="navbar-brand nav-item" to="/esemenyek">Események</NavLink>
           <NavLink className="navbar-brand nav-item" to="/LiveStream">Élő Stream</NavLink>
-         
           <NavLink className="navbar-brand nav-item" to="/ranglista">Ranglista</NavLink>
 
           <div className="d-flex justify-content-end w-100">
@@ -151,16 +166,13 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
                 >
                   {visitorNotifications.length > 0 ? (
                     visitorNotifications.map((notif) => (
-                      <li key={notif.jelentkezes_id} className="notification-item">
-                        <strong>Emlékeztető:</strong> Ma edzésed van!<br />
-                        Klub: {notif.klubbnev}<br />
-                        Helyszín: {notif.hely}<br />
-                        Idő: {notif.nap} {notif.ido}<br />
-                        Edző: {notif.coach_vnev} {notif.coach_knev}
+                      <li key={notif.notification_id} className="notification-item">
+                        <strong>{notif.message}</strong><br />
+                        <small>{new Date(notif.created_at).toLocaleString()}</small>
                       </li>
                     ))
                   ) : (
-                    <li className="notification-item">Nincs ma edzésed.</li>
+                    <li className="notification-item">Nincs új értesítés.</li>
                   )}
                 </ul>
               </div>
@@ -199,17 +211,13 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
                 >
                   {coachNotifications.length > 0 ? (
                     coachNotifications.map((notif) => (
-                      <li key={notif.jelentkezes_id} className="notification-item">
-                        <strong>Új jelentkezés:</strong><br />
-                        Látogató: {notif.visitor_username}<br />
-                        Klub: {notif.klubbnev}<br />
-                        Helyszín: {notif.hely}<br />
-                        Idő: {notif.nap} {notif.ido}<br />
-                        Jelentkezés időpontja: {new Date(notif.jelentkezes_ido).toLocaleString()}
+                      <li key={notif.notification_id} className="notification-item">
+                        <strong>{notif.message}</strong><br />
+                        <small>{new Date(notif.created_at).toLocaleString()}</small>
                       </li>
                     ))
                   ) : (
-                    <li className="notification-item">Nincs új jelentkezés.</li>
+                    <li className="notification-item">Nincs új értesítés.</li>
                   )}
                 </ul>
               </div>
