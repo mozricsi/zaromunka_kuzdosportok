@@ -259,38 +259,8 @@ CREATE TABLE IF NOT EXISTS `kuzdosportok`.`streams` (
 
   DELIMITER //
 
-Szia, főnököm! Értem a kérést: most azt kell megoldanunk, hogy amikor egy látogató (visitor) jelentkezik egy edzésre, ő maga is kapjon egy értesítést a notifications táblában, amely megjelenik a Navbar-ban a csengő ikon alatt. Az értesítés tartalmazzon információt arról, hogy melyik edző edzésére jelentkezett, és hogy mennyi idő van még az edzés kezdetéig. Az előző lépésben már létrehoztunk egy triggert az edző értesítésére, most ezt bővítjük ki a látogató értesítésével.
 
-Lépések
-Logika megértése:
-Amikor egy új rekord kerül a jelentkezes táblába, a látogatónak is létre kell hozni egy értesítést.
-Az értesítésben szerepelnie kell:
-Az edző neve (a klubbok táblából a vnev és knev mezők).
-Az edzés időpontja (a klub_edzesek táblából a nap és ido mezők).
-Mennyi idő van még az edzésig (az edzés időpontja és a jelenlegi idő különbsége).
-Trigger módosítása:
-Módosítjuk az after_jelentkezes_insert triggert, hogy a látogató számára is beszúrjon egy értesítést.
-Az edzés időpontját a klub_edzesek táblából szerezzük be, és kiszámítjuk a hátralévő időt.
-Időszámítás:
-Mivel a MySQL-ben nem egyszerű a pontos időszámítás (pl. napok, órák, percek formátumban), a hátralévő időt a trigger-ben egyszerűbb formában számoljuk ki, vagy a frontend-re bízzuk a pontos formázást.
-Frontend ellenőrzése:
-Győződjünk meg róla, hogy a Navbar.jsx megfelelően megjeleníti az új értesítést a csengő alatt.
-1. Trigger módosítása
-Módosítjuk az after_jelentkezes_insert triggert, hogy a látogató számára is létrehozzon egy értesítést.
 
-Frissített Trigger SQL kód
-Először töröljük a meglévő triggert, majd létrehozzuk az újat:
-
-sql
-
-Collapse
-
-Wrap
-
-Copy
-DELIMITER //
-
--- Először töröljük a meglévő triggert
 DROP TRIGGER IF EXISTS `kuzdosportok`.`after_jelentkezes_insert`//
 
 CREATE TRIGGER `after_jelentkezes_insert` 
