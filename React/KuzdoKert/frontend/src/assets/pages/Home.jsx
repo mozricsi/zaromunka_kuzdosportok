@@ -135,9 +135,6 @@ const Home = () => {
             <img src="https://cdn-icons-png.flaticon.com/512/174/174883.png" alt="YouTube" />
           </a>
         </div>
-        <button className="terms-btn" onClick={() => navigate("/terms")}>
-          Általános Szerződési Feltételek
-        </button>
       </footer>
     </div>
   );

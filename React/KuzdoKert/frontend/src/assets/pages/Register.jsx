@@ -25,7 +25,8 @@ const Register = () => {
   const [felhasznalonevReg, setFelhasznalonevReg] = useState(null);
   const [jelszoReg, setJelszoReg] = useState(null);
   const [jelszoReg2, setJelszoReg2] = useState(null);
-  const [role, setRole] = useState("visitor"); // Új állapot a szerepkörhöz
+  const [role, setRole] = useState("visitor");
+  const [termsAccepted, setTermsAccepted] = useState(false); // Új állapot a checkboxhoz
 
   const [reg, setReg] = useState(null);
   const navigate = useNavigate();
@@ -36,48 +37,53 @@ const Register = () => {
     if (!usernameToCheck) {
       setReg("A felhasználónév megadása kötelező!");
       return;
-    } else {
-      try {
-        const response = await Axios.post("http://localhost:5000/checkUsername", {
-          username: usernameToCheck,
-        });
+    }
 
-        setTimeout(() => {
-          if (response.data.exists === true) {
-            setReg("Létező felhasználónév!");
-            return;
-          } else {
-            if (vezeteknevReg && keresztnevReg && emailReg && szulReg && lakhelyReg && usernameToCheck && jelszoReg) {
-              if (jelszoReg === jelszoReg2) {
-                Axios.post("http://localhost:5000/register", {
-                  username: usernameToCheck,
-                  password: jelszoReg,
-                  vnev: vezeteknevReg,
-                  knev: keresztnevReg,
-                  knev2: keresztnev2Reg,
-                  email: emailReg,
-                  szul: szulReg,
-                  lakhely: lakhelyReg,
-                  tel: telReg,
-                  role: role, // Szerepkör elküldése
-                });
+    if (!termsAccepted) {
+      setReg("El kell fogadnod az Általános Szerződési Feltételeket!");
+      return;
+    }
 
-                setReg("Sikeres regisztráció!");
-                setTimeout(() => {
-                  navigate("/login");
-                }, 1000);
-              } else {
-                setReg("A beírt jelszó nem egyezik!");
-              }
+    try {
+      const response = await Axios.post("http://localhost:5000/checkUsername", {
+        username: usernameToCheck,
+      });
+
+      setTimeout(() => {
+        if (response.data.exists === true) {
+          setReg("Létező felhasználónév!");
+          return;
+        } else {
+          if (vezeteknevReg && keresztnevReg && emailReg && szulReg && lakhelyReg && usernameToCheck && jelszoReg) {
+            if (jelszoReg === jelszoReg2) {
+              Axios.post("http://localhost:5000/register", {
+                username: usernameToCheck,
+                password: jelszoReg,
+                vnev: vezeteknevReg,
+                knev: keresztnevReg,
+                knev2: keresztnev2Reg,
+                email: emailReg,
+                szul: szulReg,
+                lakhely: lakhelyReg,
+                tel: telReg,
+                role: role,
+              });
+
+              setReg("Sikeres regisztráció!");
+              setTimeout(() => {
+                navigate("/login");
+              }, 1000);
             } else {
-              setReg("Minden kötelező mezőt ki kell tölteni!");
+              setReg("A beírt jelszó nem egyezik!");
             }
+          } else {
+            setReg("Minden kötelező mezőt ki kell tölteni!");
           }
-        }, 10);
-      } catch (error) {
-        console.error("Hiba történt a szerverrel:", error);
-        setReg("Hiba történt a regisztráció során.");
-      }
+        }
+      }, 10);
+    } catch (error) {
+      console.error("Hiba történt a szerverrel:", error);
+      setReg("Hiba történt a regisztráció során.");
     }
   };
 
@@ -199,12 +205,39 @@ const Register = () => {
             </div>
           </div>
 
+          <br />   
+
+          <div>
+            <input
+              type="checkbox"
+              id="termsCheckbox"
+              checked={termsAccepted}
+              onChange={(e) => setTermsAccepted(e.target.checked)}
+            />
+            <label htmlFor="termsCheckbox" style={{color: '#ff4500'}}>
+              Elfogadom az{' '}
+              <Link to="/terms">
+                Általános Szerződési Feltételeket
+              </Link>
+            </label>
+          </div>
+
           <div>
             <p>{reg}</p>
-            <button type="submit" onClick={register}>Regisztráció</button>
+            <button
+              type="submit"
+              onClick={register}
+              disabled={!termsAccepted} // Gomb letiltása, ha nincs elfogadva
+              style={{
+                backgroundColor: termsAccepted ? '#007bff' : '#ccc', // Színváltozás
+                cursor: termsAccepted ? 'pointer' : 'not-allowed', // Kurzor változása
+              }}
+            >
+              Regisztráció
+            </button>
           </div>
           <p>
-            Van már fiókód? <br />
+            Van már fiókod? <br />
             <Link to="/login">Jelentkezz be itt!</Link>
           </p>
         </div>
