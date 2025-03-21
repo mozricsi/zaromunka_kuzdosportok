@@ -597,7 +597,7 @@ app.get('/api/esemenyek', (req, res) => {
   `;
   db.query(query, (err, results) => {
     if (err) {
-      console.error('Lekérdezési hiba:', err.message); // Részletes hibaüzenet
+      console.error('Lekérdezési hiba:', err.message);
       return res.status(500).json({ error: 'Lekérdezési hiba: ' + err.message });
     }
     res.json(results);
