@@ -181,7 +181,6 @@ CREATE TABLE IF NOT EXISTS `kuzdosportok`.`ertekelesek` (
 CREATE TABLE IF NOT EXISTS `kuzdosportok`.`esemenyek` (
   `esemeny_id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11) NOT NULL,
-  `latogato_resztvevo` INT(1) NOT NULL,
   `pontos_cim` VARCHAR(255) NOT NULL,
   `ido` DATETIME NOT NULL,
   `sportneve` VARCHAR(255) NOT NULL,
@@ -397,10 +396,9 @@ INSERT INTO `kuzdosportok`.`klub_edzesek` (`sportklub_id`, `pontoscim`, `nap`, `
 (1, 'Budapest, Sportcsarnok 1.', 'Kedd', '10:00:00');
 
 -- 1. esemény: Szolnoki Boxverseny 2025
-INSERT INTO esemenyek (user_id, latogato_resztvevo, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
+INSERT INTO esemenyek (user_id, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
 VALUES (
     1, 
-    'Kovács János, Nagy Péter, Tóth Anna', 
     'Szolnok, Sportcsarnok, Aréna utca 12.', 
     '2025-04-15 10:00:00', 
     'Box', 
@@ -412,10 +410,9 @@ VALUES (
 );
 
 -- 2. esemény: Budapesti Judo Bajnokság
-INSERT INTO esemenyek (user_id, latogato_resztvevo, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
+INSERT INTO esemenyek (user_id, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
 VALUES (
     1, 
-    'Szabó Katalin, Horváth Gergő', 
     'Budapest, Judo Aréna, Fő út 45.', 
     '2025-05-20 14:00:00', 
     'Judo', 
@@ -427,10 +424,9 @@ VALUES (
 );
 
 -- 3. esemény: Debreceni MMA Gála
-INSERT INTO esemenyek (user_id, latogato_resztvevo, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
+INSERT INTO esemenyek (user_id, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
 VALUES (
     1, 
-    'Kiss Dávid, Molnár Eszter', 
     'Debrecen, Főnix Csarnok, Sport tér 1.', 
     '2025-06-10 18:00:00', 
     'MMA', 
@@ -442,10 +438,9 @@ VALUES (
 );
 
 -- 4. esemény: Kecskeméti Kickbox Kupa
-INSERT INTO esemenyek (user_id, latogato_resztvevo, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
+INSERT INTO esemenyek (user_id, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
 VALUES (
     1, 
-    'Fekete Zoltán, Varga Réka', 
     'Kecskemét, Sportközpont, Bajnok utca 3.', 
     '2025-07-05 09:00:00', 
     'Kickbox', 
@@ -457,10 +452,9 @@ VALUES (
 );
 
 -- 5. esemény: Pécsi Muay Thai Tábor és Verseny
-INSERT INTO esemenyek (user_id, latogato_resztvevo, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
+INSERT INTO esemenyek (user_id, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
 VALUES (
     1, 
-    'Tóth Bence, Nagy Laura', 
     'Pécs, Muay Thai Terem, Harcos utca 8.', 
     '2025-08-15 08:00:00', 
     'Muay Thai', 
