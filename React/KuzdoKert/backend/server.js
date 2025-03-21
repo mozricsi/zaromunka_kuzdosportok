@@ -37,7 +37,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root", // MySQL felhasználónév
   password: "", // MySQL jelszó (ha van)
-  port: "3307",
+  port: "3306",
   database: "kuzdosportok",
 });
 
@@ -591,7 +591,7 @@ app.get('/api/ranglista', (req, res) => {
 // Események lekérdezése
 app.get('/api/esemenyek', (req, res) => {
   const query = `
-    SELECT esemeny_id, user_id, latogato_resztvevo, pontos_cim, ido, sportneve, 
+    SELECT esemeny_id, user_id, pontos_cim, ido, sportneve, 
            leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal
     FROM esemenyek
   `;
