@@ -94,7 +94,7 @@ const EdzoiOldal = () => {
 
   const deleteClub = (sprotklubId) => {
     Swal.fire({
-      title: 'Biztosan törölni szeretnéd ezt a klubbot?',
+      title: 'Biztosan törölni szeretnéd ezt a klubot?',
       text: 'Ez a művelet nem vonható vissza, és a kapcsolódó edzések is törlődnek!',
       icon: 'warning',
       showCancelButton: true,

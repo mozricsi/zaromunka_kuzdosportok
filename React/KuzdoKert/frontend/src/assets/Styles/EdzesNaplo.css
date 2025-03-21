@@ -1,435 +1,190 @@
 /* Általános stílusok */
-.container {
-  font-family: 'Roboto', Arial, sans-serif;
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: #1a1a1a;
+body {
+  background-color: #1a1a1a; /* Sötét háttér az egységes dizájnhoz */
   color: #fff;
-  min-height: 100vh;
+  margin: 0; /* Eltávolítjuk a margót */
+  min-height: 100vh; /* Teljes képernyő magasság */
+  font-family: Arial, sans-serif;
+}
+
+.edzesnaplo-container {
+  padding: 20px;
+  min-height: 100vh; /* Teljes képernyő magasság */
+  width: 100%; /* Teljes szélesség */
+  background-color: #1a1a1a; /* Egységes háttérszín */
+  text-align: center;
 }
 
 /* Cím */
 h1 {
-  font-size: 3rem;
-  color: #ff4500;
+  font-size: 2.5rem;
+  color: #ff4500; /* Narancssárga cím */
   text-transform: uppercase;
   letter-spacing: 2px;
-  text-align: center;
   margin-bottom: 20px;
 }
 
-.container > p {
+/* Üdvözlő szöveg */
+.edzesnaplo-container > p {
   font-size: 1.2rem;
-  color: #ccc;
+  color: #fff8f8; /* Világos szöveg */
   text-align: center;
   line-height: 1.6;
   margin-bottom: 40px;
 }
 
-/* Küzdősportok listája */
-.sports-list {
-  background: #2c2c2c;
+/* Edzéslista */
+.training-list {
+  background: #2c2c2c; /* Sötét háttér */
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
   margin-bottom: 40px;
 }
 
-.sports-list h2 {
+.training-list h2 {
   font-size: 2rem;
-  color: #ff4500;
+  color: #ff4500; /* Narancssárga cím */
   margin-bottom: 20px;
+  text-align: center;
 }
 
-.sports-list ul {
+.training-list ul {
   list-style: none;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 10px;
 }
 
-.sport-item {
-  background: #333;
+.training-item {
   padding: 10px;
+  margin-bottom: 10px;
+  background-color: #2c2c2c; /* Sötét háttér */
   border-radius: 5px;
-  text-align: center;
-  color: #ccc;
-  transition: transform 0.3s ease;
-  cursor: pointer;
+  text-align: left;
+  color: #ccc; /* Világos szöveg */
 }
 
-.sport-item:hover {
-  transform: scale(1.05);
-}
-
-.sport-item.selected {
-  background-color: #ff4500 !important;
-  color: #fff !important;
-}
-
-/* Űrlap */
-.workout-form {
-  background: #2c2c2c;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  margin-bottom: 40px;
-}
-
-.form-group {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  color: #ccc;
-  font-size: 1rem;
-}
-
-.required {
-  color: #ff4500;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  padding: 10px;
-  background: #333;
-  border: none;
-  border-radius: 5px;
-  color: #fff;
-  font-size: 1rem;
-}
-
-.form-group textarea {
-  height: 100px;
-  resize: vertical;
-}
-
-.add-button {
-  padding: 10px 20px;
-  background-color: #ff4500;
+/* Lemondás gomb */
+.cancel-button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #ff4500; /* Narancssárga gomb */
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  width: 100%;
 }
 
-.add-button:hover {
-  background-color: #cc3700;
-  transform: scale(1.05);
+.cancel-button:hover {
+  background-color: #cc3700; /* Sötétebb narancssárga hover */
 }
 
-/* Naptár szekció */
-.calendar-section {
-  background: #2c2c2c;
+/* Üzenetek */
+.warning,
+.message {
+  font-size: 1rem;
+  color: #ff4500; /* Narancssárga üzenetek */
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* Betöltési animáció */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: #ff4500; /* Narancssárga spinner */
+}
+
+/* Fejlődéskövetés szekció */
+.progress-section {
+  background: #2c2c2c; /* Sötét háttér */
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  margin-bottom: 40px;
-}
-
-.calendar-section h2 {
-  font-size: 2rem;
-  color: #ff4500;
-  margin-bottom: 20px;
-}
-
-.calendar-input {
-  padding: 10px;
-  background: #333;
-  border: none;
   border-radius: 5px;
-  color: #fff;
-  font-size: 1rem;
-  margin-bottom: 20px;
-  width: 100%;
-}
-
-.daily-workouts {
-  min-height: 100px;
-}
-
-.daily-workouts p {
-  color: #ccc;
-  font-size: 1rem;
-}
-
-/* Edzéslista */
-.workout-list {
-  background: #2c2c2c;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.workout-list h2 {
-  font-size: 2rem;
-  color: #ff4500;
-  margin-bottom: 20px;
-}
-
-.workout-list p {
-  font-size: 1rem;
-  color: #ccc;
-  line-height: 1.6;
-}
-
-.workout-list ul,
-.daily-workouts ul {
-  list-style: none;
-  padding: 0;
-}
-
-.workout-item {
-  padding: 15px;
-  background: #333;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  color: #ccc;
-  font-size: 1rem;
-  line-height: 1.6;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-}
-
-.workout-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-}
-
-.workout-item strong {
-  color: #ff4500;
-  margin-right: 10px;
-}
-
-/* Statisztika szekció */
-.stats-section {
-  background: #2c2c2c;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   margin-bottom: 40px;
 }
 
-.stats-section h2 {
+.progress-section h2 {
   font-size: 2rem;
-  color: #ff4500;
+  color: #ff4500; /* Narancssárga cím */
   margin-bottom: 20px;
 }
 
-.chart-container {
-  max-width: 600px;
-  margin: 0 auto;
+.progress-section p {
+  font-size: 1rem;
+  color: #ccc; /* Világos szöveg */
+  line-height: 1.6;
 }
 
-/* Motivációs üzenet */
-.motivation-message {
-  background: #2c2c2c;
+/* Motivációs szekció */
+.motivation-section {
+  background: #2c2c2c; /* Sötét háttér */
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
   margin-top: 40px;
   text-align: center;
 }
 
-.motivation-message h2 {
+.motivation-section h2 {
   font-size: 2rem;
-  color: #ff4500;
+  color: #ff4500; /* Narancssárga cím */
   margin-bottom: 10px;
 }
 
-.motivation-message p {
+.motivation-section p {
   font-size: 1rem;
-  color: #ccc;
+  color: #ccc; /* Világos szöveg */
   line-height: 1.6;
 }
 
 /* Reszponzív dizájn */
-@media (max-width: 768px) {
-  .container {
+@media (max-width: 1024px) {
+  .edzesnaplo-container {
     padding: 15px;
-    max-width: 90%;
   }
+  .training-item {
+    padding: 8px;
+  }
+}
 
-  h1 {
+@media (max-width: 768px) {
+  .edzesnaplo-container {
+    padding: 10px;
+  }
+  .edzesnaplo-container h1 {
     font-size: 2rem;
   }
-
-  .container > p {
-    font-size: 1rem;
+  .training-item {
+    padding: 6px;
+    font-size: 0.9rem;
   }
-
-  .sports-list {
-    padding: 15px;
-  }
-
-  .sports-list h2 {
+  .progress-section h2,
+  .motivation-section h2 {
     font-size: 1.5rem;
-  }
-
-  .sports-list ul {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  }
-
-  .sport-item {
-    padding: 8px;
-    font-size: 0.9rem;
-  }
-
-  .form-group {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .form-group label {
-    font-size: 0.9rem;
-  }
-
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    width: 100%;
-    padding: 8px;
-    font-size: 0.9rem;
-  }
-
-  .add-button {
-    padding: 8px 15px;
-    font-size: 0.9rem;
-  }
-
-  .calendar-section {
-    padding: 15px;
-  }
-
-  .calendar-section h2 {
-    font-size: 1.5rem;
-  }
-
-  .calendar-input {
-    padding: 8px;
-    font-size: 0.9rem;
-  }
-
-  .workout-list {
-    padding: 15px;
-  }
-
-  .workout-list h2 {
-    font-size: 1.5rem;
-  }
-
-  .workout-item {
-    padding: 10px;
-    font-size: 0.9rem;
-  }
-
-  .stats-section {
-    padding: 15px;
-  }
-
-  .stats-section h2 {
-    font-size: 1.5rem;
-  }
-
-  .chart-container {
-    max-width: 100%;
-  }
-
-  .motivation-message {
-    padding: 15px;
-  }
-
-  .motivation-message h2 {
-    font-size: 1.5rem;
-  }
-
-  .motivation-message p {
-    font-size: 0.9rem;
   }
 }
 
 @media (max-width: 480px) {
-  .container {
-    padding: 10px;
+  .edzesnaplo-container {
+    padding: 8px;
   }
-
-  h1 {
+  .edzesnaplo-container h1 {
     font-size: 1.5rem;
   }
-
-  .container > p {
+  .training-item {
+    padding: 5px;
+    font-size: 0.8rem;
+  }
+  .cancel-button {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+  .progress-section h2,
+  .motivation-section h2 {
+    font-size: 1.2rem;
+  }
+  .progress-section p,
+  .motivation-section p {
     font-size: 0.9rem;
   }
-
-  .sports-list ul {
-    grid-template-columns: 1fr;
-  }
-
-  .sport-item {
-    padding: 6px;
-    font-size: 0.8rem;
-  }
-
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    padding: 6px;
-    font-size: 0.8rem;
-  }
-
-  .add-button {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-  }
-
-  .calendar-input {
-    padding: 6px;
-    font-size: 0.8rem;
-  }
-
-  .workout-item {
-    padding: 8px;
-    font-size: 0.8rem;
-  }
-
-  .stats-section h2 {
-    font-size: 1.2rem;
-  }
-
-  .motivation-message {
-    padding: 10px;
-  }
-
-  .motivation-message h2 {
-    font-size: 1.2rem;
-  }
-
-  .motivation-message p {
-    font-size: 0.8rem;
-  }
-}
-
-.apply-button {
-  margin-top: 10px;
-  padding: 5px 10px;
-  background-color: #ff4500;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.apply-button:hover {
-  background-color: #cc3700;
 }
