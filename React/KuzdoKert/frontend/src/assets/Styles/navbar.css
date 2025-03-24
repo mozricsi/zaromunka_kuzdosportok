@@ -6,6 +6,17 @@
   background-color: #545353; /* Világosabb szürke háttér */
   padding: 15px 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Navigációs elemek konténere */
+.nav-items-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 /* Navigációs elemek */
@@ -80,11 +91,13 @@
   border: 1px solid #555; /* Világosabb szürke szegély */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
   padding: 5px 0;
+  position: absolute;
   right: 0; /* Jobb oldalra igazítás */
   left: auto;
   min-width: 180px;
   max-width: 250px;
   overflow: hidden;
+  z-index: 1000;
 }
 
 /* Dropdown elemek */
@@ -94,6 +107,7 @@
   font-size: 1rem;
   padding: 8px 15px;
   transition: all 0.3s ease;
+  display: block;
 }
 
 .dropdown-item:hover {
@@ -148,10 +162,12 @@
   border: 1px solid #555;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
   padding: 10px;
+  position: absolute;
   right: 0;
   left: auto;
   min-width: clamp(200px, 25vw, 300px);
   max-width: 350px;
+  z-index: 1000;
 }
 
 .notification-item {
@@ -169,46 +185,120 @@
   color: #ff4500;
 }
 
+/* Hamburger menü ikon (feltételezem, hogy ez a három vonal a jobb felső sarokban) */
+.hamburger-menu {
+  display: none; /* Alapértelmezetten rejtve van */
+  cursor: pointer;
+}
+
+.hamburger-menu svg {
+  width: 30px;
+  height: 30px;
+  fill: #fff;
+}
+
 /* Reszponzív dizájn */
 @media (max-width: 991px) {
   .custom-navbar {
     padding: 10px 15px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-items-container {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    display: none; /* Alapértelmezetten rejtve van, a hamburger menü nyitja meg */
+  }
+
+  .nav-items-container.active {
+    display: flex; /* Ha a hamburger menü aktív, látható */
   }
 
   .nav-item {
-    font-size: 1rem;
+    font-size: 1.1rem;
     margin: 10px 0;
+    width: 100%;
+    text-align: left;
+    padding: 10px 15px;
   }
 
   .nav-item.active {
-    padding: 5px;
+    padding: 10px 15px;
+    width: 100%;
   }
 
   .dropdown-menu {
     width: 100%;
-    text-align: right; /* Jobb oldali szöveg igazítás */
+    text-align: left;
+    position: static;
+    box-shadow: none;
+    border: none;
+    background-color: #3a3a3a;
   }
 
   .dropdown-logo {
-    margin: 0 auto;
+    margin: 0;
+    width: 28px;
+    height: 28px;
   }
 
   .notification-container {
-    margin-left: 10px;
+    margin-left: 0;
+    margin-top: 10px;
   }
 
   .notification-menu {
     width: 100%;
-    text-align: center;
+    text-align: left;
+    position: static;
+    box-shadow: none;
+    border: none;
+    background-color: #3a3a3a;
+  }
+
+  /* Hamburger menü láthatóvá tétele */
+  .hamburger-menu {
+    display: block;
+    position: absolute;
+    top: 15px;
+    right: 15px;
   }
 }
 
 @media (max-width: 576px) {
-  .notification-bell svg {
-    width: 20px;
-    height: 20px;
+  .custom-navbar {
+    padding: 8px 10px;
   }
+
+  .nav-item {
+    font-size: 1rem;
+    padding: 8px 10px;
+  }
+
+  .dropdown-logo {
+    width: 25px;
+    height: 25px;
+  }
+
+  .notification-bell svg {
+    width: 22px;
+    height: 22px;
+  }
+
   .notification-item {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .notification-count {
+    width: 14px;
+    height: 14px;
+    font-size: 0.7rem;
+  }
+
+  .hamburger-menu svg {
+    width: 25px;
+    height: 25px;
   }
 }

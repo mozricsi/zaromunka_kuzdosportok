@@ -1,24 +1,23 @@
-/* EdzoiOldal.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  background-color: #1a1a1a; /* Teljes háttér kitöltése */
+  background-color: #1a1a1a;
   color: #fff;
-  margin: 0; /* Eltávolítjuk a margót, hogy ne maradjon fehér terület */
-  min-height: 100vh; /* Biztosítjuk, hogy a body kitöltse a képernyőt */
+  margin: 0;
+  min-height: 100vh;
   font-family: 'Roboto', Arial, sans-serif;
 }
 
 .coach-container {
   padding: 20px;
-  max-width: 100%; /* Eltávolítjuk a fix 800px-et, hogy kitöltse az egész szélességet */
-  margin: 0; /* Centrálás helyett a teljes szélességet használjuk */
+  max-width: 100%;
+  margin: 0;
   background-color: #1a1a1a;
   color: #fff;
-  min-height: 100vh; /* Teljes képernyő magasság */
-  width: 100%; /* Biztosítjuk, hogy a konténer kitöltse a szülőt */
+  min-height: 100vh;
+  width: 100%;
 }
 
 h1 {
@@ -49,10 +48,10 @@ h1 {
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   margin-bottom: 40px;
-  width: 100%; /* Teljes szélesség a konténerben */
-  max-width: 600px; /* Maximális szélesség responszív célból */
+  width: 100%;
+  max-width: 600px;
   margin-left: auto;
-  margin-right: auto; /* Centrálás */
+  margin-right: auto;
 }
 
 .form-group {
@@ -99,9 +98,9 @@ h1 {
   font-size: 1rem;
   transition: background-color 0.3s ease, transform 0.3s ease;
   width: 100%;
-  max-width: 200px; /* Responszív gomb méretezés */
-  margin: 0 auto; /* Centrálás */
-  display: block; /* Blokk szintű elemként viselkedjen */
+  max-width: 200px;
+  margin: 0 auto;
+  display: block;
 }
 
 .add-button:hover {
@@ -115,9 +114,9 @@ h1 {
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   width: 100%;
-  max-width: 600px; /* Maximális szélesség responszív célból */
+  max-width: 600px;
   margin-left: auto;
-  margin-right: auto; /* Centrálás */
+  margin-right: auto;
 }
 
 .workout-list h2 {
@@ -170,15 +169,15 @@ h1 {
   border-radius: 5px;
   background-color: #0c0c0c;
   width: 100%;
-  max-width: 600px; /* Maximális szélesség responszív célból */
+  max-width: 600px;
   margin-left: auto;
-  margin-right: auto; /* Centrálás */
+  margin-right: auto;
 }
 
 .stream-button {
   padding: 0.5rem 1rem;
   margin: 0.5rem;
-  background-color: #ff4500; /* Egységesítem a narancssárga színnel */
+  background-color: #ff4500;
   color: white;
   border: none;
   border-radius: 5px;
@@ -213,7 +212,7 @@ h1 {
 
 @media (max-width: 768px) {
   .coach-container {
-    padding: 15px;
+    padding: 10px;
     max-width: 100%;
   }
 
@@ -237,14 +236,14 @@ h1 {
   }
 
   .form-group label {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
   .form-group input,
   .form-group select,
   .form-group textarea {
     padding: 8px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
 
   .add-button {
@@ -278,11 +277,11 @@ h1 {
 
 @media (max-width: 480px) {
   .coach-container {
-    padding: 10px;
+    padding: 8px;
   }
 
   h1 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 
   .coach-container > p {
@@ -299,7 +298,7 @@ h1 {
   .form-group select,
   .form-group textarea {
     padding: 6px;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .add-button {
@@ -309,12 +308,12 @@ h1 {
   }
 
   .workout-list h2 {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
 
   .workout-item {
     padding: 8px;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
 
   .message {
