@@ -1,16 +1,15 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../Styles/WelcomeScreen.css'; // Saját CSS
-import '../Styles/hirek.css'; // A Fooldal CSS-ét használjuk a konzisztens dizájnért
+import '../Styles/WelcomeScreen.css';
+import '../Styles/hirek.css';
 
 function WelcomeScreen() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 7 másodperc (7000ms) után elhalványul és átirányít a Fooldal-ra
     const timer = setTimeout(() => {
       navigate('/');
-    }, 4000);
+    }, 2000);
 
     return () => clearTimeout(timer); // Tisztítás, ha a komponens unmountol
   }, [navigate]);

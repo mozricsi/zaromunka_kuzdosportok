@@ -367,6 +367,7 @@ const EdzoiOldal = () => {
               Stream leállítása
             </button>
           </div>
+          <br />
 
           {/* Klubbok listája */}
           <div className="workout-list">
@@ -387,6 +388,7 @@ const EdzoiOldal = () => {
               </ul>
             )}
           </div>
+          <br />
 
           {/* Edzések listája */}
           <div className="workout-list">

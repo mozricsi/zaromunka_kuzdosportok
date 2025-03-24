@@ -19,7 +19,7 @@ const Login = () => {
         setUserRole(response.data.user[0].role); // Szerepkör lekérdezése
         setTimeout(() => {
           navigate("/welcome"); // Módosítva: /welcome-re irányít
-        }, 1000);
+        }, 700);
       }
     });
   }, [navigate]); // navigate hozzáadva a függőségekhez
