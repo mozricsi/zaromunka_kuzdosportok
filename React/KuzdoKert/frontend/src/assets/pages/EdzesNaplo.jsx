@@ -3,15 +3,18 @@ import '../Styles/EdzesNaplo.css';
 import Axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
-import { FaSpinner } from 'react-icons/fa'; // Ikon a betöltéshez
+import { FaSpinner } from 'react-icons/fa';
 
 const EdzesNaplo = () => {
   const [loginStatus, setLoginStatus] = useState("");
   const [userId, setUserId] = useState(null);
   const [trainings, setTrainings] = useState([]);
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(true); // Betöltési állapot
-  const [participatedTrainings, setParticipatedTrainings] = useState(0); // Fejlődéskövetéshez
+  const [loading, setLoading] = useState(true);
+  const [participatedTrainings, setParticipatedTrainings] = useState(0);
+  const [sportBreakdown, setSportBreakdown] = useState({});
+  const [monthlyGoal, setMonthlyGoal] = useState(10);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,15 +42,21 @@ const EdzesNaplo = () => {
     setLoading(true);
     Axios.get(`http://localhost:5000/edzesnaplo/${userId}`)
       .then((response) => {
-        console.log("API válasz:", response.data);
+        console.log("API válasz (jelentkezett edzések):", response.data);
         setTrainings(response.data);
         if (response.data.length === 0) {
           setMessage("Még nem jelentkeztél egyetlen edzésre sem.");
         } else {
           setMessage("");
         }
-        // Fejlődéskövetés: Számoljuk meg az edzéseket (példa: az összes edzés)
         setParticipatedTrainings(response.data.length);
+
+        // Sportágak szerinti eloszlás
+        const breakdown = {};
+        response.data.forEach((training) => {
+          breakdown[training.sportnev] = (breakdown[training.sportnev] || 0) + 1;
+        });
+        setSportBreakdown(breakdown);
       })
       .catch((error) => {
         console.error("Hiba az edzések betöltésekor:", error.response?.data || error.message);
@@ -101,6 +110,22 @@ const EdzesNaplo = () => {
     return days[day] || day;
   };
 
+  const formatTime = (time) => {
+    return time.split(':').slice(0, 2).join(':'); // Pl. "18:00:00" -> "18:00"
+  };
+
+  const getMotivationalMessage = () => {
+    if (participatedTrainings >= 10) {
+      return "Fantasztikus vagy! Már 10 edzésen túl vagy, igazi bajnok vagy!";
+    } else if (participatedTrainings >= 5) {
+      return "Szuperül haladsz! Már 5 edzésen részt vettél, csak így tovább!";
+    } else if (participatedTrainings > 0) {
+      return "Jó úton jársz! Már " + participatedTrainings + " edzésen részt vettél, folytasd így!";
+    } else {
+      return "Kezdj el edzeni, és hamarosan érezni fogod a fejlődést!";
+    }
+  };
+
   return (
     <div className="edzesnaplo-container">
       <h1>Edzésnapló</h1>
@@ -117,57 +142,81 @@ const EdzesNaplo = () => {
           )}
 
           {loginStatus && (
-            <div className="training-list">
-              <h2>Jelentkezett edzéseid</h2>
-              {trainings.length === 0 ? (
-                <p>{message || "Még nem jelentkeztél egyetlen edzésre sem."}</p>
-              ) : (
-                <ul>
-                  {trainings.map((training) => (
-                    <li key={training.jelentkezes_id} className="training-item">
-                      <strong>{training.klubbnev}</strong> <br />
-                      <strong>Sport:</strong> {training.sportnev} <br />
-                      <strong>Helyszín:</strong> {training.hely} <br />
-                      <strong>Pontos cím:</strong> {training.pontoscim} <br />
-                      <strong>Nap:</strong> {formatDate(training.nap)} <br />
-                      <strong>Idő:</strong> {training.ido} <br />
-                      <button
-                        className="cancel-button"
-                        onClick={() => cancelTraining(training.jelentkezes_id)}
-                      >
-                        Lemondás
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
+            <>
+              {/* Jelentkezett edzések */}
+              <div className="training-list">
+                <h2>Jelentkezett edzéseid</h2>
+                {trainings.length === 0 ? (
+                  <p>Még nem jelentkeztél egyetlen edzésre sem.</p>
+                ) : (
+                  <ul>
+                    {trainings.map((training) => (
+                      <li key={training.jelentkezes_id} className="training-item">
+                        <strong>{training.klubbnev}</strong> <br />
+                        <strong>Sport:</strong> {training.sportnev} <br />
+                        <strong>Helyszín:</strong> {training.hely} <br />
+                        <strong>Pontos cím:</strong> {training.pontoscim} <br />
+                        <strong>Nap:</strong> {formatDate(training.nap)} <br />
+                        <strong>Idő:</strong> {formatTime(training.ido)} <br />
+                        <button
+                          className="cancel-button"
+                          onClick={() => cancelTraining(training.jelentkezes_id)}
+                        >
+                          Lemondás
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
               {message && trainings.length === 0 && (
                 <p className="message">{message}</p>
               )}
-            </div>
-          )}
 
-          {/* Fejlődéskövetés */}
-          {loginStatus && (
-            <div className="progress-section">
-              <h2>Fejlődésed nyomon követése</h2>
-              <p>Jelenleg <strong>{participatedTrainings}</strong> edzésre jelentkeztél!</p>
-              {participatedTrainings > 0 ? (
-                <p>Gratulálunk! Folytasd így, és hamarosan elérheted céljaidat!</p>
-              ) : (
-                <p>Ne csüggedj! Nézd meg a közelgő edzéseket, és jelentkezz fel egyre!</p>
-              )}
-            </div>
-          )}
+              {/* Fejlődéskövetés */}
+              <div className="progress-section">
+                <h2>Fejlődésed nyomon követése</h2>
+                <p>Jelenleg <strong>{participatedTrainings}</strong> edzésed van!</p>
+                {participatedTrainings > 0 ? (
+                  <p>Gratulálunk! Folytasd így, és hamarosan elérheted céljaidat!</p>
+                ) : (
+                  <p>Ne csüggedj! Nézd meg a közelgő edzéseket, és jelentkezz fel egyre!</p>
+                )}
 
-          {/* Motivációs szöveg */}
-          {loginStatus && (
-            <div className="motivation-section">
-              <h2>Motiváció a folytatáshoz</h2>
-              <p>
-                "Minden egyes edzés egy lépés közelebb visz a céljaidhoz. Ne add fel, a kitartásod meghozza a gyümölcsét!"
-              </p>
-            </div>
+                {/* Sportágak szerinti eloszlás */}
+                {Object.keys(sportBreakdown).length > 0 && (
+                  <div className="sport-breakdown">
+                    <h3>Sportágak szerinti eloszlás</h3>
+                    <ul>
+                      {Object.entries(sportBreakdown).map(([sport, count]) => (
+                        <li key={sport}>
+                          {sport}: {count} edzés
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Folyamatjelző sáv */}
+                <div className="progress-bar">
+                  <h3>Havi cél: {monthlyGoal} edzés</h3>
+                  <div className="progress-bar-container">
+                    <div
+                      className="progress-bar-fill"
+                      style={{ width: `${(participatedTrainings / monthlyGoal) * 100}%` }}
+                    ></div>
+                  </div>
+                  <p>{participatedTrainings}/{monthlyGoal} edzés teljesítve</p>
+                </div>
+              </div>
+
+              {/* Motiváció */}
+              <div className="motivation-section">
+                <h2>Motiváció a folytatáshoz</h2>
+                <p>{getMotivationalMessage()}</p>
+              </div>
+            </>
           )}
         </>
       )}
