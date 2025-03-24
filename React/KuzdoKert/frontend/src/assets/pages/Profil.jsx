@@ -6,33 +6,10 @@ import Axios from "axios";
 const Profil = () => {
   const [loginStatus, setLoginStatus] = useState(false);
   const [userRole, setUserRole] = useState(null);
-  const [userData, setUserData] = useState({
-    vnev: undefined,
-    knev: undefined,
-    knev2: undefined,
-    email: undefined,
-    szul: undefined,
-    lakhely: undefined,
-    tel: undefined,
-    username: undefined,
-    password: undefined,
-    role: undefined,
-    profilePicture: undefined,
-    interestedSports: [],
-  });
-  const [editMode, setEditMode] = useState(false);
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [selectedSport, setSelectedSport] = useState("");
-  const [recommendedTrainings, setRecommendedTrainings] = useState([]);
-  const [sports, setSports] = useState([]); // Sportágak listája
-
-  const navigate = useNavigate();
   Axios.defaults.withCredentials = true;
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Felhasználói adatok betöltése
     Axios.get("http://localhost:5000/login").then((response) => {
       if (response.data.loggedIn === true) {
         setLoginStatus(response.data.user[0].felhasznalonev);
@@ -48,20 +25,31 @@ const Profil = () => {
           username: response.data.user[0].felhasznalonev,
           password: response.data.user[0].jelszo,
           role: response.data.user[0].role,
-          interestedSports: response.data.user[0].interestedSports || [],
         });
       } else {
         navigate("/login");
       }
     });
-
-    // Sportágak betöltése az adatbázisból
-    Axios.get("http://localhost:5000/api/sportok").then((response) => {
-      setSports(response.data);
-    }).catch((error) => {
-      console.error("Hiba a sportágak lekérdezésekor:", error);
-    });
   }, [navigate]);
+
+  const [userData, setUserData] = useState({
+    vnev: undefined,
+    knev: undefined,
+    knev2: undefined,
+    email: undefined,
+    szul: undefined,
+    lakhely: undefined,
+    tel: undefined,
+    username: undefined,
+    password: undefined,
+    role: undefined,
+    profilePicture: undefined,
+  });
+
+  const [editMode, setEditMode] = useState(false);
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -121,6 +109,7 @@ const Profil = () => {
 
   const handleSaveChanges = () => {
     const requiredFields = ["vnev", "knev", "email", "szul", "lakhely", "username"];
+
     const emptyFields = requiredFields.filter((field) => !userData[field] || userData[field].trim() === "");
 
     if (emptyFields.length > 0) {
@@ -138,60 +127,6 @@ const Profil = () => {
         console.error("Hiba az adatok mentésekor:", error);
         alert("Hiba történt a mentés közben.");
       });
-  };
-
-  const handleSportSelection = (e) => {
-    const sport = e.target.value;
-    setSelectedSport(sport);
-    if (sport && !userData.interestedSports.includes(sport)) {
-      const updatedSports = [...userData.interestedSports, sport];
-      setUserData({ ...userData, interestedSports: updatedSports });
-
-      Axios.post("http://localhost:5000/updateUser", {
-        ...userData,
-        interestedSports: updatedSports,
-      })
-        .then((response) => {
-          console.log("Érdeklődési körök frissítve:", response.data);
-        })
-        .catch((error) => {
-          console.error("Hiba az érdeklődési körök mentésekor:", error);
-        });
-
-      fetchRecommendedTrainings(sport);
-    }
-  };
-
-  const fetchRecommendedTrainings = (sport) => {
-    Axios.get(`http://localhost:5000/api/edzesek/sport/${sport}`)
-      .then((response) => {
-        setRecommendedTrainings(response.data);
-      })
-      .catch((error) => {
-        console.error(`Hiba a(z) ${sport} edzések lekérdezésekor:`, error);
-        setRecommendedTrainings([]);
-      });
-  };
-
-  const removeSport = (sport) => {
-    const updatedSports = userData.interestedSports.filter((s) => s !== sport);
-    setUserData({ ...userData, interestedSports: updatedSports });
-
-    Axios.post("http://localhost:5000/updateUser", {
-      ...userData,
-      interestedSports: updatedSports,
-    })
-      .then((response) => {
-        console.log("Érdeklődési körök frissítve:", response.data);
-      })
-      .catch((error) => {
-        console.error("Hiba az érdeklődési körök mentésekor:", error);
-      });
-
-    if (selectedSport === sport) {
-      setSelectedSport("");
-      setRecommendedTrainings([]);
-    }
   };
 
   return (
@@ -251,7 +186,7 @@ const Profil = () => {
                 <input
                   type="date"
                   name="szul"
-                  value={userData.szul ? userData.szul.split('T')[0] : ""}
+                  value={new Date(userData.szul).toLocaleDateString("hu-HU") || ""}
                   onChange={handleInputChange}
                 />
               </td>
@@ -329,7 +264,7 @@ const Profil = () => {
               </tr>
               <tr>
                 <th>Születési dátum:</th>
-                <td>{userData.szul ? new Date(userData.szul).toLocaleDateString("hu-HU") : ""}</td>
+                <td>{new Date(userData.szul).toLocaleDateString("hu-HU")}</td>
               </tr>
               <tr>
                 <th>Lakhely:</th>
@@ -382,57 +317,6 @@ const Profil = () => {
             />
             <button onClick={handlePasswordChange}>Jelszó változtatása</button>
           </div>
-
-          {userRole === "visitor" && (
-            <div className="interests-section">
-              <h2>Milyen típusú edzések érdekelnek téged?</h2>
-              <p>Így személyre szabott ajánlatokat kaphatsz.</p>
-              <select value={selectedSport} onChange={handleSportSelection}>
-                <option value="">Válassz egy sportágat...</option>
-                {sports.map((sport) => (
-                  <option key={sport.sport_id} value={sport.sportnev}>
-                    {sport.sportnev}
-                  </option>
-                ))}
-              </select>
-
-              {userData.interestedSports.length > 0 && (
-                <div className="selected-sports">
-                  <h3>Kiválasztott sportágak:</h3>
-                  <ul>
-                    {userData.interestedSports.map((sport, index) => (
-                      <li key={index}>
-                        {sport}
-                        <button
-                          className="remove-sport-button"
-                          onClick={() => removeSport(sport)}
-                        >
-                          Törlés
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {recommendedTrainings.length > 0 && (
-                <div className="recommended-trainings">
-                  <h3>Ajánlott edzések ({selectedSport}):</h3>
-                  <ul>
-                    {recommendedTrainings.map((training) => (
-                      <li key={training.edzes_id} className="training-item">
-                        <strong>{training.klubbnev}</strong> <br />
-                        <strong>Helyszín:</strong> {training.hely} <br />
-                        <strong>Pontos cím:</strong> {training.pontoscim} <br />
-                        <strong>Nap:</strong> {training.nap} <br />
-                        <strong>Idő:</strong> {training.ido}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
         </>
       )}
 

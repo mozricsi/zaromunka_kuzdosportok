@@ -37,7 +37,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root", // MySQL felhasználónév
   password: "", // MySQL jelszó (ha van)
-  port: "3307",
+  port: "3306",
   database: "kuzdosportok",
 });
 
@@ -831,55 +831,6 @@ app.get('/esemenyek/sport/:sportnev', (req, res) => {
   });
 });
 
-app.get('/api/edzesek/sport/:sportnev', (req, res) => {
-  const sportnev = req.params.sportnev;
-  const query = `
-    SELECT ke.edzes_id, k.klubbnev, k.hely, ke.pontoscim, ke.nap, ke.ido
-    FROM klub_edzesek ke
-    JOIN klubbok k ON ke.sportklub_id = k.sprotklub_id
-    JOIN sport s ON k.sport_id = s.sport_id
-    WHERE s.sportnev = ?
-  `;
-  db.query(query, [sportnev], (err, results) => {
-    if (err) {
-      console.error("Hiba az edzések lekérdezésekor:", err);
-      res.status(500).json({ message: "Hiba történt." });
-    } else {
-      res.json(results);
-    }
-  });
-});
-
-app.get('/api/sportok', (req, res) => {
-  const query = 'SELECT sport_id, sportnev FROM sport';
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Hiba a sportágak lekérdezésekor:", err);
-      res.status(500).json({ message: "Hiba történt." });
-    } else {
-      res.json(results);
-    }
-  });
-});
-
-app.get('/api/edzesek/sport/:sportnev', (req, res) => {
-  const sportnev = req.params.sportnev;
-  const query = `
-    SELECT ke.edzes_id, k.klubbnev, k.hely, ke.pontoscim, ke.nap, ke.ido
-    FROM klub_edzesek ke
-    JOIN klubbok k ON ke.sportklub_id = k.sprotklub_id
-    JOIN sport s ON k.sport_id = s.sport_id
-    WHERE s.sportnev = ?
-  `;
-  db.query(query, [sportnev], (err, results) => {
-    if (err) {
-      console.error("Hiba az edzések lekérdezésekor:", err);
-      res.status(500).json({ message: "Hiba történt." });
-    } else {
-      res.json(results);
-    }
-  });
-});
 
 
 // **Szerver indítása**
