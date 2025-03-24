@@ -9,7 +9,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  position: relative;
 }
 
 /* Navigációs elemek konténere */
@@ -17,6 +17,7 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  gap: 10px;
 }
 
 /* Navigációs elemek */
@@ -27,6 +28,7 @@
   letter-spacing: 1px;
   margin: 0 15px;
   transition: all 0.3s ease;
+  text-decoration: none;
 }
 
 .nav-item:hover {
@@ -54,12 +56,20 @@
   letter-spacing: 1px;
   padding: 5px 10px;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .nav-item .toggle-btn:hover {
   color: #ff4500; /* Narancssárga hoverkor */
   transform: translateY(-3px);
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Ikonok konténere (harang és profil) */
+.icons-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 /* Dropdown konténer és ikon */
@@ -92,7 +102,7 @@
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
   padding: 5px 0;
   position: absolute;
-  right: 0; /* Jobb oldalra igazítás */
+  right: 0;
   left: auto;
   min-width: 180px;
   max-width: 250px;
@@ -108,6 +118,7 @@
   padding: 8px 15px;
   transition: all 0.3s ease;
   display: block;
+  text-decoration: none;
 }
 
 .dropdown-item:hover {
@@ -132,7 +143,6 @@
 /* Értesítések konténer */
 .notification-container {
   position: relative;
-  margin-left: 15px;
 }
 
 .notification-bell {
@@ -185,7 +195,7 @@
   color: #ff4500;
 }
 
-/* Hamburger menü ikon (feltételezem, hogy ez a három vonal a jobb felső sarokban) */
+/* Hamburger menü ikon */
 .hamburger-menu {
   display: none; /* Alapértelmezetten rejtve van */
   cursor: pointer;
@@ -198,11 +208,12 @@
 }
 
 /* Reszponzív dizájn */
-@media (max-width: 991px) {
+@media (max-width: 768px) {
   .custom-navbar {
     padding: 10px 15px;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .nav-items-container {
@@ -210,6 +221,13 @@
     flex-direction: column;
     align-items: flex-start;
     display: none; /* Alapértelmezetten rejtve van, a hamburger menü nyitja meg */
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background-color: #545353;
+    padding: 10px 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 999;
   }
 
   .nav-items-container.active {
@@ -218,7 +236,7 @@
 
   .nav-item {
     font-size: 1.1rem;
-    margin: 10px 0;
+    margin: 5px 0;
     width: 100%;
     text-align: left;
     padding: 10px 15px;
@@ -227,6 +245,22 @@
   .nav-item.active {
     padding: 10px 15px;
     width: 100%;
+  }
+
+  .nav-item .toggle-btn {
+    font-size: 1.1rem;
+    padding: 10px 15px;
+    width: 100%;
+    text-align: left;
+  }
+
+  .icons-container {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
   }
 
   .dropdown-menu {
@@ -246,7 +280,6 @@
 
   .notification-container {
     margin-left: 0;
-    margin-top: 10px;
   }
 
   .notification-menu {
@@ -263,7 +296,7 @@
     display: block;
     position: absolute;
     top: 15px;
-    right: 15px;
+    left: 15px;
   }
 }
 
@@ -272,7 +305,16 @@
     padding: 8px 10px;
   }
 
+  .nav-items-container {
+    top: 50px;
+  }
+
   .nav-item {
+    font-size: 1rem;
+    padding: 8px 10px;
+  }
+
+  .nav-item .toggle-btn {
     font-size: 1rem;
     padding: 8px 10px;
   }
@@ -300,5 +342,11 @@
   .hamburger-menu svg {
     width: 25px;
     height: 25px;
+  }
+
+  .icons-container {
+    top: 10px;
+    right: 10px;
+    gap: 10px;
   }
 }
