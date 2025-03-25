@@ -50,6 +50,7 @@ const Login = () => {
   };
 
   return (
+  <main className="logbod">
     <div className="login-container">
       <div className="background-animation">
         <div className="rotating-logo logo1"></div>
@@ -86,6 +87,7 @@ const Login = () => {
         </div>
       )}
     </div>
+    </main>
   );
 };
 
