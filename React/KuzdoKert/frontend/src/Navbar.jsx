@@ -15,6 +15,7 @@ const Navbar = () => {
   const [isVisitorNotifOpen, setIsVisitorNotifOpen] = useState(false);
   const [isCoachNotifOpen, setIsCoachNotifOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   
 
   Axios.defaults.withCredentials = true;
