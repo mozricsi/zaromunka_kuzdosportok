@@ -1,55 +1,67 @@
+body {
+  background-color: #1a1a1a;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
 .sport-leiras {
   font-family: 'Roboto', Arial, sans-serif;
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 15px; /* Kisebb padding */
+  width: 100%;
   background-color: #1a1a1a !important;
-  color: #fff;
+  color: #444;
+  min-height: 100vh;
 }
 
 .sport-leiras h1 {
-  font-size: 3rem;
+  font-size: 2rem; /* Kisebb cím */
   color: #ff4500;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
 }
 
 .rules-section,
 .events-section,
 .clubs-section {
-  background: #2c2c2c;
-  padding: 20px;
+  background: #222;
+  padding: 15px; /* Kisebb padding */
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  margin-bottom: 40px;
+  margin-bottom: 20px; /* Kisebb margó */
 }
 
 .rules-section h2,
 .events-section h2,
 .clubs-section h2 {
-  font-size: 2rem;
+  font-size: 1.5rem; /* Kisebb cím */
   color: #ff4500;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
-.rules-section p,
+.rules-section p {
+  font-size: 0.9rem; /* Kisebb szöveg */
+  color: #fff; /* Fehér szín a leíráshoz */
+  line-height: 1.4;
+}
+
 .clubs-section p {
-  font-size: 1rem;
-  color: #ccc;
-  line-height: 1.6;
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.4;
 }
 
 .clubs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Kisebb kártyák */
+  gap: 15px; /* Kisebb gap */
 }
 
 .club-card {
-  background: #333;
-  padding: 15px;
+  background: #1a1a1a;
+  padding: 10px; /* Kisebb padding */
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -61,33 +73,49 @@
 }
 
 .club-card h3 {
-  font-size: 1.5rem;
+  font-size: 1.2rem; /* Kisebb cím */
   color: #ff4500;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .club-card p {
-  font-size: 1rem;
-  color: #ccc;
+  font-size: 0.8rem; /* Kisebb szöveg */
+  color: #444;
   margin-bottom: 5px;
+}
+
+.club-card button {
+  background-color: #ff4500;
+  color: #444;
+  padding: 6px 10px; /* Kisebb padding */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem; /* Kisebb betűméret */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.club-card button:hover {
+  background-color: #cc3700;
+  transform: scale(1.05);
 }
 
 .ratings-section,
 .rating-form {
-  margin-top: 15px;
+  margin-top: 10px; /* Kisebb margó */
 }
 
 .ratings-section h4,
 .rating-form h4 {
-  font-size: 1.2rem;
+  font-size: 1rem; /* Kisebb cím */
   color: #ff4500;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .star-rating,
 .star-display {
   display: flex;
-  gap: 5px;
+  gap: 3px; /* Kisebb gap */
 }
 
 .star,
@@ -97,36 +125,38 @@
 
 .star svg,
 .star-display svg {
-  width: 24px;
-  height: 24px;
-  fill: #ccc;
+  width: 20px; /* Kisebb csillagok */
+  height: 20px;
+  fill: #444;
   transition: fill 0.3s ease;
+  stroke: #444;
 }
 
 .star.filled svg,
 .star-display span.filled svg {
   fill: #ff4500;
+  stroke: #ff4500;
 }
 
 .rating-form textarea {
   width: 100%;
-  padding: 8px;
-  background: #333;
+  padding: 6px; /* Kisebb padding */
+  background: #222;
   border: none;
   border-radius: 5px;
-  color: #fff;
-  font-size: 1rem;
-  margin-bottom: 10px;
+  color: #444;
+  font-size: 0.9rem; /* Kisebb betűméret */
+  margin-bottom: 8px;
 }
 
 .rating-form button {
-  padding: 8px 15px;
+  padding: 6px 10px; /* Kisebb padding */
   background-color: #ff4500;
-  color: white;
+  color: #444;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.9rem; /* Kisebb betűméret */
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
@@ -135,77 +165,53 @@
   transform: scale(1.05);
 }
 
+/* Események kártyák */
+.event-card {
+  background: #222;
+  padding: 10px; /* Kisebb padding */
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.event-card h3 {
+  font-size: 1.2rem; /* Kisebb cím */
+  color: #ff4500;
+  margin-bottom: 8px;
+}
+
+.event-card p {
+  font-size: 0.8rem; /* Kisebb szöveg */
+  color: #444;
+  margin-bottom: 5px;
+}
+
+.event-card a {
+  color: #ff4500;
+  text-decoration: none;
+}
+
+.event-card a:hover {
+  color: #cc3700;
+}
+
 /* Reszponzív dizájn */
 @media (max-width: 768px) {
   .sport-leiras {
-    padding: 15px;
-    max-width: 90%;
+    padding: 10px;
   }
 
   .sport-leiras h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 
   .rules-section h2,
   .events-section h2,
   .clubs-section h2 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 
   .clubs-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  }
-
-  .club-card {
-    padding: 10px;
-  }
-
-  .club-card h3 {
-    font-size: 1.2rem;
-  }
-
-  .club-card p {
-    font-size: 0.9rem;
-  }
-
-  .ratings-section h4,
-  .rating-form h4 {
-    font-size: 1rem;
-  }
-
-  .star-rating,
-  .star-display {
-    gap: 3px;
-  }
-
-  .star svg,
-  .star-display svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .rating-form textarea {
-    padding: 6px;
-    font-size: 0.9rem;
-  }
-
-  .rating-form button {
-    padding: 6px 12px;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .sport-leiras {
-    padding: 10px;
-  }
-
-  .sport-leiras h1 {
-    font-size: 1.5rem;
-  }
-
-  .clubs-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Még kisebb kártyák */
   }
 
   .club-card {
@@ -217,12 +223,17 @@
   }
 
   .club-card p {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
   }
 
   .ratings-section h4,
   .rating-form h4 {
     font-size: 0.9rem;
+  }
+
+  .star-rating,
+  .star-display {
+    gap: 2px;
   }
 
   .star svg,
@@ -237,7 +248,54 @@
   }
 
   .rating-form button {
-    padding: 5px 10px;
+    padding: 5px 8px;
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sport-leiras {
+    padding: 8px;
+  }
+
+  .sport-leiras h1 {
+    font-size: 1.3rem;
+  }
+
+  .clubs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .club-card {
+    padding: 6px;
+  }
+
+  .club-card h3 {
+    font-size: 0.9rem;
+  }
+
+  .club-card p {
+    font-size: 0.6rem;
+  }
+
+  .ratings-section h4,
+  .rating-form h4 {
+    font-size: 0.8rem;
+  }
+
+  .star svg,
+  .star-display svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .rating-form textarea {
+    padding: 4px;
+    font-size: 0.7rem;
+  }
+
+  .rating-form button {
+    padding: 4px 6px;
+    font-size: 0.7rem;
   }
 }
