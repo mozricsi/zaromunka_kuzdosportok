@@ -11,22 +11,12 @@ body {
   font-family: Arial, sans-serif;
 }
 
-/* esemenyek.css - hozzáadott stílus a linkhez */
-.location-link {
-  color: #ff4500; /* Narancssárga, hogy illeszkedjen a navbarhoz */
-  text-decoration: underline;
-  transition: color 0.3s ease;
-}
 
-.location-link:hover {
-  color: #fff; /* Fehérre vált hoverkor */
-}
 
 .esemenyek-container {
   padding: 20px;
   min-height: 100vh; /* Teljes képernyő magasság */
   width: 100%; /* Teljes szélesség */
-  background-color: #1a1a1a; /* Egységes háttérszín */
   text-align: center;
 }
 
@@ -57,7 +47,7 @@ body {
   margin: 20px auto;
   width: 100%;
   max-width: 800px;
-  background-color: #333; /* Sötét háttér a naptárnak */
+  background-color: #2a2a2a; /* Sötét háttér a naptárnak */
   border-radius: 5px;
   padding: 10px;
   border: 1px solid #ccc;
