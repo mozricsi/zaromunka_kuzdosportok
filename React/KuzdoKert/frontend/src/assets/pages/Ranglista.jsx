@@ -33,7 +33,7 @@ function Ranglista() {
         Ranglista - A Legjobb Edzők
       </h1>
       <div className="max-w-1200 mx-auto p-4">
-        <div className="overflow-x-auto shadow-lg rounded-lg">
+        <div className="overflow-x-auto shadow-lg rounded-lg asztal">
           <table className="w-full text-left bg-2c2c2c border-separate border-spacing-0">
             <thead>
               <tr className="bg-333">

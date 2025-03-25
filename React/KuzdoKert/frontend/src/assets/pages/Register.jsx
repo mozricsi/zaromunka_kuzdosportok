@@ -249,7 +249,7 @@ const Register = () => {
               checked={termsAccepted}
               onChange={(e) => setTermsAccepted(e.target.checked)}
             />
-            <label htmlFor="termsCheckbox">
+            <label className="aszf" htmlFor="termsCheckbox">
               Elfogadom az{' '}
               <Link to="/terms">
                 Általános Szerződési Feltételeket
@@ -264,7 +264,7 @@ const Register = () => {
               onClick={register}
               disabled={!termsAccepted}
               style={{
-                backgroundColor: termsAccepted ? '#007bff' : '#ccc',
+                backgroundColor: termsAccepted ? '#ff4500' : '#ccc',
                 cursor: termsAccepted ? 'pointer' : 'not-allowed',
               }}
             >
