@@ -1,46 +1,52 @@
-body {
-  background-color: #1a1a1a;
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-}
-
 .logout-container {
   font-family: 'Roboto', Arial, sans-serif;
-  width: 100%;
-  padding: 15px; /* Kisebb padding */
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
   background-color: #1a1a1a;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* Középre igazítás függőlegesen */
 }
 
 /* Cím */
 .logout-container h1 {
   color: #ff4500;
-  font-size: 1.8rem; /* Kisebb cím */
-  margin-bottom: 10px; /* Kisebb margó */
+  font-size: 2.5rem;
+  margin-bottom: 15px;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 /* Szöveg */
 .logout-container p {
-  font-size: 1rem; /* Kisebb szöveg */
-  color: #444;
-  line-height: 1.4;
-  margin-bottom: 15px;
+  font-size: 1.2rem;
+  color: #ccc;
+  line-height: 1.6;
+  margin-bottom: 20px;
 }
 
 /* Reszponzív dizájn */
 @media (max-width: 768px) {
   .logout-container {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .logout-container h1 {
+    font-size: 2rem;
+  }
+
+  .logout-container p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logout-container {
     padding: 10px;
+    margin: 5px;
   }
 
   .logout-container h1 {
@@ -49,19 +55,5 @@ body {
 
   .logout-container p {
     font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .logout-container {
-    padding: 8px;
-  }
-
-  .logout-container h1 {
-    font-size: 1.3rem;
-  }
-
-  .logout-container p {
-    font-size: 0.8rem;
   }
 }
