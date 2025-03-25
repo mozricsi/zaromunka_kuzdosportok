@@ -1,38 +1,28 @@
-body {
-  background-color: #1a1a1a;
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-}
-
 .regisztracio {
   font-family: 'Roboto', Arial, sans-serif;
-  width: 100%;
-  padding: 15px; /* Kisebb padding */
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
   background-color: #1a1a1a;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* Középre igazítás függőlegesen */
 }
 
 .regisztracio h2 {
   text-align: center;
   color: #ff4500;
-  font-size: 1.8rem; /* Kisebb cím */
-  margin-bottom: 15px;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .regisztracio > p {
-  font-size: 0.9rem; /* Kisebb szöveg */
-  color: #444;
-  line-height: 1.4;
-  margin-bottom: 15px;
+  font-size: 1.1rem;
+  color: #ccc;
+  line-height: 1.6;
+  margin-bottom: 25px;
   text-align: center;
 }
 
@@ -42,49 +32,46 @@ body {
 }
 
 .regisztracio .nemkotelezo {
-  color: #444;
+  color: #888;
   font-style: italic;
-  font-size: 0.8rem; /* Kisebb betűméret */
+  font-size: 0.9rem;
 }
 
 .reg {
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Kisebb gap */
-  max-width: 600px; /* Középre igazítás és maximális szélesség */
-  margin: 0 auto; /* Középre igazítás */
+  gap: 20px;
 }
 
 /* Egy div-be zárt regisztrációs adatok */
 .reg_data {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 10px; /* Kisebb gap */
+  gap: 15px;
 }
 
 .reg_names {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 10px; /* Kisebb gap */
+  gap: 15px;
 }
 
 .reg_data label {
   color: #ff4500;
-  font-size: 0.9rem; /* Kisebb betűméret */
-  margin-bottom: 3px; /* Kisebb margó */
+  font-size: 1.1rem;
+  margin-bottom: 5px;
   display: block;
-  text-align: left; /* Balra igazítás */
 }
 
 .reg_data input,
 .reg_data select {
   width: 100%;
-  padding: 8px; /* Kisebb padding */
-  background-color: #222;
+  padding: 10px;
+  background-color: #2c2c2c;
   border: none;
   border-radius: 5px;
-  color: #444;
-  font-size: 0.9rem; /* Kisebb betűméret */
+  color: #fff;
+  font-size: 1rem;
   transition: all 0.2s ease;
 }
 
@@ -92,25 +79,25 @@ body {
 .reg_data select:focus {
   outline: none;
   box-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
-  background-color: #1a1a1a;
+  background-color: #333;
 }
 
 .reg_data input::placeholder {
-  color: #444;
+  color: #888;
   opacity: 0.8;
 }
 
 .reg button {
   background-color: #ff4500;
-  color: #444;
-  padding: 10px 15px; /* Kisebb padding */
+  color: #fff;
+  padding: 12px 20px;
   border: none;
   border-radius: 5px;
-  font-size: 1rem; /* Kisebb betűméret */
+  font-size: 1.2rem;
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-top: 10px; /* Kisebb margó */
+  margin-top: 15px;
   width: 100%;
 }
 
@@ -120,60 +107,61 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-.reg button:disabled {
-  background-color: #444;
-  color: #222;
-  cursor: not-allowed;
-}
-
 .reg p {
   text-align: center;
-  color: #444;
-  font-size: 0.9rem; /* Kisebb betűméret */
-  margin: 8px 0; /* Kisebb margó */
+  color: #ccc;
+  font-size: 1.1rem;
+  margin: 10px 0;
 }
 
 .regisztracio h1 {
   text-align: center;
   color: #ff4500;
-  font-size: 1.3rem; /* Kisebb cím */
-  margin-top: 15px;
-}
-
-/* Linkek a regisztracio-ban */
-.reg a {
-  color: #ff4500;
-  text-decoration: none;
-}
-
-.reg a:hover {
-  color: #cc3700;
-}
-
-/* Checkbox és label */
-.reg div {
-  text-align: left; /* Balra igazítás */
-  margin: 10px 0; /* Kisebb margó */
-}
-
-.reg div label {
-  color: #444;
-  font-size: 0.9rem;
+  font-size: 1.5rem;
+  margin-top: 20px;
 }
 
 /* Reszponzív dizájn */
 @media (max-width: 768px) {
   .regisztracio {
-    padding: 10px;
+    margin: 10px;
+    padding: 15px;
+    max-width: 90%;
   }
 
   .regisztracio h2 {
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
 
   .reg_data,
   .reg_names {
     grid-template-columns: 1fr;
+  }
+
+  .reg_data input,
+  .reg_data select {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .reg button {
+    font-size: 1rem;
+    padding: 10px 15px;
+  }
+
+  .reg p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .regisztracio {
+    padding: 10px;
+    margin: 5px;
+  }
+
+  .regisztracio h2 {
+    font-size: 1.5rem;
   }
 
   .reg_data input,
@@ -188,31 +176,6 @@ body {
   }
 
   .reg p {
-    font-size: 0.8rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .regisztracio {
-    padding: 8px;
-  }
-
-  .regisztracio h2 {
-    font-size: 1.3rem;
-  }
-
-  .reg_data input,
-  .reg_data select {
-    font-size: 0.7rem;
-    padding: 5px;
-  }
-
-  .reg button {
-    font-size: 0.8rem;
-    padding: 6px 10px;
-  }
-
-  .reg p {
-    font-size: 0.7rem;
+    font-size: 0.9rem;
   }
 }
