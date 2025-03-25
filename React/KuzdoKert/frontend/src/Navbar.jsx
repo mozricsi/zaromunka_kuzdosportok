@@ -15,6 +15,7 @@ const Navbar = () => {
   const [isVisitorNotifOpen, setIsVisitorNotifOpen] = useState(false);
   const [isCoachNotifOpen, setIsCoachNotifOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  
 
   Axios.defaults.withCredentials = true;
 
@@ -45,40 +46,39 @@ const Navbar = () => {
 
   // Látogatói értesítések lekérése
   useEffect(() => {
-    if (userId && userRole === "visitor") {
+    if (userId && userRole === 'visitor') {
       const fetchVisitorNotifications = async () => {
         try {
-          const response = await Axios.get(`http://localhost:5000/notifications/visitor/${userId}`);
+          const response = await Axios.get(`http://localhost:5000/api/notifications/visitor/${userId}`);
           setVisitorNotifications(response.data);
         } catch (error) {
-          console.error("Hiba a látogatói értesítések lekérdezésekor:", error);
+          console.error('Hiba a látogatói értesítések lekérdezésekor:', error);
         }
       };
 
       fetchVisitorNotifications();
-      const interval = setInterval(fetchVisitorNotifications, 300000);
+      const interval = setInterval(fetchVisitorNotifications, 300000); // 5 percenként frissít
       return () => clearInterval(interval);
     }
   }, [userId, userRole]);
 
   // Edzői értesítések lekérése
   useEffect(() => {
-    if (userId && userRole === "coach") {
+    if (userId && userRole === 'coach') {
       const fetchCoachNotifications = async () => {
         try {
-          const response = await Axios.get(`http://localhost:5000/notifications/coach/${userId}`);
+          const response = await Axios.get(`http://localhost:5000/api/notifications/coach/${userId}`);
           setCoachNotifications(response.data);
         } catch (error) {
-          console.error("Hiba az edzői értesítések lekérdezésekor:", error);
+          console.error('Hiba az edzői értesítések lekérdezésekor:', error);
         }
       };
 
       fetchCoachNotifications();
-      const interval = setInterval(fetchCoachNotifications, 60000);
+      const interval = setInterval(fetchCoachNotifications, 60000); // 1 percenként frissít
       return () => clearInterval(interval);
     }
   }, [userId, userRole]);
-
   // Hamburger menü bezárása link kattintáskor
   const handleLinkClick = () => {
     const navbar = document.getElementById("navbarNav");

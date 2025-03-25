@@ -437,40 +437,109 @@ app.get('/api/jelentkezes/check', (req, res) => {
     }
   });
 });
-// Értesítések lekérdezése a látogató számára
-app.get('/notifications/:user_id', (req, res) => {
-  const user_id = req.params.user_id;
+// Értesítés létrehozása, amikor egy látogató jelentkezik egy edzésre
+app.post('/api/notifications/create', (req, res) => {
+  const { trainingId, visitorId } = req.body;
 
-  const query = `
+  // 1. Lekérdezzük az edzés adatait és az edzőt
+  const queryTraining = `
     SELECT 
-      j.jelentkezes_id,
-      k.klubbnev,
-      k.hely,
-      e.nap,
-      e.ido,
-      l.vnev AS coach_vnev,
-      l.knev AS coach_knev
-    FROM jelentkezes j
-    JOIN klubbok k ON j.sportklub_id = k.sprotklub_id
+      e.sportklub_id, e.nap, e.ido, 
+      k.user_id AS coach_id, k.klubbnev,
+      l.vnev AS coach_vnev, l.knev AS coach_knev
+    FROM klub_edzesek e
+    JOIN klubbok k ON e.sportklub_id = k.sprotklub_id
     JOIN latogatok l ON k.user_id = l.user_id
-    JOIN klub_edzesek e ON k.sprotklub_id = e.sportklub_id
-    WHERE j.user_id = ?
-      AND e.nap = DAYNAME(CURDATE())
-      AND j.elfogadva = 1
+    WHERE e.edzes_id = ?
   `;
 
-  db.query(query, [user_id], (err, results) => {
+  db.query(queryTraining, [trainingId], (err, trainingResults) => {
     if (err) {
-      console.error('Hiba az értesítések lekérdezésekor:', err);
-      return res.status(500).json({ message: 'Hiba történt az értesítések lekérdezésekor.' });
+      console.error('Hiba az edzés lekérdezésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt az edzés lekérdezésekor.' });
+    }
+    if (trainingResults.length === 0) {
+      return res.status(404).json({ message: 'Edzés nem található.' });
+    }
+
+    const training = trainingResults[0];
+    const coachId = training.coach_id;
+    const clubName = training.klubbnev;
+    const coachName = `${training.coach_vnev} ${training.coach_knev}`;
+    const trainingDate = new Date(`${training.nap} ${training.ido}`);
+
+    // 2. Lekérdezzük a látogató nevét
+    const queryVisitor = `SELECT vnev, knev FROM latogatok WHERE user_id = ?`;
+    db.query(queryVisitor, [visitorId], (err, visitorResults) => {
+      if (err) {
+        console.error('Hiba a látogató lekérdezésekor:', err);
+        return res.status(500).json({ message: 'Hiba történt a látogató lekérdezésekor.' });
+      }
+      if (visitorResults.length === 0) {
+        return res.status(404).json({ message: 'Látogató nem található.' });
+      }
+
+      const visitor = visitorResults[0];
+      const visitorName = `${visitor.vnev} ${visitor.knev}`;
+
+      // 3. Edző értesítése
+      const coachMessage = `Új jelentkezés: ${visitorName} jelentkezett az edzésedre (${clubName}).`;
+      const coachQuery = `
+        INSERT INTO notifications (user_id, role, message, created_at)
+        VALUES (?, 'coach', ?, NOW())
+      `;
+      db.query(coachQuery, [coachId, coachMessage], (err) => {
+        if (err) {
+          console.error('Hiba az edző értesítésének mentésekor:', err);
+          return res.status(500).json({ message: 'Hiba történt az edző értesítésének mentésekor.' });
+        }
+
+        // 4. Látogató értesítése (hátralévő idő kiszámítása)
+        const now = new Date();
+        const timeUntilEvent = Math.max(0, trainingDate - now); // Idő milliszekundumban
+        const hoursUntilEvent = Math.floor(timeUntilEvent / (1000 * 60 * 60));
+        const minutesUntilEvent = Math.floor((timeUntilEvent % (1000 * 60 * 60)) / (1000 * 60));
+
+        const visitorMessage = `Sikeresen jelentkeztél ${coachName} edzésére (${clubName}). Hátralévő idő: ${hoursUntilEvent} óra ${minutesUntilEvent} perc.`;
+        const visitorQuery = `
+          INSERT INTO notifications (user_id, role, message, created_at)
+          VALUES (?, 'visitor', ?, NOW())
+        `;
+        db.query(visitorQuery, [visitorId, visitorMessage], (err) => {
+          if (err) {
+            console.error('Hiba a látogató értesítésének mentésekor:', err);
+            return res.status(500).json({ message: 'Hiba történt a látogató értesítésének mentésekor.' });
+          }
+
+          res.status(200).json({ message: 'Értesítések sikeresen létrehozva.' });
+        });
+      });
+    });
+  });
+});
+
+// Értesítések lekérdezése a látogató számára
+app.get('/api/notifications/visitor/:userId', (req, res) => {
+  const userId = req.params.userId;
+
+  const query = `
+    SELECT * FROM notifications 
+    WHERE user_id = ? AND role = 'visitor'
+    ORDER BY created_at DESC
+  `;
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Hiba a látogatói értesítések lekérdezésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt a látogatói értesítések lekérdezésekor.' });
     }
     res.json(results);
   });
 });
 
-app.get('/coach-notifications/:userId', (req, res) => {
+// Értesítések lekérdezése az edző számára
+app.get('/api/notifications/coach/:userId', (req, res) => {
   const userId = req.params.userId;
-  // Ellenőrizd, hogy a userId szám-e
+
   if (isNaN(userId)) {
     return res.status(400).json({ message: 'Érvénytelen userId.' });
   }
@@ -482,8 +551,8 @@ app.get('/coach-notifications/:userId', (req, res) => {
   `;
   db.query(query, [userId], (err, results) => {
     if (err) {
-      console.error('Hiba az értesítések lekérdezésekor:', err);
-      return res.status(500).json({ message: 'Hiba történt az értesítések lekérdezésekor.', error: err.message });
+      console.error('Hiba az edzői értesítések lekérdezésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt az edzői értesítések lekérdezésekor.' });
     }
     res.json(results);
   });
