@@ -366,7 +366,7 @@ INSERT INTO `kuzdosportok`.`latogatok` (`user_id`, `vnev`, `knev`, `knev2`, `tel
 (4, 'Szabó', 'Mária', 'Anna', 4, 'szabo.maria@example.com', '1995-03-14', 'Pécs', '2025-02-22 00:00:00', 'smaria', '$2b$10$lU4EEgGIuS2QhocVvFBi4eekNPi.sDCCYKqWC1.z1LarzOC23A.HG', 'visitor'),
 (5, 'Varga', 'Béla', NULL, 5, 'varga.bela@example.com', '1988-07-19', 'Győr', '2025-02-22 00:00:00', 'vbela', '$2b$10$S/oxPWR1GAefsAw1sksUtu9ghwQO.M1d9pOiQ3vX0Q5uQHSfbNqV2', 'visitor'),
 (6, 'kovacs', 'jeno', NULL, NULL, 'kovacsjeno@gmail.com', '2025-03-19', 'Saab', '2025-03-03 12:58:26', 'kjeno', '$2b$10$E4uY7aLRJ4uCeMCXKvDOj.Z6MzmiHVAm4mZKRLqhMcNywp8ihg8ou', 'visitor'),
-(7, 'bela', 'feri', NULL, NULL, 'belaferi@gmail.com', '2025-03-14', 'Budapest', '2025-03-03 14:09:27', 'bferi', '$2b$10$I/6jCKKXuCCqpoPBu7Qcy.fLhOjeaCYOpgTx267Eu3/Rzv7CyHTZu', 'coach'),
+(7, 'Béla', 'Feri', NULL, NULL, 'belaferi@gmail.com', '2025-03-14', 'Budapest', '2025-03-03 14:09:27', 'bferi', '$2b$10$I/6jCKKXuCCqpoPBu7Qcy.fLhOjeaCYOpgTx267Eu3/Rzv7CyHTZu', 'coach'),
 (8, 'kati', 'bela', NULL, NULL, 'katibela@gmail.com', '2025-03-27', 'Szeged', '2025-03-03 14:10:52', 'kbela', '$2b$10$fBN1L4viZ4imJqPtzm61vOSBHLbyeLwsJsjv45h0sda/u7QTr2PSy', 'visitor');
 
 INSERT INTO `kuzdosportok`.`streams` VALUES 
@@ -385,9 +385,16 @@ INSERT INTO `kuzdosportok`.`sport` (`sport_id`, `sportnev`, `leiras`, `szabalyok
 (8, 'MMA', 'Az MMA egy vegyes harcművészet.', '<ul><li>A mérkőzés általában 3-5 menetből áll.</li><li>A győzelem kiütéssel, feladással érhető el.</li></ul>');
 
 INSERT INTO `kuzdosportok`.`klubbok` (`sprotklub_id`, `sport_id`, `user_id`, `vnev`, `knev`, `klubbnev`, `hely`, `szabalyok`, `leiras`) VALUES
-(1, 1, 1, 'Kiss', 'Péter', 'Szolnoki Boxegyesület', 'Szolnok', 'nincs szabály', 'barátságos közösség vagyunk'),
+(1, 1, 1, 'Kiss', 'Péter', 'Szolnoki Boxegyesület', 'Szolnok', 'Sportcipő kötelező, tiszta ruha, törölköző ajánlott.', 'barátságos közösség vagyunk'),
 (2, 1, 2, 'Nagy', 'Anna', 'Debreceni Boxegyesület', 'Debrecen', 'nincs szabály', 'barátságos közösség vagyunk'),
-(3, 2, 3, 'Tóth', 'Gábor', 'Szolnoki Judo egyesület', 'Szeged', 'nincs szabály', 'barátságos közösség vagyunk');
+(10, 1, 7, 'Béla', 'Feri', 'Box', 'Szolnok', 'nincs szabály', 'barátságos közösség vagyunk'),
+(3, 3, 7, 'Béla', 'Feri', 'Jiu Jitsu Szolnok', 'Szolnok', 'nincs szabály', 'barátságos közösség vagyunk'),
+(4, 4, 2, 'Nagy', 'Anna', 'Muay Thai', 'Debrecen', 'nincs szabály', 'barátságos közösség vagyunk'),
+(5, 5, 2, 'Nagy', 'Anna', 'K1', 'Budapest', 'nincs szabály', 'barátságos közösség vagyunk'),
+(6, 6, 2, 'Nagy', 'Anna', 'Birkózás', 'Kelenföld', 'nincs szabály', 'barátságos közösség vagyunk'),
+(7, 7, 2, 'Nagy', 'Anna', 'Kickbox', 'Budapest', 'nincs szabály', 'barátságos közösség vagyunk'),
+(8, 8, 2, 'Nagy', 'Anna', 'MMA klubb', 'Debrecen', 'nincs szabály', 'barátságos közösség vagyunk'),
+(9, 2, 3, 'Tóth', 'Gábor', 'Szolnoki Judo egyesület', 'Szeged', 'nincs szabály', 'barátságos közösség vagyunk');
 
 INSERT INTO `kuzdosportok`.`klub_edzesek` (`sportklub_id`, `pontoscim`, `nap`, `ido`) VALUES
 (1, 'Budapest, Sportcsarnok 1.', 'Hétfő', '18:00:00'),
