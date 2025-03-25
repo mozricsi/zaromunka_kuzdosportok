@@ -23,13 +23,19 @@ function Esemenyek() {
     return null;
   };
 
+  // Google Maps link generálása
+  const getGoogleMapsLink = (address) => {
+    const encodedAddress = encodeURIComponent(address);
+    return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+  };
+
   return (
     <div className="esemenyek-container">
       <h1>Események</h1>
       <Calendar
         onChange={setDate}
         value={date}
-        tileClassName={tileClassName} // Dinamikus osztályok hozzárendelése
+        tileClassName={tileClassName}
       />
       <div>
         {events
@@ -37,7 +43,17 @@ function Esemenyek() {
           .map(event => (
             <div key={event.esemeny_id} className="event-item">
               <p>{event.sportneve} - {event.leiras}</p>
-              <p>Helyszín: {event.pontos_cim}</p>
+              <p>
+                Helyszín:{' '}
+                <a
+                  href={getGoogleMapsLink(event.pontos_cim)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="location-link"
+                >
+                  {event.pontos_cim}
+                </a>
+              </p>
             </div>
           ))}
       </div>

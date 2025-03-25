@@ -52,19 +52,11 @@ const Navbar = () => {
           setVisitorNotifications(response.data);
         } catch (error) {
           console.error("Hiba a látogatói értesítések lekérdezésekor:", error);
-          if (error.response) {
-            console.log('Szerver válasz:', error.response.data);
-            console.log('Státusz:', error.response.status);
-          } else if (error.request) {
-            console.log('Nem érkezett válasz a szervertől:', error.request);
-          } else {
-            console.log('Hiba a kérés beállításakor:', error.message);
-          }
         }
       };
 
       fetchVisitorNotifications();
-      const interval = setInterval(fetchVisitorNotifications, 300000); // 5 percenként frissít
+      const interval = setInterval(fetchVisitorNotifications, 300000);
       return () => clearInterval(interval);
     }
   }, [userId, userRole]);
@@ -78,58 +70,48 @@ const Navbar = () => {
           setCoachNotifications(response.data);
         } catch (error) {
           console.error("Hiba az edzői értesítések lekérdezésekor:", error);
-          if (error.response) {
-            console.log('Szerver válasz:', error.response.data);
-            console.log('Státusz:', error.response.status);
-          } else if (error.request) {
-            console.log('Nem érkezett válasz a szervertől:', error.request);
-          } else {
-            console.log('Hiba a kérés beállításakor:', error.message);
-          }
         }
       };
 
       fetchCoachNotifications();
-      const interval = setInterval(fetchCoachNotifications, 60000); // 1 percenként frissít
+      const interval = setInterval(fetchCoachNotifications, 60000);
       return () => clearInterval(interval);
     }
   }, [userId, userRole]);
 
+  // Hamburger menü bezárása link kattintáskor
+  const handleLinkClick = () => {
+    const navbar = document.getElementById("navbarNav");
+    if (navbar && navbar.classList.contains("show")) {
+      const bootstrapCollapse = new window.bootstrap.Collapse(navbar, { toggle: false });
+      bootstrapCollapse.hide();
+    }
+  };
+
   return (
     <div>
       <nav className="navbar navbar-expand-lg custom-navbar">
-        <Link className="navbar-brand nav-item" to="/">Főoldal</Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+        <Link className="navbar-brand nav-item" to="/" onClick={handleLinkClick}>Főoldal</Link>
         <div className="collapse navbar-collapse" id="navbarNav">
-          <NavLink className="navbar-brand nav-item" to="/SportKartyak">Sportok</NavLink>
-          <NavLink className="navbar-brand nav-item" to="/esemenyek">Események</NavLink>
-          <NavLink className="navbar-brand nav-item" to="/LiveStream">Élő Stream</NavLink>
-          <NavLink className="navbar-brand nav-item" to="/ranglista">Ranglista</NavLink>
+          <NavLink className="navbar-brand nav-item" to="/SportKartyak" onClick={handleLinkClick}>Sportok</NavLink>
+          <NavLink className="navbar-brand nav-item" to="/esemenyek" onClick={handleLinkClick}>Események</NavLink>
+          <NavLink className="navbar-brand nav-item" to="/LiveStream" onClick={handleLinkClick}>Élő Stream</NavLink>
+          <NavLink className="navbar-brand nav-item" to="/ranglista" onClick={handleLinkClick}>Ranglista</NavLink>
 
           <div className="d-flex justify-content-end w-100">
             {loginStatus ? (
               <>
                 {userRole === "coach" && (
-                  <NavLink className="navbar-brand nav-item" to="/EdzoiOldal">Edzői oldal</NavLink>
+                  <NavLink className="navbar-brand nav-item" to="/EdzoiOldal" onClick={handleLinkClick}>Edzői oldal</NavLink>
                 )}
                 {userRole === "visitor" && (
-                  <NavLink className="navbar-brand nav-item" to="/EdzesNaplo">Edzésnapló</NavLink>
+                  <NavLink className="navbar-brand nav-item" to="/EdzesNaplo" onClick={handleLinkClick}>Edzésnapló</NavLink>
                 )}
               </>
             ) : (
               <>
-                <NavLink className="navbar-brand nav-item" to="/Login">Bejelentkezés</NavLink>
-                <NavLink className="navbar-brand nav-item" to="/Register">Regisztráció</NavLink>
+                <NavLink className="navbar-brand nav-item" to="/Login" onClick={handleLinkClick}>Bejelentkezés</NavLink>
+                <NavLink className="navbar-brand nav-item" to="/Register" onClick={handleLinkClick}>Regisztráció</NavLink>
               </>
             )}
           </div>
@@ -245,13 +227,24 @@ const Navbar = () => {
                   className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}
                   aria-labelledby="navbarDropdown"
                 >
-                  <li><NavLink className="dropdown-item" to="/Profil">Profilom</NavLink></li>
-                  <li><NavLink className="dropdown-item" to="/Logout">Kijelentkezés</NavLink></li>
+                  <li><NavLink className="dropdown-item" to="/Profil" onClick={handleLinkClick}>Profilom</NavLink></li>
+                  <li><NavLink className="dropdown-item" to="/Logout" onClick={handleLinkClick}>Kijelentkezés</NavLink></li>
                 </ul>
               </div>
             ) : null}
           </div>
         </div>
+        <button
+          className="navbar-toggler ms-auto"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
       </nav>
     </div>
   );
