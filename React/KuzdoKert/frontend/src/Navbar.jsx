@@ -15,8 +15,6 @@ const Navbar = () => {
   const [isVisitorNotifOpen, setIsVisitorNotifOpen] = useState(false);
   const [isCoachNotifOpen, setIsCoachNotifOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-  
 
   Axios.defaults.withCredentials = true;
 
@@ -29,6 +27,10 @@ const Navbar = () => {
             setLoginStatus(response.data.user[0].felhasznalonev);
             setUserRole(response.data.user[0].role);
             setUserId(response.data.user[0].user_id);
+            console.log("Bejelentkezett felhasználó:", {
+              userId: response.data.user[0].user_id,
+              userRole: response.data.user[0].role,
+            });
           } else {
             setLoginStatus(false);
             setUserRole(null);
@@ -52,6 +54,7 @@ const Navbar = () => {
         try {
           const response = await Axios.get(`http://localhost:5000/api/notifications/visitor/${userId}`);
           setVisitorNotifications(response.data);
+          console.log("Látogatói értesítések:", response.data);
         } catch (error) {
           console.error('Hiba a látogatói értesítések lekérdezésekor:', error);
         }
@@ -70,6 +73,7 @@ const Navbar = () => {
         try {
           const response = await Axios.get(`http://localhost:5000/api/notifications/coach/${userId}`);
           setCoachNotifications(response.data);
+          console.log("Edzői értesítések:", response.data);
         } catch (error) {
           console.error('Hiba az edzői értesítések lekérdezésekor:', error);
         }
@@ -80,6 +84,48 @@ const Navbar = () => {
       return () => clearInterval(interval);
     }
   }, [userId, userRole]);
+
+  // Olvasatlan értesítések számolása
+  const unreadVisitorNotifications = visitorNotifications.filter((notif) => notif.read === 0).length;
+  const unreadCoachNotifications = coachNotifications.filter((notif) => notif.read === 0).length;
+
+  // Értesítések olvasottá tétele
+  const markNotificationsAsRead = async () => {
+    if (!userId || !userRole) {
+      console.error("Hiányzó userId vagy userRole:", { userId, userRole });
+      return;
+    }
+
+    try {
+      console.log(`PUT kérés küldése: /api/notifications/mark-read/${userId}/${userRole}`);
+      const response = await Axios.put(`http://localhost:5000/api/notifications/mark-read/${userId}/${userRole}`);
+      console.log("PUT válasz:", response.data);
+
+      // Frissítjük az értesítéseket
+      if (userRole === 'visitor') {
+        const response = await Axios.get(`http://localhost:5000/api/notifications/visitor/${userId}`);
+        setVisitorNotifications(response.data);
+        console.log("Frissített látogatói értesítések:", response.data);
+      } else if (userRole === 'coach') {
+        const response = await Axios.get(`http://localhost:5000/api/notifications/coach/${userId}`);
+        setCoachNotifications(response.data);
+        console.log("Frissített edzői értesítések:", response.data);
+      }
+    } catch (error) {
+      console.error('Hiba az értesítések olvasottá tételénél:', error.response ? error.response.data : error.message);
+      // Ha a PUT kérés nem sikerül, próbáljuk meg újra lekérni az értesítéseket
+      if (userRole === 'visitor') {
+        const response = await Axios.get(`http://localhost:5000/api/notifications/visitor/${userId}`);
+        setVisitorNotifications(response.data);
+        console.log("Frissített látogatói értesítések (hiba után):", response.data);
+      } else if (userRole === 'coach') {
+        const response = await Axios.get(`http://localhost:5000/api/notifications/coach/${userId}`);
+        setCoachNotifications(response.data);
+        console.log("Frissített edzői értesítések (hiba után):", response.data);
+      }
+    }
+  };
+
   // Hamburger menü bezárása link kattintáskor
   const handleLinkClick = () => {
     const navbar = document.getElementById("navbarNav");
@@ -122,7 +168,10 @@ const Navbar = () => {
             <div className="notification-container">
               <div
                 className="nav-item notification"
-                onMouseEnter={() => setIsVisitorNotifOpen(true)}
+                onMouseEnter={() => {
+                  setIsVisitorNotifOpen(true);
+                  markNotificationsAsRead(); // Értesítések olvasottá tétele
+                }}
                 onMouseLeave={() => setIsVisitorNotifOpen(false)}
               >
                 <span className="nav-icon notification-bell">
@@ -139,8 +188,8 @@ const Navbar = () => {
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                   </svg>
-                  {visitorNotifications.length > 0 && (
-                    <span className="notification-count">{visitorNotifications.length}</span>
+                  {unreadVisitorNotifications > 0 && (
+                    <span className="notification-count">{unreadVisitorNotifications}</span>
                   )}
                 </span>
                 <ul
@@ -149,7 +198,7 @@ const Navbar = () => {
                 >
                   {visitorNotifications.length > 0 ? (
                     visitorNotifications.map((notif) => (
-                      <li key={notif.notification_id} className="notification-item">
+                      <li key={notif.notification_id} className={`notification-item ${notif.read ? 'read' : 'unread'}`}>
                         <strong>{notif.message}</strong><br />
                         <small>{new Date(notif.created_at).toLocaleString()}</small>
                       </li>
@@ -167,7 +216,10 @@ const Navbar = () => {
             <div className="notification-container">
               <div
                 className="nav-item notification"
-                onMouseEnter={() => setIsCoachNotifOpen(true)}
+                onMouseEnter={() => {
+                  setIsCoachNotifOpen(true);
+                  markNotificationsAsRead(); // Értesítések olvasottá tétele
+                }}
                 onMouseLeave={() => setIsCoachNotifOpen(false)}
               >
                 <span className="nav-icon notification-bell">
@@ -184,8 +236,8 @@ const Navbar = () => {
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                   </svg>
-                  {coachNotifications.length > 0 && (
-                    <span className="notification-count">{coachNotifications.length}</span>
+                  {unreadCoachNotifications > 0 && (
+                    <span className="notification-count">{unreadCoachNotifications}</span>
                   )}
                 </span>
                 <ul
@@ -194,7 +246,7 @@ const Navbar = () => {
                 >
                   {coachNotifications.length > 0 ? (
                     coachNotifications.map((notif) => (
-                      <li key={notif.notification_id} className="notification-item">
+                      <li key={notif.notification_id} className={`notification-item ${notif.read ? 'read' : 'unread'}`}>
                         <strong>{notif.message}</strong><br />
                         <small>{new Date(notif.created_at).toLocaleString()}</small>
                       </li>

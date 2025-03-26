@@ -599,6 +599,7 @@ app.put('/api/notifications/mark-read/:userId/:role', (req, res) => {
       console.error('Hiba az értesítések olvasottá tételénél:', err);
       return res.status(500).json({ message: 'Hiba történt az értesítések olvasottá tételénél.' });
     }
+    console.log(`Értesítések olvasottá téve: userId=${userId}, role=${role}, érintett sorok: ${result.affectedRows}`);
     res.status(200).json({ message: 'Értesítések olvasottá téve.' });
   });
 });

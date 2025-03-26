@@ -124,6 +124,7 @@ const Home = () => {
           Így személyre szabott ajánlatokat kaphatsz.
         </p>
       </section>
+      
 
       <section className="news-section">
         <h2>Legfrissebb hírek (Box, Kickbox, MMA)</h2>
