@@ -2,11 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Modernebb betűtípus */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+
 body {
   color: #fff;
   margin: 0;
   min-height: 100vh;
-  font-family: 'Roboto', Arial, sans-serif;
+  font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
 }
 
 .App {
@@ -16,21 +19,45 @@ body {
   color: #fff;
 }
 
-header {
+/* Hero szekció */
+.hero-section {
+  position: relative;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1593079831268-3381b0db4a77?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center;
+  padding: 60px 20px;
   text-align: center;
+  border-radius: 10px;
   margin-bottom: 40px;
 }
 
-header h1 {
+.hero-content h1 {
   font-size: 3rem;
   color: #ff4500;
   text-transform: uppercase;
   letter-spacing: 2px;
+  margin-bottom: 20px;
 }
 
-header p {
+.hero-content p {
   font-size: 1.2rem;
   color: #ccc;
+  margin-bottom: 30px;
+}
+
+.cta-button {
+  padding: 12px 30px;
+  background-color: #ff4500;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.cta-button:hover {
+  background-color: #cc3700;
 }
 
 /* Bevezető szekció */
@@ -58,16 +85,34 @@ header p {
   max-width: 100px;
   height: auto;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.intro-section h2 {
+.intro-section h2,
+.coach-section h2,
+.training-log-section h2,
+.profile-section h2,
+.featured-trainings-section h2,
+.news-section h2,
+.about-section h2,
+.testimonials-section h2 {
   font-size: 2rem;
   color: #ff4500;
   margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
-.intro-section p {
+.section-icon {
+  color: #ff4500;
+}
+
+.intro-section p,
+.coach-section p,
+.training-log-section p,
+.profile-section p {
   font-size: 1rem;
   color: #ccc;
   line-height: 1.6;
@@ -84,20 +129,53 @@ header p {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.coach-section h2,
-.training-log-section h2,
-.profile-section h2 {
-  font-size: 2rem;
+/* Kiemelt edzések szekció */
+.featured-trainings-section {
+  margin-bottom: 40px;
+  padding: 20px;
+  background: #2a2a2a;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.trainings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.training-item {
+  background: #333;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.training-item h3 {
+  font-size: 1.2rem;
   color: #ff4500;
   margin-bottom: 10px;
 }
 
-.coach-section p,
-.training-log-section p,
-.profile-section p {
+.training-item p {
   font-size: 1rem;
   color: #ccc;
   line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.join-button {
+  padding: 10px 20px;
+  background-color: #ff4500;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.join-button:hover {
+  background-color: #cc3700;
 }
 
 /* Hírek szekció */
@@ -118,7 +196,6 @@ header p {
   gap: 20px;
 }
 
-/* Az utolsó két hír középre igazítva */
 .last-two-news {
   display: flex;
   justify-content: center;
@@ -167,21 +244,6 @@ header p {
 
 .news-item a:hover {
   color: #cc3700;
-}
-
-/* Gombok */
-button {
-  padding: 10px 20px;
-  background-color: #ff4500;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-button:hover {
-  background-color: #cc3700;
 }
 
 /* Rólunk szekció */
@@ -235,7 +297,6 @@ button:hover {
   color: #ff4500;
 }
 
-/* Kapcsolat linkek */
 .contact-links {
   display: flex;
   justify-content: center;
@@ -254,6 +315,74 @@ button:hover {
 
 .contact-links a:hover {
   color: #cc3700;
+}
+
+/* Visszajelzések szekció */
+.testimonials-section {
+  margin-bottom: 40px;
+  padding: 20px;
+  background: #2a2a2a;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.testimonial-item {
+  background: #333;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.quote-icon {
+  color: #ff4500;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.testimonial-item p {
+  font-size: 1rem;
+  color: #ccc;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.testimonial-author p {
+  font-size: 1rem;
+  color: #ff4500;
+  margin-bottom: 10px;
+}
+
+.rating {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.star-icon {
+  color: #ff4500;
+  font-size: 1.2rem;
+}
+
+/* Gombok */
+button {
+  padding: 10px 20px;
+  background-color: #ff4500;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+button:hover {
+  background-color: #cc3700;
 }
 
 /* Lábléc */
@@ -382,11 +511,11 @@ footer {
     padding: 15px;
   }
 
-  header h1 {
+  .hero-content h1 {
     font-size: 2.5rem;
   }
 
-  header p {
+  .hero-content p {
     font-size: 1.1rem;
   }
 
@@ -394,8 +523,10 @@ footer {
   .coach-section,
   .training-log-section,
   .profile-section,
+  .featured-trainings-section,
   .news-section,
-  .about-section {
+  .about-section,
+  .testimonials-section {
     padding: 15px;
   }
 
@@ -403,8 +534,10 @@ footer {
   .coach-section h2,
   .training-log-section h2,
   .profile-section h2,
+  .featured-trainings-section h2,
   .news-section h2,
-  .about-section h2 {
+  .about-section h2,
+  .testimonials-section h2 {
     font-size: 1.8rem;
   }
 
@@ -412,7 +545,9 @@ footer {
   .coach-section p,
   .training-log-section p,
   .profile-section p,
-  .about-text h3 {
+  .training-item h3,
+  .about-text h3,
+  .testimonial-item p {
     font-size: 0.95rem;
   }
 
@@ -423,13 +558,20 @@ footer {
   .news-item p,
   .about-text p,
   .about-text ul li,
-  .contact-links a {
+  .contact-links a,
+  .training-item p {
     font-size: 0.95rem;
   }
 
   .social-icons img {
     width: 28px;
     height: 28px;
+  }
+
+  .cta-button,
+  .join-button {
+    padding: 10px 25px;
+    font-size: 1rem;
   }
 }
 
@@ -438,11 +580,11 @@ footer {
     padding: 10px;
   }
 
-  header h1 {
+  .hero-content h1 {
     font-size: 2rem;
   }
 
-  header p {
+  .hero-content p {
     font-size: 1rem;
   }
 
@@ -450,8 +592,10 @@ footer {
   .coach-section,
   .training-log-section,
   .profile-section,
+  .featured-trainings-section,
   .news-section,
-  .about-section {
+  .about-section,
+  .testimonials-section {
     padding: 10px;
   }
 
@@ -459,8 +603,10 @@ footer {
   .coach-section h2,
   .training-log-section h2,
   .profile-section h2,
+  .featured-trainings-section h2,
   .news-section h2,
-  .about-section h2 {
+  .about-section h2,
+  .testimonials-section h2 {
     font-size: 1.5rem;
   }
 
@@ -468,7 +614,9 @@ footer {
   .coach-section p,
   .training-log-section p,
   .profile-section p,
-  .about-text h3 {
+  .training-item h3,
+  .about-text h3,
+  .testimonial-item p {
     font-size: 0.9rem;
   }
 
@@ -478,7 +626,9 @@ footer {
     max-width: 75px;
   }
 
-  .news-grid {
+  .news-grid,
+  .trainings-grid,
+  .testimonials-grid {
     grid-template-columns: 1fr;
   }
 
@@ -498,7 +648,8 @@ footer {
   .news-item p,
   .about-text p,
   .about-text ul li,
-  .contact-links a {
+  .contact-links a,
+  .training-item p {
     font-size: 0.9rem;
   }
 
@@ -513,12 +664,14 @@ footer {
     font-size: 0.9rem;
   }
 
-  .terms-btn:hover {
-    background-color: #cc3700;
-  }
-
   .toggle-btn {
     padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  .cta-button,
+  .join-button {
+    padding: 8px 20px;
     font-size: 0.9rem;
   }
 }
@@ -528,11 +681,11 @@ footer {
     padding: 8px;
   }
 
-  header h1 {
+  .hero-content h1 {
     font-size: 1.8rem;
   }
 
-  header p {
+  .hero-content p {
     font-size: 0.9rem;
   }
 
@@ -540,8 +693,10 @@ footer {
   .coach-section,
   .training-log-section,
   .profile-section,
+  .featured-trainings-section,
   .news-section,
-  .about-section {
+  .about-section,
+  .testimonials-section {
     padding: 8px;
   }
 
@@ -549,8 +704,10 @@ footer {
   .coach-section h2,
   .training-log-section h2,
   .profile-section h2,
+  .featured-trainings-section h2,
   .news-section h2,
-  .about-section h2 {
+  .about-section h2,
+  .testimonials-section h2 {
     font-size: 1.3rem;
   }
 
@@ -558,7 +715,9 @@ footer {
   .coach-section p,
   .training-log-section p,
   .profile-section p,
-  .about-text h3 {
+  .training-item h3,
+  .about-text h3,
+  .testimonial-item p {
     font-size: 0.85rem;
   }
 
@@ -575,7 +734,8 @@ footer {
   .news-item p,
   .about-text p,
   .about-text ul li,
-  .contact-links a {
+  .contact-links a,
+  .training-item p {
     font-size: 0.85rem;
   }
 
@@ -592,6 +752,12 @@ footer {
 
   .toggle-btn {
     padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .cta-button,
+  .join-button {
+    padding: 6px 15px;
     font-size: 0.8rem;
   }
 }
