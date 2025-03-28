@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../Styles/hirek.css";
 
 const Home = () => {
@@ -9,6 +9,7 @@ const Home = () => {
   const NEWS_API_KEY = '6ed9be5621794199b9b943fbb1a4febf';
   const TRANSLATE_API_KEY = 'YOUR_GOOGLE_TRANSLATE_KEY';
   const TOPIC = 'Boxing OR Kickboxing OR MMA';
+
 
   const fetchNews = async () => {
     try {
@@ -115,6 +116,7 @@ const Home = () => {
           A sima felhasználók számára elérhető az edzésnapló funkció, ahol a saját edzéseidet tudod vezetni.
           Kövesd nyomon a fejlődésedet, és maradj motivált!
         </p>
+        
       </section>
 
       <section className="profile-section">
@@ -122,6 +124,29 @@ const Home = () => {
         <p>
           A profil oldalon módosíthatod a saját adataidat, és beállíthatod, hogy milyen típusú edzések érdekelnek téged.
           Így személyre szabott ajánlatokat kaphatsz.
+        </p>
+      </section>
+
+      <section className="profile-section">
+        <h2>Események</h2>
+        <p>
+          Az események oldalon naptárból nézheted meg a közelgő vagy elmúlt események adatait, szervezőit és nekik az elérhetőségeiket.
+          Így könnyen és egyszerűen tudsz érdeklődni a közelgő versenyekről és történésekről.
+        </p>
+      </section>
+
+      <section className="profile-section">
+        <h2>Élő Stream</h2>
+        <p>
+          Az élő stream oldalon élőben tudsz edzők által közvetített videót nézni, így akár otthonról is a megfelelő körülmények között részt tudsz venni.
+        </p>
+      </section>
+
+      <section className="profile-section">
+        <h2>Ranglista</h2>
+        <p>
+          A ranglistán láthatod a legaktívabb edzőket és résztvevőit.
+          Nyomon követheted hogy ki mennyi edzést tart és ki és ki mennyi edzésre megy el.
         </p>
       </section>
       
