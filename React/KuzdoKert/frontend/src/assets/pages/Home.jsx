@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { FaEnvelope } from 'react-icons/fa'; // Ikon az emailhez
 import "../Styles/hirek.css";
 
 const Home = () => {
@@ -188,6 +189,37 @@ const Home = () => {
             )}
           </>
         )}
+      </section>
+
+      {/* Rólunk szekció */}
+      <section className="about-section">
+        <h2>Rólunk</h2>
+        <div className="about-content">
+          <div className="about-text">
+            <h3>A platform célja</h3>
+            <p>
+              A Küzdősportok Világa platform azért jött létre, hogy összekösse a küzdősportok szerelmeseit. Célunk egy olyan közösségi tér létrehozása, ahol a felhasználók edzéseket, eseményeket és ranglistákat követhetnek nyomon, valós idejű csevegést folytathatnak, valamint élő közvetítéseket nézhetnek. Legyen szó kezdőkről vagy profi sportolókról, nálunk mindenki megtalálja a helyét!
+            </p>
+            <h3>Csapatunk</h3>
+            <p>
+              A platformot egy elhivatatott csapat fejlesztette, akik maguk is szenvedélyes küzdősport-rajongók. A fejlesztést [Rapcsák Marcell,Pekny Márk és Mózer Richárd] vezette, aki a BGSzC Pestszentlőrinci Közgazdasági és Informatikai Szakgimnázium diákjaiként készítették el ezt a projektet záródolgozatként. A dizájnt és a közösségi funkciókat egy fiktív csapat támogatta:
+            </p>
+            <ul>
+              <li><strong>Kovács Anna</strong> - UI/UX dizájner</li>
+              <li><strong>Nagy Péter</strong> - Backend fejlesztő</li>
+              <li><strong>Szabó Eszter</strong> - Marketing és közösségi média</li>
+            </ul>
+            <h3>Kapcsolat</h3>
+            <p>
+              Ha kérdésed van, vagy szeretnél csatlakozni hozzánk, lépj velünk kapcsolatba az alábbi email címen:
+            </p>
+            <div className="contact-links">
+              <a href="mailto:info@kuzdosportok.hu">
+                <FaEnvelope /> info@kuzdosportok.hu
+              </a>
+            </div>
+          </div>
+        </div>
       </section>
 
       <footer>
