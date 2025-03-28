@@ -1,30 +1,26 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useTheme } from './ThemeContext';
+import { Link } from 'react-router-dom';
 import '../Styles/ranglista.css';
 
 function Ranglista() {
   const [coachesLeaderboard, setCoachesLeaderboard] = useState([]);
   const [visitorsLeaderboard, setVisitorsLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
   const [filter, setFilter] = useState('all');
+  const [page, setPage] = useState(1);
   const itemsPerPage = 10;
-  const { theme } = useTheme();
 
-  const fetchLeaderboard = () => {
-    axios
-      .get(`http://localhost:5000/api/ranglista?page=${page}&limit=${itemsPerPage}&filter=${filter}`)
-      .then((res) => {
-        setCoachesLeaderboard(res.data.coaches);
-        setVisitorsLeaderboard(res.data.visitors);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Hiba a ranglista lekérdezésekor:', err);
-        setLoading(false);
-      });
+  const fetchLeaderboard = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/ranglista?page=${page}&limit=${itemsPerPage}&filter=${filter}`);
+      setCoachesLeaderboard(response.data.coaches);
+      setVisitorsLeaderboard(response.data.visitors);
+      setLoading(false);
+    } catch (err) {
+      console.error('Hiba a ranglista lekérdezésekor:', err);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -40,22 +36,24 @@ function Ranglista() {
 
   if (loading) {
     return (
-      <div className={`p-4 text-center min-h-screen bg-333 ${theme}`}>
+      <div className="p-4 text-center min-h-screen bg-333">
         <h1 className="text-3xl font-bold text-ff4500 animate-pulse">Ranglista betöltése...</h1>
       </div>
     );
   }
 
   return (
-    <div className={`sport-page min-h-screen bg-333 text-ff4500 ${theme}`}>
-      {/* Edzők ranglistája */}
-      <h1 className="text-4xl font-bold mb-6 text-center animate-pulse bg-333 p-5">
-        Ranglista - A Legjobb Edzők
-      </h1>
+    <div className="sport-page min-h-screen bg-333 text-ff4500">
+      {/* Szűrő gombok */}
       <div className="filter-section">
         <button onClick={() => handleFilterChange('all')} className={filter === 'all' ? 'active' : ''}>Összes</button>
         <button onClick={() => handleFilterChange('last30days')} className={filter === 'last30days' ? 'active' : ''}>Utolsó 30 nap</button>
       </div>
+
+      {/* Edzők ranglistája */}
+      <h1 className="text-4xl font-bold mb-6 text-center animate-pulse bg-333 p-5">
+        Ranglista - A Legjobb Edzők
+      </h1>
       <div className="max-w-1200 mx-auto p-4">
         <div className="overflow-x-auto shadow-lg rounded-lg asztal">
           <table className="w-full text-left bg-2c2c2c border-separate border-spacing-0">
@@ -91,12 +89,16 @@ function Ranglista() {
                     )}
                   </td>
                   <td className="p-3 border-b border-ccc">
-                    <div className="user-profile">
-                      <img src="default-avatar.png" alt="Profilkép" className="avatar" />
-                      <Link to={`/profil/${user.felhasznalonev}`} className="user-link">
+                    <Link to={`/profil/${user.felhasznalonev}`} className="user-link">
+                      <div className="user-profile">
+                        <img
+                          src={user.profilePic || 'https://via.placeholder.com/30?text=User'}
+                          alt="Profilkép"
+                          className="avatar"
+                        />
                         {user.felhasznalonev}
-                      </Link>
-                    </div>
+                      </div>
+                    </Link>
                   </td>
                   <td className="p-3 border-b border-ccc">{user.edzesek} edzés</td>
                 </tr>
@@ -118,10 +120,6 @@ function Ranglista() {
       <h1 className="text-4xl font-bold mb-6 text-center animate-pulse bg-333 p-5 mt-10">
         Ranglista - A Legaktívabb Látogatók
       </h1>
-      <div className="filter-section">
-        <button onClick={() => handleFilterChange('all')} className={filter === 'all' ? 'active' : ''}>Összes</button>
-        <button onClick={() => handleFilterChange('last30days')} className={filter === 'last30days' ? 'active' : ''}>Utolsó 30 nap</button>
-      </div>
       <div className="max-w-1200 mx-auto p-4">
         <div className="overflow-x-auto shadow-lg rounded-lg asztal">
           <table className="w-full text-left bg-2c2c2c border-separate border-spacing-0">
@@ -157,12 +155,16 @@ function Ranglista() {
                     )}
                   </td>
                   <td className="p-3 border-b border-ccc">
-                    <div className="user-profile">
-                      <img src="default-avatar.png" alt="Profilkép" className="avatar" />
-                      <Link to={`/profil/${user.felhasznalonev}`} className="user-link">
+                    <Link to={`/profil/${user.felhasznalonev}`} className="user-link">
+                      <div className="user-profile">
+                        <img
+                          src={user.profilePic || 'https://via.placeholder.com/30?text=User'}
+                          alt="Profilkép"
+                          className="avatar"
+                        />
                         {user.felhasznalonev}
-                      </Link>
-                    </div>
+                      </div>
+                    </Link>
                   </td>
                   <td className="p-3 border-b border-ccc">{user.reszvetel} edzés</td>
                 </tr>

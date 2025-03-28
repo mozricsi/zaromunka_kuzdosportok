@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { FaEnvelope, FaFistRaised, FaUserPlus, FaCalendarAlt, FaUser, FaVideo, FaTrophy, FaQuoteLeft, FaStar } from 'react-icons/fa';
+import { FaEnvelope, FaFistRaised, FaUserPlus, FaCalendarAlt, FaUser, FaVideo, FaTrophy, FaQuoteLeft, FaStar, FaSearch } from 'react-icons/fa';
 import Axios from 'axios';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet';
-import { useTheme } from './ThemeContext';
 import "../Styles/hirek.css";
 
 const SkeletonLoader = () => (
@@ -12,6 +11,7 @@ const SkeletonLoader = () => (
     <div className="skeleton-image"></div>
     <div className="skeleton-title"></div>
     <div className="skeleton-text"></div>
+    <div className="skeleton-link"></div>
   </div>
 );
 
@@ -32,58 +32,15 @@ const HeroSection = ({ navigate }) => (
   </motion.header>
 );
 
-const FeaturedTrainings = ({ featuredTrainings, loading, navigate, isLoggedIn, searchTerm, setSearchTerm, handleSearch }) => (
-  <section className="featured-trainings-section">
-    <h2>Kiemelt Edzések</h2>
-    <div className="search-section">
-      <input
-        type="text"
-        placeholder="Keresés (pl. Box, Budapest)"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="search-input"
-      />
-      <button onClick={handleSearch} className="search-button">Keresés</button>
-    </div>
-    {loading ? (
-      <div className="trainings-grid">
-        <SkeletonLoader />
-        <SkeletonLoader />
-        <SkeletonLoader />
-      </div>
-    ) : featuredTrainings.length === 0 ? (
-      <p>Nincsenek elérhető edzések.</p>
-    ) : (
-      <div className="trainings-grid">
-        {featuredTrainings.map((training, index) => (
-          <div key={index} className="training-item">
-            <h3>{training.klubbnev}</h3>
-            <p>{training.pontoscim}</p>
-            <p>{training.nap} - {training.ido}</p>
-            <button
-              onClick={() => !isLoggedIn ? navigate('/login') : navigate(`/edzes/${training.edzes_id}`)}
-              className="join-button"
-            >
-              Csatlakozz
-            </button>
-          </div>
-        ))}
-      </div>
-    )}
-  </section>
-);
-
 const Home = () => {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [featuredTrainings, setFeaturedTrainings] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
   const NEWS_API_KEY = '6ed9be5621794199b9b943fbb1a4febf';
   const TRANSLATE_API_KEY = 'YOUR_GOOGLE_TRANSLATE_KEY';
   const TOPIC = 'Boxing OR Kickboxing OR MMA';
-  const isLoggedIn = false; // Feltételezem, hogy van egy autentikációs logika
 
   const fetchNews = async () => {
     try {
@@ -91,6 +48,7 @@ const Home = () => {
         `https://newsapi.org/v2/everything?q=${TOPIC}&language=en&pageSize=20&apiKey=${NEWS_API_KEY}`
       );
       const data = await response.json();
+      console.log("API válasz:", data); // Nézzük meg, mit kapunk az API-tól
       if (data.articles) {
         const filteredNews = data.articles.filter(article => {
           const title = article.title ? article.title.toLowerCase() : '';
@@ -104,6 +62,7 @@ const Home = () => {
             !title.includes('basketball') && !description.includes('basketball')
           );
         });
+        console.log("Szűrt hírek:", filteredNews);
 
         const newsToTranslate = filteredNews.slice(0, 10);
         const translatedNews = await Promise.all(
@@ -117,6 +76,7 @@ const Home = () => {
             };
           })
         );
+        console.log("Fordított hírek:", translatedNews);
         setNews(translatedNews);
       }
       setLoading(false);
@@ -149,18 +109,19 @@ const Home = () => {
     }
   };
 
-  const fetchFeaturedTrainings = async (term = '') => {
+  const fetchFeaturedTrainings = async () => {
     try {
-      const response = await Axios.get(`http://localhost:5000/edzesek?search=${term}`);
-      const trainings = response.data;
-      setFeaturedTrainings(trainings.slice(0, 3));
+      const response = await Axios.get('http://localhost:5000/api/kiemelt-edzesek');
+      setFeaturedTrainings(response.data);
     } catch (error) {
       console.error("Hiba a kiemelt edzések lekérésekor:", error);
     }
   };
 
   const handleSearch = () => {
-    fetchFeaturedTrainings(searchTerm);
+    Axios.get(`http://localhost:5000/api/kereses?term=${searchTerm}`)
+      .then((res) => setFeaturedTrainings(res.data))
+      .catch((err) => console.error('Hiba a keresés során:', err));
   };
 
   useEffect(() => {
@@ -183,223 +144,310 @@ const Home = () => {
     });
 
     images.forEach((img) => observer.observe(img));
-  }, []);
+  }, [news]);
 
   const mainNews = news.slice(0, -2);
   const lastTwoNews = news.slice(-2);
 
   return (
-    <div className={`App ${theme}`}>
+    <>
       <Helmet>
         <title>Küzdősportok - Főoldal</title>
         <meta name="description" content="Csatlakozz a legjobb küzdősport edzésekhez Magyarországon!" />
       </Helmet>
-      <button onClick={toggleTheme} className="theme-toggle">
-        {theme === 'dark' ? 'Világos mód' : 'Sötét mód'}
-      </button>
+      <div className="App">
+        <HeroSection navigate={navigate} />
 
-      <HeroSection navigate={navigate} />
+        <section className="search-section">
+          <input
+            type="text"
+            placeholder="Keresés (pl. Box, Budapest)"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+            aria-label="Keresés edzések között"
+          />
+          <button onClick={handleSearch} className="search-button" aria-label="Keresés indítása">
+            <FaSearch />
+          </button>
+        </section>
 
-      <section className="intro-section">
-        <h2><FaFistRaised className="section-icon" /> Üdvözöllek a Küzdősportok Világában!</h2>
-        <div className="intro-content">
+        <motion.section
+          className="intro-section"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          <h2><FaFistRaised className="section-icon" /> Üdvözöllek a Küzdősportok Világában!</h2>
+          <div className="intro-content">
+            <p>
+              Weboldalunkon különböző küzdősportokkal ismerkedhetsz meg, mint például a box, kickbox és MMA.
+              Legyen szó kezdőkről vagy haladókról, nálunk mindenki megtalálja a számára megfelelő edzéseket és információkat.
+            </p>
+          </div>
+        </motion.section>
+
+        <motion.section
+          className="coach-section"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <h2><FaUserPlus className="section-icon" /> Edzőként regisztrálj!</h2>
           <p>
-            Weboldalunkon különböző küzdősportokkal ismerkedhetsz meg, mint például a box, kickbox és MMA.
-            Legyen szó kezdőkről vagy haladókról, nálunk mindenki megtalálja a számára megfelelő edzéseket és információkat.
+            Ha edző vagy, regisztrálj és töltsd fel a saját klubod adatait, valamint az edzéseid időpontjait és helyszíneit.
+            Így a felhasználók könnyen megtalálhatják és csatlakozhatnak az edzéseidhez.
           </p>
-        </div>
-      </section>
+        </motion.section>
 
-      <section className="coach-section">
-        <h2><FaUserPlus className="section-icon" /> Edzőként regisztrálj!</h2>
-        <p>
-          Ha edző vagy, regisztrálj és töltsd fel a saját klubod adatait, valamint az edzéseid időpontjait és helyszíneit.
-          Így a felhasználók könnyen megtalálhatják és csatlakozhatnak az edzéseidhez.
-        </p>
-      </section>
+        <motion.section
+          className="training-log-section"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
+          <h2><FaCalendarAlt className="section-icon" /> Edzésnapló</h2>
+          <p>
+            A sima felhasználók számára elérhető az edzésnapló funkció, ahol a saját edzéseidet tudod vezetni.
+            Kövesd nyomon a fejlődésedet, és maradj motivált!
+          </p>
+        </motion.section>
 
-      <section className="training-log-section">
-        <h2><FaCalendarAlt className="section-icon" /> Edzésnapló</h2>
-        <p>
-          A sima felhasználók számára elérhető az edzésnapló funkció, ahol a saját edzéseidet tudod vezetni.
-          Kövesd nyomon a fejlődésedet, és maradj motivált!
-        </p>
-      </section>
+        <motion.section
+          className="profile-section"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+        >
+          <h2><FaUser className="section-icon" /> Profil</h2>
+          <p>
+            A profil oldalon módosíthatod a saját adataidat, és beállíthatod, hogy milyen típusú edzések érdekelnek téged.
+            Így személyre szabott ajánlatokat kaphatsz.
+          </p>
+        </motion.section>
 
-      <section className="profile-section">
-        <h2><FaUser className="section-icon" /> Profil</h2>
-        <p>
-          A profil oldalon módosíthatod a saját adataidat, és beállíthatod, hogy milyen típusú edzések érdekelnek téged.
-          Így személyre szabott ajánlatokat kaphatsz.
-        </p>
-      </section>
+        <motion.section
+          className="profile-section"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+        >
+          <h2><FaCalendarAlt className="section-icon" /> Események</h2>
+          <p>
+            Az események oldalon naptárból nézheted meg a közelgő vagy elmúlt események adatait, szervezőit és nekik az elérhetőségeiket.
+            Így könnyen és egyszerűen tudsz érdeklődni a közelgő versenyekről és történésekről.
+          </p>
+        </motion.section>
 
-      <section className="profile-section">
-        <h2><FaCalendarAlt className="section-icon" /> Események</h2>
-        <p>
-          Az események oldalon naptárból nézheted meg a közelgő vagy elmúlt események adatait, szervezőit és nekik az elérhetőségeiket.
-          Így könnyen és egyszerűen tudsz érdeklődni a közelgő versenyekről és történésekről.
-        </p>
-      </section>
+        <motion.section
+          className="profile-section"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1.0 }}
+        >
+          <h2><FaVideo className="section-icon" /> Élő Stream</h2>
+          <p>
+            Az élő stream oldalon élőben tudsz edzők által közvetített videót nézni, így akár otthonról is a megfelelő körülmények között részt tudsz venni.
+          </p>
+        </motion.section>
 
-      <section className="profile-section">
-        <h2><FaVideo className="section-icon" /> Élő Stream</h2>
-        <p>
-          Az élő stream oldalon élőben tudsz edzők által közvetített videót nézni, így akár otthonról is a megfelelő körülmények között részt tudsz venni.
-        </p>
-      </section>
+        <motion.section
+          className="profile-section"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1.2 }}
+        >
+          <h2><FaTrophy className="section-icon" /> Ranglista</h2>
+          <p>
+            A ranglistán láthatod a legaktívabb edzőket és résztvevőit.
+            Nyomon követheted hogy ki mennyi edzést tart és ki mennyi edzésre megy el.
+          </p>
+        </motion.section>
 
-      <section className="profile-section">
-        <h2><FaTrophy className="section-icon" /> Ranglista</h2>
-        <p>
-          A ranglistán láthatod a legaktívabb edzőket és résztvevőit.
-          Nyomon követheted hogy ki mennyi edzést tart és ki és ki mennyi edzésre megy el.
-        </p>
-      </section>
-
-      <FeaturedTrainings
-        featuredTrainings={featuredTrainings}
-        loading={loading}
-        navigate={navigate}
-        isLoggedIn={isLoggedIn}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        handleSearch={handleSearch}
-      />
-
-      <section className="news-section">
-        <h2>Legfrissebb hírek (Box, Kickbox, MMA)</h2>
-        {loading ? (
-          <div className="news-grid">
-            <SkeletonLoader />
-            <SkeletonLoader />
-            <SkeletonLoader />
-          </div>
-        ) : news.length === 0 ? (
-          <p>Nincsenek elérhető hírek a box, kickbox vagy MMA témában.</p>
-        ) : (
-          <>
-            {mainNews.length > 0 && (
-              <div className="news-grid">
-                {mainNews.map((article, index) => (
-                  <div key={index} className="news-item">
-                    {article.urlToImage && (
-                      <img
-                        src="placeholder.jpg"
-                        data-src={article.urlToImage}
-                        alt={article.title}
-                        className="lazy-load"
-                      />
-                    )}
-                    <h3>{article.title}</h3>
-                    <p>{article.description}</p>
-                    <a href={article.url} target="_blank" rel="noopener noreferrer">További információk</a>
-                  </div>
-                ))}
-              </div>
+        <motion.section
+          className="featured-trainings-section"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1.4 }}
+        >
+          <h2>Kiemelt Edzések</h2>
+          <div className="trainings-grid">
+            {featuredTrainings.length === 0 ? (
+              <p>Nincsenek kiemelt edzések.</p>
+            ) : (
+              featuredTrainings.map((edzes, index) => (
+                <div key={index} className="training-item">
+                  <h3>{edzes.klubbnev}</h3>
+                  <p>{edzes.pontoscim}</p>
+                  <p>{edzes.nap} - {edzes.ido}</p>
+                  <button
+                    className="join-button"
+                    onClick={() => navigate('/login')}
+                    aria-label={`Csatlakozz a ${edzes.klubbnev} edzéséhez`}
+                  >
+                    Csatlakozz
+                  </button>
+                </div>
+              ))
             )}
-            {lastTwoNews.length > 0 && (
-              <div className="last-two-news">
-                {lastTwoNews.map((article, index) => (
-                  <div key={index} className="news-item last-news-item">
-                    {article.urlToImage && (
-                      <img
-                        src="placeholder.jpg"
-                        data-src={article.urlToImage}
-                        alt={article.title}
-                        className="lazy-load"
-                      />
-                    )}
-                    <h3>{article.title}</h3>
-                    <p>{article.description}</p>
-                    <a href={article.url} target="_blank" rel="noopener noreferrer">További információk</a>
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
-        )}
-      </section>
+          </div>
+        </motion.section>
 
-      <section className="about-section">
-        <h2>Rólunk</h2>
-        <div className="about-content">
-          <div className="about-text">
-            <h3>A platform célja</h3>
-            <p>
-              A Küzdősportok Világa platform azért jött létre, hogy összekösse a küzdősportok szerelmeseit. Célunk egy olyan közösségi tér létrehozása, ahol a felhasználók edzéseket, eseményeket és ranglistákat követhetnek nyomon, valós idejű csevegést folytathatnak, valamint élő közvetítéseket nézhetnek. Legyen szó kezdőkről vagy profi sportolókról, nálunk mindenki megtalálja a helyét!
-            </p>
-            <h3>Csapatunk</h3>
-            <p>
-              A platformot egy elhivatatott csapat fejlesztette, akik maguk is szenvedélyes küzdősport-rajongók. A fejlesztést Rapcsák Marcell, Pekny Márk és Mózer Richárd vezette, akik a BGSzC Pestszentlőrinci Közgazdasági és Informatikai Szakgimnázium diákjaiként készítették el ezt a projektet záródolgozatként. A dizájnt és a közösségi funkciókat egy fiktív csapat támogatta:
-            </p>
-            <ul>
-              <li><strong>Kovács Anna</strong> - UI/UX dizájner</li>
-              <li><strong>Nagy Péter</strong> - Backend fejlesztő</li>
-              <li><strong>Szabó Eszter</strong> - Marketing és közösségi média</li>
-            </ul>
-            <h3>Kapcsolat</h3>
-            <p>
-              Ha kérdésed van, vagy szeretnél csatlakozni hozzánk, lépj velünk kapcsolatba az alábbi email címen:
-            </p>
-            <div className="contact-links">
-              <a href="mailto:info@kuzdosportok.hu">
-                <FaEnvelope /> info@kuzdosportok.hu
-              </a>
+        <motion.section
+          className="news-section"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1.6 }}
+        >
+          <h2>Legfrissebb hírek (Box, Kickbox, MMA)</h2>
+          {loading ? (
+            <div className="news-grid">
+              <SkeletonLoader />
+              <SkeletonLoader />
+              <SkeletonLoader />
+            </div>
+          ) : news.length === 0 ? (
+            <p>Nincsenek elérhető hírek a box, kickbox vagy MMA témában.</p>
+          ) : (
+            <>
+              {mainNews.length > 0 && (
+                <div className="news-grid">
+                  {mainNews.map((article, index) => (
+                    <div key={index} className="news-item">
+                      {article.urlToImage ? (
+                        <img
+                          src={article.urlToImage}
+                          alt={article.title}
+                          className="lazy-load"
+                          data-src={article.urlToImage}
+                          onError={(e) => (e.target.src = 'https://via.placeholder.com/300x200?text=Nincs+kép')}
+                        />
+                      ) : (
+                        <img src="https://via.placeholder.com/300x200?text=Nincs+kép" alt="Nincs kép" />
+                      )}
+                      <h3>{article.title}</h3>
+                      <p>{article.description}</p>
+                      <a href={article.url} target="_blank" rel="noopener noreferrer">További információk</a>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {lastTwoNews.length > 0 && (
+                <div className="last-two-news">
+                  {lastTwoNews.map((article, index) => (
+                    <div key={index} className="news-item last-news-item">
+                      {article.urlToImage ? (
+                        <img
+                          src={article.urlToImage}
+                          alt={article.title}
+                          className="lazy-load"
+                          data-src={article.urlToImage}
+                          onError={(e) => (e.target.src = 'https://via.placeholder.com/300x200?text=Nincs+kép')}
+                        />
+                      ) : (
+                        <img src="https://via.placeholder.com/300x200?text=Nincs+kép" alt="Nincs kép" />
+                      )}
+                      <h3>{article.title}</h3>
+                      <p>{article.description}</p>
+                      <a href={article.url} target="_blank" rel="noopener noreferrer">További információk</a>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </motion.section>
+
+        <motion.section
+          className="about-section"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1.8 }}
+        >
+          <h2>Rólunk</h2>
+          <div className="about-content">
+            <div className="about-text">
+              <h3>A platform célja</h3>
+              <p>
+                A Küzdősportok Világa platform azért jött létre, hogy összekösse a küzdősportok szerelmeseit. Célunk egy olyan közösségi tér létrehozása, ahol a felhasználók edzéseket, eseményeket és ranglistákat követhetnek nyomon, valós idejű csevegést folytathatnak, valamint élő közvetítéseket nézhetnek. Legyen szó kezdőkről vagy profi sportolókról, nálunk mindenki megtalálja a helyét!
+              </p>
+              <h3>Csapatunk</h3>
+              <p>
+                A platformot egy elhivatatott csapat fejlesztette, akik maguk is szenvedélyes küzdősport-rajongók. A fejlesztést Rapcsák Marcell, Pekny Márk és Mózer Richárd vezette, akik a BGSzC Pestszentlőrinci Közgazdasági és Informatikai Szakgimnázium diákjaiként készítették el ezt a projektet záródolgozatként. A dizájnt és a közösségi funkciókat egy fiktív csapat támogatta:
+              </p>
+              <ul>
+                <li><strong>Kovács Anna</strong> - UI/UX dizájner</li>
+                <li><strong>Nagy Péter</strong> - Backend fejlesztő</li>
+                <li><strong>Szabó Eszter</strong> - Marketing és közösségi média</li>
+              </ul>
+              <h3>Kapcsolat</h3>
+              <p>
+                Ha kérdésed van, vagy szeretnél csatlakozni hozzánk, lépj velünk kapcsolatba az alábbi email címen:
+              </p>
+              <div className="contact-links">
+                <a href="mailto:info@kuzdosportok.hu">
+                  <FaEnvelope /> info@kuzdosportok.hu
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </motion.section>
 
-      <section className="testimonials-section">
-        <h2>Mit mondanak rólunk?</h2>
-        <div className="testimonials-grid">
-          <div className="testimonial-item">
-            <FaQuoteLeft className="quote-icon" />
-            <p>"Ez a platform teljesen megváltoztatta az edzéseimhez való hozzáállásomat. Könnyen megtalálom a legjobb edzéseket!"</p>
-            <div className="testimonial-author">
-              <p><strong>Kiss Tamás</strong> - MMA rajongó</p>
-              <div className="rating">
-                <FaStar className="star-icon" />
-                <FaStar className="star-icon" />
-                <FaStar className="star-icon" />
-                <FaStar className="star-icon" />
-                <FaStar className="star-icon" />
+        <motion.section
+          className="testimonials-section"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 2.0 }}
+        >
+          <h2>Mit mondanak rólunk?</h2>
+          <div className="testimonials-grid">
+            <div className="testimonial-item">
+              <FaQuoteLeft className="quote-icon" />
+              <p>"Ez a platform teljesen megváltoztatta az edzéseimhez való hozzáállásomat. Könnyen megtalálom a legjobb edzéseket!"</p>
+              <div className="testimonial-author">
+                <p><strong>Kiss Tamás</strong> - MMA rajongó</p>
+                <div className="rating">
+                  <FaStar className="star-icon" />
+                  <FaStar className="star-icon" />
+                  <FaStar className="star-icon" />
+                  <FaStar className="star-icon" />
+                  <FaStar className="star-icon" />
+                </div>
+              </div>
+            </div>
+            <div className="testimonial-item">
+              <FaQuoteLeft className="quote-icon" />
+              <p>"Edzőként nagyon egyszerűen tudom kezelni az edzéseimet, és a közösség nagyon támogató!"</p>
+              <div className="testimonial-author">
+                <p><strong>Nagy Éva</strong> - Kickbox edző</p>
+                <div className="rating">
+                  <FaStar className="star-icon" />
+                  <FaStar className="star-icon" />
+                  <FaStar className="star-icon" />
+                  <FaStar className="star-icon" />
+                  <FaStar className="star-icon" />
+                </div>
               </div>
             </div>
           </div>
-          <div className="testimonial-item">
-            <FaQuoteLeft className="quote-icon" />
-            <p>"Edzőként nagyon egyszerűen tudom kezelni az edzéseimet, és a közösség nagyon támogató!"</p>
-            <div className="testimonial-author">
-              <p><strong>Nagy Éva</strong> - Kickbox edző</p>
-              <div className="rating">
-                <FaStar className="star-icon" />
-                <FaStar className="star-icon" />
-                <FaStar className="star-icon" />
-                <FaStar className="star-icon" />
-                <FaStar className="star-icon" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+        </motion.section>
 
-      <footer>
-        <p>Kövess minket a közösségi médiában, és maradj naprakész a legújabb hírekkel!</p>
-        <div className="social-icons">
-          <a href="https://twitter.com/search?q=boxing%20OR%20kickboxing%20OR%20MMA&src=typed_query" target="_blank" rel="noopener noreferrer">
-            <img src="https://cdn-icons-png.flaticon.com/512/124/124021.png" alt="Twitter" />
-          </a>
-          <a href="https://www.instagram.com/explore/tags/boxing/" target="_blank" rel="noopener noreferrer">
-            <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" />
-          </a>
-          <a href="https://www.youtube.com/results?search_query=boxing+kickboxing+MMA" target="_blank" rel="noopener noreferrer">
-            <img src="https://cdn-icons-png.flaticon.com/512/174/174883.png" alt="YouTube" />
-          </a>
-        </div>
-      </footer>
-    </div>
+        <footer>
+          <p>Kövess minket a közösségi médiában, és maradj naprakész a legújabb hírekkel!</p>
+          <div className="social-icons">
+            <a href="https://twitter.com/search?q=boxing%20OR%20kickboxing%20OR%20MMA&src=typed_query" target="_blank" rel="noopener noreferrer">
+              <img src="https://cdn-icons-png.flaticon.com/512/124/124021.png" alt="Twitter" />
+            </a>
+            <a href="https://www.instagram.com/explore/tags/boxing/" target="_blank" rel="noopener noreferrer">
+              <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" />
+            </a>
+            <a href="https://www.youtube.com/results?search_query=boxing+kickboxing+MMA" target="_blank" rel="noopener noreferrer">
+              <img src="https://cdn-icons-png.flaticon.com/512/174/174883.png" alt="YouTube" />
+            </a>
+          </div>
+        </footer>
+      </div>
+    </>
   );
 };
 
