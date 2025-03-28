@@ -59,11 +59,6 @@ header p {
   height: auto;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease;
-}
-
-.intro-image:hover {
-  transform: scale(1.05);
 }
 
 .intro-section h2 {
@@ -137,12 +132,6 @@ header p {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.news-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 .last-news-item {
@@ -174,7 +163,6 @@ header p {
   color: #ff4500;
   text-decoration: none;
   font-weight: bold;
-  transition: color 0.3s ease;
 }
 
 .news-item a:hover {
@@ -190,12 +178,82 @@ button {
   border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 button:hover {
   background-color: #cc3700;
-  transform: scale(1.05);
+}
+
+/* Rólunk szekció */
+.about-section {
+  margin-bottom: 40px;
+  padding: 20px;
+  background: #2a2a2a;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.about-section h2 {
+  font-size: 2rem;
+  color: #ff4500;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.about-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.about-text h3 {
+  font-size: 1.5rem;
+  color: #ff4500;
+  margin-bottom: 10px;
+}
+
+.about-text p {
+  font-size: 1rem;
+  color: #ccc;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.about-text ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.about-text ul li {
+  font-size: 1rem;
+  color: #ccc;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.about-text ul li strong {
+  color: #ff4500;
+}
+
+/* Kapcsolat linkek */
+.contact-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.contact-links a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  color: #ff4500;
+  text-decoration: none;
+}
+
+.contact-links a:hover {
+  color: #cc3700;
 }
 
 /* Lábléc */
@@ -217,11 +275,6 @@ footer {
 .social-icons img {
   width: 30px;
   height: 30px;
-  transition: transform 0.3s ease;
-}
-
-.social-icons img:hover {
-  transform: scale(1.05);
 }
 
 .terms-btn {
@@ -233,12 +286,10 @@ footer {
   border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .terms-btn:hover {
   background-color: #cc3700;
-  transform: scale(1.05);
 }
 
 /* Toggle gombok */
@@ -256,12 +307,10 @@ footer {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .toggle-btn:hover {
   background-color: #cc3700;
-  transform: scale(1.05);
 }
 
 /* Dashboard szekció */
@@ -345,7 +394,8 @@ footer {
   .coach-section,
   .training-log-section,
   .profile-section,
-  .news-section {
+  .news-section,
+  .about-section {
     padding: 15px;
   }
 
@@ -353,14 +403,16 @@ footer {
   .coach-section h2,
   .training-log-section h2,
   .profile-section h2,
-  .news-section h2 {
+  .news-section h2,
+  .about-section h2 {
     font-size: 1.8rem;
   }
 
   .intro-section p,
   .coach-section p,
   .training-log-section p,
-  .profile-section p {
+  .profile-section p,
+  .about-text h3 {
     font-size: 0.95rem;
   }
 
@@ -368,7 +420,10 @@ footer {
     font-size: 1.1rem;
   }
 
-  .news-item p {
+  .news-item p,
+  .about-text p,
+  .about-text ul li,
+  .contact-links a {
     font-size: 0.95rem;
   }
 
@@ -395,7 +450,8 @@ footer {
   .coach-section,
   .training-log-section,
   .profile-section,
-  .news-section {
+  .news-section,
+  .about-section {
     padding: 10px;
   }
 
@@ -403,14 +459,16 @@ footer {
   .coach-section h2,
   .training-log-section h2,
   .profile-section h2,
-  .news-section h2 {
+  .news-section h2,
+  .about-section h2 {
     font-size: 1.5rem;
   }
 
   .intro-section p,
   .coach-section p,
   .training-log-section p,
-  .profile-section p {
+  .profile-section p,
+  .about-text h3 {
     font-size: 0.9rem;
   }
 
@@ -437,7 +495,10 @@ footer {
     font-size: 1rem;
   }
 
-  .news-item p {
+  .news-item p,
+  .about-text p,
+  .about-text ul li,
+  .contact-links a {
     font-size: 0.9rem;
   }
 
@@ -479,7 +540,8 @@ footer {
   .coach-section,
   .training-log-section,
   .profile-section,
-  .news-section {
+  .news-section,
+  .about-section {
     padding: 8px;
   }
 
@@ -487,14 +549,16 @@ footer {
   .coach-section h2,
   .training-log-section h2,
   .profile-section h2,
-  .news-section h2 {
+  .news-section h2,
+  .about-section h2 {
     font-size: 1.3rem;
   }
 
   .intro-section p,
   .coach-section p,
   .training-log-section p,
-  .profile-section p {
+  .profile-section p,
+  .about-text h3 {
     font-size: 0.85rem;
   }
 
@@ -508,7 +572,10 @@ footer {
     font-size: 0.9rem;
   }
 
-  .news-item p {
+  .news-item p,
+  .about-text p,
+  .about-text ul li,
+  .contact-links a {
     font-size: 0.85rem;
   }
 
