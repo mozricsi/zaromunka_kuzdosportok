@@ -1,17 +1,89 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { FaEnvelope, FaFistRaised, FaUserPlus, FaCalendarAlt, FaUser, FaVideo, FaTrophy, FaQuoteLeft, FaStar } from 'react-icons/fa'; // Ikonok
+import { FaEnvelope, FaFistRaised, FaUserPlus, FaCalendarAlt, FaUser, FaVideo, FaTrophy, FaQuoteLeft, FaStar } from 'react-icons/fa';
 import Axios from 'axios';
+import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet';
+import { useTheme } from './ThemeContext';
 import "../Styles/hirek.css";
+
+const SkeletonLoader = () => (
+  <div className="skeleton-news-item">
+    <div className="skeleton-image"></div>
+    <div className="skeleton-title"></div>
+    <div className="skeleton-text"></div>
+  </div>
+);
+
+const HeroSection = ({ navigate }) => (
+  <motion.header
+    className="hero-section"
+    initial={{ opacity: 0, y: 50 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 1 }}
+  >
+    <div className="hero-content">
+      <h1>Küzdősportok Világa</h1>
+      <p>Fedezd fel a különböző küzdősportokat, regisztrálj akár edzőként, és tartsd karban az edzésnaplódat!</p>
+      <button onClick={() => navigate('/register')} className="cta-button">
+        Csatlakozz most!
+      </button>
+    </div>
+  </motion.header>
+);
+
+const FeaturedTrainings = ({ featuredTrainings, loading, navigate, isLoggedIn, searchTerm, setSearchTerm, handleSearch }) => (
+  <section className="featured-trainings-section">
+    <h2>Kiemelt Edzések</h2>
+    <div className="search-section">
+      <input
+        type="text"
+        placeholder="Keresés (pl. Box, Budapest)"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="search-input"
+      />
+      <button onClick={handleSearch} className="search-button">Keresés</button>
+    </div>
+    {loading ? (
+      <div className="trainings-grid">
+        <SkeletonLoader />
+        <SkeletonLoader />
+        <SkeletonLoader />
+      </div>
+    ) : featuredTrainings.length === 0 ? (
+      <p>Nincsenek elérhető edzések.</p>
+    ) : (
+      <div className="trainings-grid">
+        {featuredTrainings.map((training, index) => (
+          <div key={index} className="training-item">
+            <h3>{training.klubbnev}</h3>
+            <p>{training.pontoscim}</p>
+            <p>{training.nap} - {training.ido}</p>
+            <button
+              onClick={() => !isLoggedIn ? navigate('/login') : navigate(`/edzes/${training.edzes_id}`)}
+              className="join-button"
+            >
+              Csatlakozz
+            </button>
+          </div>
+        ))}
+      </div>
+    )}
+  </section>
+);
 
 const Home = () => {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [featuredTrainings, setFeaturedTrainings] = useState([]); // Kiemelt edzések
+  const [featuredTrainings, setFeaturedTrainings] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
   const NEWS_API_KEY = '6ed9be5621794199b9b943fbb1a4febf';
   const TRANSLATE_API_KEY = 'YOUR_GOOGLE_TRANSLATE_KEY';
   const TOPIC = 'Boxing OR Kickboxing OR MMA';
+  const isLoggedIn = false; // Feltételezem, hogy van egy autentikációs logika
 
   const fetchNews = async () => {
     try {
@@ -77,16 +149,18 @@ const Home = () => {
     }
   };
 
-  // Kiemelt edzések lekérdezése
-  const fetchFeaturedTrainings = async () => {
+  const fetchFeaturedTrainings = async (term = '') => {
     try {
-      const response = await Axios.get('http://localhost:5000/edzesek');
+      const response = await Axios.get(`http://localhost:5000/edzesek?search=${term}`);
       const trainings = response.data;
-      // Példa: Az első 3 edzést kiemeljük
       setFeaturedTrainings(trainings.slice(0, 3));
     } catch (error) {
       console.error("Hiba a kiemelt edzések lekérésekor:", error);
     }
+  };
+
+  const handleSearch = () => {
+    fetchFeaturedTrainings(searchTerm);
   };
 
   useEffect(() => {
@@ -96,22 +170,35 @@ const Home = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Az utolsó két hírt különválasztjuk
+  useEffect(() => {
+    const images = document.querySelectorAll('.lazy-load');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          img.src = img.dataset.src;
+          observer.unobserve(img);
+        }
+      });
+    });
+
+    images.forEach((img) => observer.observe(img));
+  }, []);
+
   const mainNews = news.slice(0, -2);
   const lastTwoNews = news.slice(-2);
 
   return (
-    <div className="App">
-      {/* Hero szekció */}
-      <header className="hero-section">
-        <div className="hero-content">
-          <h1>Küzdősportok Világa</h1>
-          <p>Fedezd fel a különböző küzdősportokat, regisztrálj akár edzőként, és tartsd karban az edzésnaplódat!</p>
-          <button onClick={() => navigate('/register')} className="cta-button">
-            Csatlakozz most!
-          </button>
-        </div>
-      </header>
+    <div className={`App ${theme}`}>
+      <Helmet>
+        <title>Küzdősportok - Főoldal</title>
+        <meta name="description" content="Csatlakozz a legjobb küzdősport edzésekhez Magyarországon!" />
+      </Helmet>
+      <button onClick={toggleTheme} className="theme-toggle">
+        {theme === 'dark' ? 'Világos mód' : 'Sötét mód'}
+      </button>
+
+      <HeroSection navigate={navigate} />
 
       <section className="intro-section">
         <h2><FaFistRaised className="section-icon" /> Üdvözöllek a Küzdősportok Világában!</h2>
@@ -170,33 +257,24 @@ const Home = () => {
         </p>
       </section>
 
-      {/* Kiemelt edzések szekció - Hibajavítás */}
-      <section className="featured-trainings-section">
-        <h2><FaCalendarAlt className="section-icon" /> Kiemelt edzések</h2>
-        {featuredTrainings.length === 0 ? (
-          <p>Nincsenek elérhető edzések.</p>
-        ) : (
-          <div className="trainings-grid">
-            {featuredTrainings.map((training, index) => (
-              <div key={index} className="training-item">
-                <h3>{training.klubbnev}</h3>
-                <p><strong>Sport:</strong> {training.sportnev}</p>
-                <p><strong>Helyszín:</strong> {training.hely}</p>
-                <p><strong>Nap:</strong> {training.nap}</p>
-                <p><strong>Idő:</strong> {training.ido}</p>
-                <button onClick={() => navigate('/edzesnaplo')} className="join-button">
-                  Csatlakozz
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+      <FeaturedTrainings
+        featuredTrainings={featuredTrainings}
+        loading={loading}
+        navigate={navigate}
+        isLoggedIn={isLoggedIn}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        handleSearch={handleSearch}
+      />
 
       <section className="news-section">
         <h2>Legfrissebb hírek (Box, Kickbox, MMA)</h2>
         {loading ? (
-          <p>Hírek betöltése...</p>
+          <div className="news-grid">
+            <SkeletonLoader />
+            <SkeletonLoader />
+            <SkeletonLoader />
+          </div>
         ) : news.length === 0 ? (
           <p>Nincsenek elérhető hírek a box, kickbox vagy MMA témában.</p>
         ) : (
@@ -205,7 +283,14 @@ const Home = () => {
               <div className="news-grid">
                 {mainNews.map((article, index) => (
                   <div key={index} className="news-item">
-                    {article.urlToImage && <img src={article.urlToImage} alt={article.title} />}
+                    {article.urlToImage && (
+                      <img
+                        src="placeholder.jpg"
+                        data-src={article.urlToImage}
+                        alt={article.title}
+                        className="lazy-load"
+                      />
+                    )}
                     <h3>{article.title}</h3>
                     <p>{article.description}</p>
                     <a href={article.url} target="_blank" rel="noopener noreferrer">További információk</a>
@@ -217,7 +302,14 @@ const Home = () => {
               <div className="last-two-news">
                 {lastTwoNews.map((article, index) => (
                   <div key={index} className="news-item last-news-item">
-                    {article.urlToImage && <img src={article.urlToImage} alt={article.title} />}
+                    {article.urlToImage && (
+                      <img
+                        src="placeholder.jpg"
+                        data-src={article.urlToImage}
+                        alt={article.title}
+                        className="lazy-load"
+                      />
+                    )}
                     <h3>{article.title}</h3>
                     <p>{article.description}</p>
                     <a href={article.url} target="_blank" rel="noopener noreferrer">További információk</a>
@@ -259,7 +351,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Visszajelzések szekció */}
       <section className="testimonials-section">
         <h2>Mit mondanak rólunk?</h2>
         <div className="testimonials-grid">

@@ -695,7 +695,16 @@ app.get('/api/klub/:id', (req, res) => {
 
 // Ranglista lekérdezése
 app.get('/api/ranglista', (req, res) => {
-  const query = `
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+  const filter = req.query.filter || 'all';
+  let dateFilter = '';
+  if (filter === 'last30days') {
+    dateFilter = 'AND j.jelentkezes_ido >= DATE_SUB(NOW(), INTERVAL 30 DAY)';
+  }
+
+  const coachesQuery = `
     SELECT 
       l.felhasznalonev,
       COUNT(e.edzes_id) AS edzesek
@@ -707,14 +716,40 @@ app.get('/api/ranglista', (req, res) => {
     WHERE l.role = 'coach'
     GROUP BY l.user_id, l.felhasznalonev
     ORDER BY edzesek DESC
+    LIMIT ? OFFSET ?
   `;
 
-  db.query(query, (err, results) => {
+  const visitorsQuery = `
+    SELECT 
+      l.felhasznalonev,
+      COUNT(j.jelentkezes_id) AS reszvetel
+    FROM latogatok l
+    LEFT JOIN jelentkezes j 
+      ON l.user_id = j.user_id
+    WHERE l.role = 'visitor'
+    ${dateFilter}
+    GROUP BY l.user_id, l.felhasznalonev
+    ORDER BY reszvetel DESC
+    LIMIT ? OFFSET ?
+  `;
+
+  db.query(coachesQuery, [limit, offset], (err, coachesResult) => {
     if (err) {
-      console.error('Hiba a ranglista lekérdezésekor:', err.message);
-      return res.status(500).json({ error: 'Hiba történt: ' + err.message });
+      console.error('Hiba az edzők ranglistájának lekérdezésekor:', err.message);
+      return res.status(500).json({ error: 'Hiba történt az edzők lekérdezésekor: ' + err.message });
     }
-    res.json(results);
+
+    db.query(visitorsQuery, [limit, offset], (err, visitorsResult) => {
+      if (err) {
+        console.error('Hiba a látogatók ranglistájának lekérdezésekor:', err.message);
+        return res.status(500).json({ error: 'Hiba történt a látogatók lekérdezésekor: ' + err.message });
+      }
+
+      res.json({
+        coaches: coachesResult,
+        visitors: visitorsResult,
+      });
+    });
   });
 });
 // Események lekérdezése
