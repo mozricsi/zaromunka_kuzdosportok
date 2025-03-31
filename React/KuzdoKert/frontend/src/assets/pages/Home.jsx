@@ -158,19 +158,7 @@ const Home = () => {
       <div className="App">
         <HeroSection navigate={navigate} />
 
-        <section className="search-section">
-          <input
-            type="text"
-            placeholder="Keresés (pl. Box, Budapest)"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-            aria-label="Keresés edzések között"
-          />
-          <button onClick={handleSearch} className="search-button" aria-label="Keresés indítása">
-            <FaSearch />
-          </button>
-        </section>
+        
 
         <motion.section
           className="intro-section"
@@ -264,34 +252,7 @@ const Home = () => {
           </p>
         </motion.section>
 
-        <motion.section
-          className="featured-trainings-section"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1.4 }}
-        >
-          <h2>Kiemelt Edzések</h2>
-          <div className="trainings-grid">
-            {featuredTrainings.length === 0 ? (
-              <p>Nincsenek kiemelt edzések.</p>
-            ) : (
-              featuredTrainings.map((edzes, index) => (
-                <div key={index} className="training-item">
-                  <h3>{edzes.klubbnev}</h3>
-                  <p>{edzes.pontoscim}</p>
-                  <p>{edzes.nap} - {edzes.ido}</p>
-                  <button
-                    className="join-button"
-                    onClick={() => navigate('/login')}
-                    aria-label={`Csatlakozz a ${edzes.klubbnev} edzéséhez`}
-                  >
-                    Csatlakozz
-                  </button>
-                </div>
-              ))
-            )}
-          </div>
-        </motion.section>
+       
 
         <motion.section
           className="news-section"
