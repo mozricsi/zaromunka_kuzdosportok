@@ -16,13 +16,13 @@ const Login = () => {
     Axios.get("http://localhost:5000/login").then((response) => {
       if (response.data.loggedIn === true) {
         setLoginStatus(response.data.user[0].felhasznalonev);
-        setUserRole(response.data.user[0].role); // Szerepkör lekérdezése
+        setUserRole(response.data.user[0].role);
         setTimeout(() => {
-          navigate("/welcome"); // Módosítva: /welcome-re irányít
+          navigate("/");
         }, 700);
       }
     });
-  }, [navigate]); // navigate hozzáadva a függőségekhez
+  }, [navigate]); 
 
   const login = () => {
     if (!felhasznalonev) {

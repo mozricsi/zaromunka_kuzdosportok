@@ -1,21 +1,22 @@
+// Klub.js
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { FaCalendarAlt } from 'react-icons/fa'; // Ikonok importálása
 import "../Styles/klub.css";
 
 const Klub = () => {
-  const { id } = useParams(); // Az id paraméter lekérése a URL-ből
+  const { id } = useParams();
   const [klub, setKlub] = useState(null);
   const [edzesek, setEdzesek] = useState([]);
   const [userId, setUserId] = useState(null);
   const [loginStatus, setLoginStatus] = useState(false);
 
   useEffect(() => {
-    // Ellenőrizzük, hogy a felhasználó be van-e jelentkezve
     axios.get('http://localhost:5000/login', { withCredentials: true })
       .then((response) => {
         if (response.data.loggedIn === true) {
-          setUserId(response.data.user[0].user_id); // Felhasználó ID mentése
+          setUserId(response.data.user[0].user_id);
           setLoginStatus(true);
         } else {
           setLoginStatus(false);
@@ -26,9 +27,7 @@ const Klub = () => {
         setLoginStatus(false);
       });
 
-    // Klub és edzések lekérdezése
-    axios
-      .get(`http://localhost:5000/api/klub/${id}`)
+    axios.get(`http://localhost:5000/api/klub/${id}`)
       .then((response) => {
         setKlub(response.data.klub);
         setEdzesek(response.data.edzesek);
@@ -49,21 +48,17 @@ const Klub = () => {
       return;
     }
 
-    // Ellenőrizzük, hogy a felhasználó már jelentkezett-e
-    axios
-      .get(`http://localhost:5000/api/jelentkezes/check`, {
-        params: { user_id: userId, edzes_id: edzesId },
-      })
+    axios.get(`http://localhost:5000/api/jelentkezes/check`, {
+      params: { user_id: userId, edzes_id: edzesId },
+    })
       .then((response) => {
         if (response.data.alreadyApplied) {
           alert('Már jelentkeztél erre az edzésre!');
         } else {
-          // Jelentkezés API hívás
-          axios
-            .post('http://localhost:5000/apply-workout', {
-              user_id: userId,
-              edzes_id: edzesId,
-            })
+          axios.post('http://localhost:5000/apply-workout', {
+            user_id: userId,
+            edzes_id: edzesId,
+          })
             .then((response) => {
               alert(response.data.message);
             })
@@ -94,9 +89,13 @@ const Klub = () => {
       <ul className="edzes-list">
         {edzesek.map((edzes) => (
           <li key={edzes.edzes_id} className="edzes-item">
-            <span>
-              <strong>{edzes.nap}</strong>: {edzes.pontoscim}, {edzes.ido}
-            </span>
+            <div className="edzes-icon">
+              <FaCalendarAlt />
+            </div>
+            <div className="edzes-info">
+              <strong>{edzes.nap}</strong>
+              <p>{edzes.pontoscim}, {edzes.ido}</p>
+            </div>
             <button
               className="jelentkezes-btn"
               onClick={() => handleJelentkezes(edzes.edzes_id)}

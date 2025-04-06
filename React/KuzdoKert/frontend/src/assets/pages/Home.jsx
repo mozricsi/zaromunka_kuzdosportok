@@ -15,7 +15,8 @@ const SkeletonLoader = () => (
   </div>
 );
 
-const HeroSection = ({ navigate }) => (
+
+const HeroSection = ({ navigate, loginStatus }) => (
   <motion.header
     className="hero-section"
     initial={{ opacity: 0, y: 50 }}
@@ -25,22 +26,46 @@ const HeroSection = ({ navigate }) => (
     <div className="hero-content">
       <h1>Küzdősportok Világa</h1>
       <p>Fedezd fel a különböző küzdősportokat, regisztrálj akár edzőként, és tartsd karban az edzésnaplódat!</p>
-      <button onClick={() => navigate('/register')} className="cta-button">
-        Csatlakozz most!
-      </button>
+      {!loginStatus && (
+        <button onClick={() => navigate('/login')} className="cta-button">
+          Bejelentkezés
+        </button>
+      )}
     </div>
   </motion.header>
 );
-
 const Home = () => {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [featuredTrainings, setFeaturedTrainings] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loginStatus, setLoginStatus] = useState(false);
   const navigate = useNavigate();
   const NEWS_API_KEY = '6ed9be5621794199b9b943fbb1a4febf';
   const TRANSLATE_API_KEY = 'YOUR_GOOGLE_TRANSLATE_KEY';
   const TOPIC = 'Boxing OR Kickboxing OR MMA';
+
+
+    useEffect(() => {
+    const checkLoginStatus = () => {
+      Axios.get("http://localhost:5000/login", { withCredentials: true })
+        .then((response) => {
+          if (response.data.loggedIn) {
+            setLoginStatus(true);
+          } else {
+            setLoginStatus(false);
+          }
+        })
+        .catch((error) => {
+          console.error("Hiba történt a bejelentkezés ellenőrzésekor:", error);
+        });
+    };
+
+    checkLoginStatus();
+    const interval = setInterval(checkLoginStatus, 5000); // Minden 5 másodpercben újra ellenőrzi
+    return () => clearInterval(interval);
+  }, []);
+
 
   const fetchNews = async () => {
     try {
@@ -156,7 +181,7 @@ const Home = () => {
         <meta name="description" content="Csatlakozz a legjobb küzdősport edzésekhez Magyarországon!" />
       </Helmet>
       <div className="App">
-        <HeroSection navigate={navigate} />
+        <HeroSection navigate={navigate}  loginStatus={loginStatus} />
 
         
 

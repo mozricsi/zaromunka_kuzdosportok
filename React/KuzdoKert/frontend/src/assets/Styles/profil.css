@@ -13,12 +13,29 @@ body {
   text-align: center;
 }
 
+.custom-swal-popup {
+  background-color: #312f2f; /* szürke háttér */
+  color: orange; /* narancssárga szöveg */
+}
+
+.custom-swal-title {
+  color: orange;
+}
+
+.custom-swal-content {
+  color: orange;
+}
+
+
 /* Címek */
 h1 {
   font-size: 2.5rem;
   color: #ff4500 !important;  /* Narancssárga cím */
   text-transform: uppercase;
   letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+.edit-save-button {
   margin-bottom: 20px;
 }
 
