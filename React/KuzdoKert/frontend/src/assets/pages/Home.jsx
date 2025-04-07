@@ -27,8 +27,8 @@ const HeroSection = ({ navigate, loginStatus }) => (
       <h1>Küzdősportok Világa</h1>
       <p>Fedezd fel a különböző küzdősportokat, regisztrálj akár edzőként, és tartsd karban az edzésnaplódat!</p>
       {!loginStatus && (
-        <button onClick={() => navigate('/login')} className="cta-button">
-          Bejelentkezés
+        <button onClick={() => navigate('/register')} className="cta-button">
+          Csatlakozz hozzánk!
         </button>
       )}
     </div>

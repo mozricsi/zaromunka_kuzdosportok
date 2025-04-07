@@ -334,7 +334,8 @@ const SportLeiras = () => {
         </>
       ) : (
         <>
-          <p>Jelentkezz be kérlek</p>
+          <h2 className='kerlek'>Jelentkezz be kérlek</h2>
+          <p className='kerlek'>Máris átirányítunk...</p>
         </>
       )}
     </div>
