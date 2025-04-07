@@ -11,7 +11,6 @@ body {
   padding: 20px;
   min-height: 100vh;
   width: 100%;
-  background: #1a1a1a; /* Sötétebb háttér a #2c2c2c helyett */
   box-sizing: border-box;
   color: #999; /* Sötétebb szürke a #fff helyett */
 }

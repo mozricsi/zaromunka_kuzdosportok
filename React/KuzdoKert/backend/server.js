@@ -999,6 +999,29 @@ app.get('/esemenyek/sport/:sportnev', (req, res) => {
 //---------------------------------------------
 
 
+// Jelentkezés ID lekérdezése
+app.get('/api/jelentkezes/getId', (req, res) => {
+  const { user_id, edzes_id } = req.query;
+
+  const query = `
+    SELECT jelentkezes_id FROM jelentkezes 
+    WHERE user_id = ? AND edzes_id = ?
+  `;
+
+  db.query(query, [user_id, edzes_id], (err, result) => {
+    if (err) {
+      console.error('Hiba a jelentkezés ID lekérdezésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt a jelentkezés ID lekérdezésekor.' });
+    }
+
+    if (result.length > 0) {
+      res.json({ jelentkezesId: result[0].jelentkezes_id });
+    } else {
+      res.json({ jelentkezesId: null });
+    }
+  });
+});
+
 
 
 

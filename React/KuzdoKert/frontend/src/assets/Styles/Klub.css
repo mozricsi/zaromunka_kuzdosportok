@@ -1,9 +1,6 @@
-
-
 .klub-container {
   padding: 20px;
   min-height: 100vh;
-  background-color: #1a1a1a;
   text-align: center;
 }
 
@@ -28,188 +25,21 @@
   margin-bottom: 10px;
 }
 
-/* Edzéslista stílusok */
-.edzes-list {
-  list-style: none;
-  padding: 0;
-  margin-top: 20px;
-}
-
-.edzes-item {
-  padding: 15px;
-  margin-bottom: 15px;
-  background: linear-gradient(135deg, #2c2c2c, #444); /* Színátmenet a háttérhez */
-  border-radius: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #ccc;
-  font-size: 1.1rem;
-  text-align: left;
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.edzes-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-}
-
-.edzes-item span {
-  flex: 1;
-  padding-right: 10px;
-}
-
-.edzes-item .edzes-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.edzes-item .edzes-info strong {
-  font-size: 1.3rem;
-  color: #ff4500;
-  margin-bottom: 5px;
-}
-
-.edzes-item .edzes-info p {
-  color: #bbb;
-  font-size: 0.95rem;
-}
-
-.jelentkezes-btn {
-  padding: 10px 20px;
-  background-color: #ff4500;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.jelentkezes-btn:hover {
-  background-color: #cc3700;
-  transform: scale(1.05);
-}
-
-/* Ikonok és egyéb finomítások */
-.edzes-item .edzes-icon {
-  font-size: 2rem;
-  color: #ff4500;
-  margin-right: 15px;
-}
-
-.edzes-item .edzes-icon:hover {
-  color: #ccc;
-}
-
-/* Reszponzív dizájn */
-@media (max-width: 768px) {
-  .klub-container {
-    padding: 15px;
-  }
-
-  .klub-container h1 {
-    font-size: 2rem;
-  }
-
-  .edzes-item {
-    padding: 12px;
-    font-size: 1rem;
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
-  }
-
-  .jelentkezes-btn {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .klub-container {
-    padding: 10px;
-  }
-
-  .klub-container h1 {
-    font-size: 1.5rem;
-  }
-
-  .edzes-item {
-    padding: 8px;
-    font-size: 0.9rem;
-  }
-
-  .jelentkezes-btn {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-  }
-}
-/* Base styles */
-body {
-  background-color: #1a1a1a;
-  color: #fff;
-  margin: 0;
-  min-height: 100vh;
-  font-family: 'Roboto', Arial, sans-serif;
-}
-
-.klub-container {
-  padding: 20px;
-  min-height: 100vh;
-  background-color: #1a1a1a;
-  text-align: center;
-}
-
-.klub-container h1 {
-  font-size: 2.5rem;
-  color: #ff4500;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 20px;
-}
-
-.klub-container p {
-  font-size: 1rem;
-  color: #ccc;
-  line-height: 1.6;
-  margin-bottom: 20px;
-}
-
-.klub-container h3 {
-  font-size: 1.5rem;
-  color: #ff4500;
-  margin-bottom: 10px;
-}
-
-/* Edzéslista stílusok */
-.edzes-list {
-  display: grid; /* Grid elrendezés */
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Minimum 250px szélességű, automatikusan több oszlop */
+/* Edzés grid stílusok */
+.edzes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Maximum 3 oszlop, de reszponzív */
   gap: 20px;
   list-style: none;
   padding: 0;
   margin-top: 20px;
-  justify-items: center; /* Ezt hozzáadtuk, hogy középre igazítsuk a dobozokat */
-  align-items: start; /* Igazítás a sorokban */
-}
-@media (max-width: 900px) {
-  .edzes-list {
-    grid-template-columns: repeat(2, 1fr); /* 2 oszlopos elrendezés, ha kisebb a képernyő */
-  }
-}
-
-@media (max-width: 600px) {
-  .edzes-list {
-    grid-template-columns: 1fr; /* 1 oszlopos elrendezés mobilon */
-  }
+  justify-content: center; /* Középre igazítás */
+  align-items: start;
 }
 
 .edzes-item {
   padding: 15px;
-  margin-bottom: 15px;
-  background: linear-gradient(135deg, #2c2c2c, #444); /* Színátmenet a háttérhez */
+  background: linear-gradient(135deg, #212121, #252424);
   border-radius: 10px;
   display: flex;
   justify-content: space-between;
@@ -224,11 +54,6 @@ body {
 .edzes-item:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-}
-
-.edzes-item span {
-  flex: 1;
-  padding-right: 10px;
 }
 
 .edzes-item .edzes-info {
@@ -247,10 +72,8 @@ body {
   font-size: 0.95rem;
 }
 
-.jelentkezes-btn {
+.jelentkezes-btn, .visszavonas-btn {
   padding: 10px 20px;
-  background-color: #ff4500;
-  color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -258,12 +81,27 @@ body {
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
+.jelentkezes-btn {
+  background-color: #ff4500;
+  color: white;
+}
+
 .jelentkezes-btn:hover {
   background-color: #cc3700;
   transform: scale(1.05);
 }
 
-/* Ikonok és egyéb finomítások */
+.visszavonas-btn {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.visszavonas-btn:hover {
+  background-color: #cc4444;
+  transform: scale(1.05);
+}
+
+/* Ikonok */
 .edzes-item .edzes-icon {
   font-size: 2rem;
   color: #ff4500;
@@ -275,6 +113,22 @@ body {
 }
 
 /* Reszponzív dizájn */
+@media (max-width: 1024px) {
+  .edzes-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Kisebb képernyőn kevesebb oszlop */
+  }
+
+  .edzes-item {
+    padding: 12px;
+    font-size: 1rem;
+  }
+
+  .jelentkezes-btn, .visszavonas-btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}
+
 @media (max-width: 768px) {
   .klub-container {
     padding: 15px;
@@ -285,16 +139,14 @@ body {
   }
 
   .edzes-item {
-    padding: 12px;
-    font-size: 1rem;
     flex-direction: column;
-    gap: 10px;
     align-items: flex-start;
+    gap: 10px;
   }
 
-  .jelentkezes-btn {
-    padding: 8px 16px;
-    font-size: 0.9rem;
+  .jelentkezes-btn, .visszavonas-btn {
+    width: 100%;
+    margin-top: 10px;
   }
 }
 
@@ -312,7 +164,7 @@ body {
     font-size: 0.9rem;
   }
 
-  .jelentkezes-btn {
+  .jelentkezes-btn, .visszavonas-btn {
     padding: 6px 12px;
     font-size: 0.8rem;
   }

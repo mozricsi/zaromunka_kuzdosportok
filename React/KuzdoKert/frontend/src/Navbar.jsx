@@ -149,7 +149,11 @@ const Navbar = () => {
             {loginStatus ? (
               <>
                 {userRole === "coach" && (
+                  <>
+                  <NavLink className="navbar-brand nav-item" to="/EdzesNaplo" onClick={handleLinkClick}>Edzésnapló</NavLink>
                   <NavLink className="navbar-brand nav-item" to="/EdzoiOldal" onClick={handleLinkClick}>Edzői oldal</NavLink>
+                  
+                </>
                 )}
                 {userRole === "visitor" && (
                   <NavLink className="navbar-brand nav-item" to="/EdzesNaplo" onClick={handleLinkClick}>Edzésnapló</NavLink>

@@ -9,7 +9,6 @@ body {
   font-family: 'Roboto', Arial, sans-serif;
   padding: 15px; /* Kisebb padding */
   width: 100%;
-  background-color: #1a1a1a !important;
   color: #444;
   min-height: 100vh;
 }
