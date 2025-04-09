@@ -1,17 +1,13 @@
-/* esemenyek.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  background-color: #1a1a1a; /* Sötét háttér az egységes dizájnhoz */
   color: #fff;
-  margin: 0; /* Eltávolítjuk a margót, hogy ne maradjon fehér terület */
-  min-height: 100vh; /* Biztosítjuk, hogy a body kitöltse a képernyőt */
+  margin: 0;
+  min-height: 100vh;
   font-family: Arial, sans-serif;
 }
-
-
 
 .esemenyek-container {
   padding: 20px;
@@ -29,18 +25,81 @@ body {
 }
 
 .event-item {
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #2c2c2c; /* Sötét háttér az egységes dizájnhoz */
-  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: #333333; /* Sötétebb szürke háttér, hogy kiemelkedjen */
+  border-radius: 8px; /* Kerekebb sarkok */
   text-align: left;
-  color: #ccc; /* Világos szöveg a kontraszt miatt */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover effekt */
+  color: #e0e0e0; /* Világosabb szöveg jobb olvashatóságért */
+  border-left: 4px solid #ff4500; /* Narancssárga kiemelés bal oldalon */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Finom árnyék */
+  transition: all 0.3s ease; /* Simább átmenetek minden változáshoz */
+  overflow: hidden; /* Biztosítja, hogy a tartalom ne lógjon ki */
+  position: relative; /* Pozicionálás az elemekhez */
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 .event-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Emelkedő effekt */
+  transform: translateY(-5px); /* Feljebb emelkedik hovernél */
+  box-shadow: 0 8px 20px rgba(255, 69, 0, 0.4); /* Erősebb árnyék narancssárgával */
+  background-color: #3a3a3a; /* Sötétebb háttér hovernél */
+}
+
+/* Esemény szöveg stilizálása (bal oldal) */
+.event-item .content {
+  flex-grow: 1;
+}
+
+.event-item .content p {
+  margin: 0 0 10px 0; /* Térköz a bekezdések között */
+  font-size: 1rem;
+  line-height: 1.5; /* Jobb olvashatóság */
+  color: #f5f5f5; /* Még világosabb szöveg */
+}
+
+/* Státusz és időpont (jobb oldal) */
+.event-item .event-status {
+  display: inline-block;
+  background-color: #ff4500;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.event-item:hover .event-status {
+  background-color: #ff6347; /* Világosabb narancssárga hovernél */
+}
+
+.event-item .event-time {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: normal;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #fff;
+  margin-left: 0;
+  margin-top: 2px;
+  word-break: break-word; /* Szöveg tördelése, ha szükséges */
+}
+
+/* Link stilizálása (pl. Google Maps link) */
+.location-link {
+  color: #ff4500; /* Narancssárga link szín */
+  text-decoration: none; /* Aláhúzás eltávolítása */
+  transition: color 0.3s ease; /* Simább színváltozás */
+}
+
+.location-link:hover {
+  color: #ff6347; /* Világosabb narancssárga hovernél */
+  text-decoration: underline; /* Hovernél aláhúzás */
 }
 
 .react-calendar {
@@ -78,7 +137,7 @@ body {
 /* Hover és fókusz állapot */
 .react-calendar__tile:enabled:hover,
 .react-calendar__tile:enabled:focus {
-  background-color: #ff4500; /* Narancssárga hover */
+  background-color: #3f3a38; /* Narancssárga hover */
   color: #fff;
 }
 
@@ -108,10 +167,19 @@ body {
     padding: 15px;
   }
   .event-item {
-    padding: 8px;
+    padding: 12px;
   }
   .react-calendar {
     max-width: 90%;
+  }
+
+  .event-item .event-status {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+  }
+
+  .event-item .event-time {
+    font-size: 0.6rem;
   }
 }
 
@@ -123,12 +191,27 @@ body {
     font-size: 2rem;
   }
   .event-item {
-    padding: 6px;
+    padding: 12px;
     font-size: 0.9rem;
+    border-left-width: 3px; /* Kisebb kiemelés mobil nézetben */
   }
+
+  .event-item .content p {
+    font-size: 0.85rem;
+  }
+
   .react-calendar {
     padding: 8px;
     max-width: 100%;
+  }
+
+  .event-item .event-status {
+    font-size: 0.65rem;
+    padding: 2px 5px;
+  }
+
+  .event-item .event-time {
+    font-size: 0.55rem;
   }
 }
 
@@ -140,11 +223,40 @@ body {
     font-size: 1.5rem;
   }
   .event-item {
-    padding: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px; /* Kisebb sarkok mobil nézetben */
+    border-left-width: 2px;
+    flex-direction: column; /* Mobil nézetben oszlopba rendezzük */
+    align-items: flex-end; /* Jobbra igazítás */
+  }
+
+  .event-item .content {
+    width: 100%; /* Teljes szélesség a szövegnek */
+  }
+
+  .event-item .content p {
     font-size: 0.8rem;
   }
+
+  .location-link {
+    font-size: 0.8rem;
+  }
+
   .react-calendar {
     padding: 6px;
     font-size: 0.9rem;
+  }
+
+  .event-item .event-status {
+    font-size: 0.6rem;
+    padding: 2px 4px;
+    margin-bottom: 2px;
+  }
+
+  .event-item .event-time {
+    font-size: 0.5rem;
+    margin-left: 0;
+    margin-top: 1px;
   }
 }

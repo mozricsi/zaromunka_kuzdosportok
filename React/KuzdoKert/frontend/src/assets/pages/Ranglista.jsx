@@ -14,8 +14,11 @@ function Ranglista() {
   const fetchLeaderboard = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/ranglista?page=${page}&limit=${itemsPerPage}&filter=${filter}`);
-      setCoachesLeaderboard(response.data.coaches);
-      setVisitorsLeaderboard(response.data.visitors);
+      // Filter out users with zero activities
+      const filteredCoaches = response.data.coaches.filter(coach => coach.edzesek > 0);
+      const filteredVisitors = response.data.visitors.filter(visitor => visitor.reszvetel > 0);
+      setCoachesLeaderboard(filteredCoaches);
+      setVisitorsLeaderboard(filteredVisitors);
       setLoading(false);
     } catch (err) {
       console.error('Hiba a ranglista lekérdezésekor:', err);
@@ -90,14 +93,7 @@ function Ranglista() {
                   </td>
                   <td className="p-3 border-b border-ccc">
                     <Link to={`/profil/${user.felhasznalonev}`} className="user-link">
-                      <div className="user-profile">
-                        <img
-                          src={user.profilePic || 'https://via.placeholder.com/30?text=User'}
-                          alt="Profilkép"
-                          className="avatar"
-                        />
-                        {user.felhasznalonev}
-                      </div>
+                      {user.felhasznalonev}
                     </Link>
                   </td>
                   <td className="p-3 border-b border-ccc">{user.edzesek} edzés</td>
@@ -156,14 +152,7 @@ function Ranglista() {
                   </td>
                   <td className="p-3 border-b border-ccc">
                     <Link to={`/profil/${user.felhasznalonev}`} className="user-link">
-                      <div className="user-profile">
-                        <img
-                          src={user.profilePic || 'https://via.placeholder.com/30?text=User'}
-                          alt="Profilkép"
-                          className="avatar"
-                        />
-                        {user.felhasznalonev}
-                      </div>
+                      {user.felhasznalonev}
                     </Link>
                   </td>
                   <td className="p-3 border-b border-ccc">{user.reszvetel} edzés</td>
