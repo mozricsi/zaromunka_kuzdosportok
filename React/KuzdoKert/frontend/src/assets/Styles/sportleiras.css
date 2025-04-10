@@ -9,7 +9,7 @@ body {
   font-family: 'Roboto', Arial, sans-serif;
   padding: 15px; /* Kisebb padding */
   width: 100%;
-  color: #444;
+  color: rgb(199, 199, 199);
   min-height: 100vh;
 }
 
@@ -54,7 +54,6 @@ body {
 
 .clubs-section p {
   font-size: 0.9rem;
-  color: #444;
   line-height: 1.4;
 }
 
@@ -85,7 +84,6 @@ body {
 
 .club-card p {
   font-size: 0.8rem; /* Kisebb szöveg */
-  color: #444;
   margin-bottom: 5px;
 }
 
@@ -186,7 +184,6 @@ body {
 
 .event-card p {
   font-size: 0.8rem; /* Kisebb szöveg */
-  color: #444;
   margin-bottom: 5px;
 }
 
