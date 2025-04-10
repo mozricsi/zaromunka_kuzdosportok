@@ -240,3 +240,49 @@ body {
     font-size: 0.8rem;
   }
 }
+
+/* SweetAlert stílusok a klubokhoz */
+.swal2-popup {
+  background-color: #312f2f; /* Sötét szürke háttér, mint a custom-swal-popup-ban */
+  color: orange; /* Narancssárga szöveg, mint a profilban */
+  border-radius: 5px; /* Egy kis lekerekítés */
+  font-family: Arial, sans-serif;
+}
+
+.swal2-title {
+  color: orange; /* Cím narancssárga, mint a custom-swal-title */
+  font-size: 1.5rem;
+}
+
+.swal2-content {
+  color: orange; /* Tartalom narancssárga, mint a custom-swal-content */
+  font-size: 1rem;
+}
+
+.swal2-confirm {
+  background-color: #ff4500; /* Narancssárga gomb, mint a profil gombjai */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.swal2-confirm:hover {
+  background-color: #cc3700; /* Hover effekt, mint a profil gombok */
+}
+
+.swal2-cancel {
+  background-color: #ff6b6b; /* Visszavonás gomb pirosas árnyalata */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.swal2-cancel:hover {
+  background-color: #cc4444;
+}

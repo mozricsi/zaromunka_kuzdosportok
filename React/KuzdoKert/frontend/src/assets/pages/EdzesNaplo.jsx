@@ -73,10 +73,15 @@ const EdzesNaplo = () => {
       text: 'Ez a művelet nem vonható vissza!',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
       confirmButtonText: 'Igen, lemondom!',
       cancelButtonText: 'Mégse',
+      customClass: {
+        popup: 'swal2-popup',
+        title: 'swal2-title',
+        content: 'swal2-content',
+        confirmButton: 'swal2-confirm',
+        cancelButton: 'swal2-cancel',
+      },
     }).then((result) => {
       if (result.isConfirmed) {
         Axios.delete(`http://localhost:5000/jelentkezes/${jelentkezesId}`, { withCredentials: true })
