@@ -360,9 +360,9 @@ DELIMITER ;
 
 -- Adatok feltöltése (INSERT-ek változatlanok, de a sport_id-kat AUTO_INCREMENT-hez igazítom)
 INSERT INTO `kuzdosportok`.`latogatok` (`user_id`, `vnev`, `knev`, `knev2`, `telefonszam`, `email`, `szul_ido`, `lakhelyvaros`, `regisztracio_datum`, `felhasznalonev`, `jelszo`, `role`) VALUES
-(1, 'Kiss', 'Péter', NULL, 1, 'kiss.peter@example.com', '1990-05-12', 'Budapest', '2025-02-22 00:00:00', 'kpeter', '$2b$10$Ye0uo3ffgRUMuM1rX369V.6di9clKRXre7/vjxOz5u3QlYDUxWlIW', 'coach'),
-(2, 'Nagy', 'Anna', NULL, 2, 'nagy.anna@example.com', '1985-08-25', 'Debrecen', '2025-02-22 00:00:00', 'nanna', '$2b$10$F6z0jKRpuk5Iw9X/Hd5FRuG.ADcQmEEOd0Fsqci1jVXz2vZhUXzQi', 'coach'),
-(3, 'Tóth', 'Gábor', 'Ferenc', 3, 'toth.gabor@example.com', '1992-11-10', 'Szeged', '2025-02-22 00:00:00', 'tgabor', '$2b$10$NTAJ.Zz7abNQN44PPYo2yOLxmWP0BXy3n/KZa6b16KTgCbD7J7MfG', 'coach'),
+(1, 'Kiss', 'Péter', NULL, 302342122, 'kiss.peter@example.com', '1990-05-12', 'Budapest', '2025-02-22 00:00:00', 'kpeter', '$2b$10$Ye0uo3ffgRUMuM1rX369V.6di9clKRXre7/vjxOz5u3QlYDUxWlIW', 'coach'),
+(2, 'Nagy', 'Anna', NULL, 209999922, 'nagy.anna@example.com', '1985-08-25', 'Debrecen', '2025-02-22 00:00:00', 'nanna', '$2b$10$F6z0jKRpuk5Iw9X/Hd5FRuG.ADcQmEEOd0Fsqci1jVXz2vZhUXzQi', 'coach'),
+(3, 'Tóth', 'Gábor', 'Ferenc', 301224212, 'toth.gabor@example.com', '1992-11-10', 'Szeged', '2025-02-22 00:00:00', 'tgabor', '$2b$10$NTAJ.Zz7abNQN44PPYo2yOLxmWP0BXy3n/KZa6b16KTgCbD7J7MfG', 'coach'),
 (4, 'Szabó', 'Mária', 'Anna', 4, 'szabo.maria@example.com', '1995-03-14', 'Pécs', '2025-02-22 00:00:00', 'smaria', '$2b$10$lU4EEgGIuS2QhocVvFBi4eekNPi.sDCCYKqWC1.z1LarzOC23A.HG', 'visitor'),
 (5, 'Varga', 'Béla', NULL, 5, 'varga.bela@example.com', '1988-07-19', 'Győr', '2025-02-22 00:00:00', 'vbela', '$2b$10$S/oxPWR1GAefsAw1sksUtu9ghwQO.M1d9pOiQ3vX0Q5uQHSfbNqV2', 'visitor'),
 (6, 'kovacs', 'jeno', NULL, NULL, 'kovacsjeno@gmail.com', '2025-03-19', 'Saab', '2025-03-03 12:58:26', 'kjeno', '$2b$10$E4uY7aLRJ4uCeMCXKvDOj.Z6MzmiHVAm4mZKRLqhMcNywp8ihg8ou', 'visitor'),
@@ -400,6 +400,13 @@ INSERT INTO `kuzdosportok`.`klub_edzesek` (`sportklub_id`, `pontoscim`, `nap`, `
 (1, 'Budapest, Sportcsarnok 1.', 'Hétfő', '18:00:00'),
 (2, 'Debrecen, Edzőterem 2.', 'Szerda', '19:30:00'),
 (3, 'Szeged, Harcművészeti Központ', 'Péntek', '17:00:00'),
+(10, 'Szolnok, Városi Sportközpont', 'Csütörtök', '16:00:00'), -- Box (Szolnok) számára új edzés
+(4, 'Debrecen, Harcművészeti Akadémia', 'Kedd', '18:30:00'), -- Muay Thai (Debrecen) számára új edzés
+(5, 'Budapest, K1 Aréna', 'Péntek', '19:00:00'), -- K1 (Budapest) számára új edzés
+(6, 'Kelenföld, Birkózó Csarnok', 'Szerda', '17:30:00'), -- Birkózás (Kelenföld) számára új edzés
+(7, 'Budapest, Kickbox Centrum', 'Szombat', '10:00:00'), -- Kickbox (Budapest) számára új edzés
+(8, 'Debrecen, MMA Edzőterem', 'Hétfő', '20:00:00'), -- MMA klubb (Debrecen) számára új edzés
+(9, 'Szeged, Judo Terem', 'Vasárnap', '11:00:00'),
 (1, 'Budapest, Sportcsarnok 1.', 'Kedd', '10:00:00');
 
 -- 1. esemény: Szolnoki Boxverseny 2025

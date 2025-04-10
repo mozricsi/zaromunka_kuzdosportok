@@ -46,7 +46,7 @@ function LiveStream() {
             className="stream-iframe"
             style={{ display: 'none' }}
           />
-          <p className="stream-placeholder">Várakozás élő adásra...</p>
+          <p className="stream-placeholder">Jelenleg nincs élő adás...</p>
         </div>
       </div>
     </div>
