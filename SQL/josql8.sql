@@ -363,8 +363,8 @@ INSERT INTO `kuzdosportok`.`latogatok` (`user_id`, `vnev`, `knev`, `knev2`, `tel
 (1, 'Kiss', 'Péter', NULL, 302342122, 'kiss.peter@example.com', '1990-05-12', 'Budapest', '2025-02-22 00:00:00', 'kpeter', '$2b$10$Ye0uo3ffgRUMuM1rX369V.6di9clKRXre7/vjxOz5u3QlYDUxWlIW', 'coach'),
 (2, 'Nagy', 'Anna', NULL, 209999922, 'nagy.anna@example.com', '1985-08-25', 'Debrecen', '2025-02-22 00:00:00', 'nanna', '$2b$10$F6z0jKRpuk5Iw9X/Hd5FRuG.ADcQmEEOd0Fsqci1jVXz2vZhUXzQi', 'coach'),
 (3, 'Tóth', 'Gábor', 'Ferenc', 301224212, 'toth.gabor@example.com', '1992-11-10', 'Szeged', '2025-02-22 00:00:00', 'tgabor', '$2b$10$NTAJ.Zz7abNQN44PPYo2yOLxmWP0BXy3n/KZa6b16KTgCbD7J7MfG', 'coach'),
-(4, 'Szabó', 'Mária', 'Anna', 4, 'szabo.maria@example.com', '1995-03-14', 'Pécs', '2025-02-22 00:00:00', 'smaria', '$2b$10$lU4EEgGIuS2QhocVvFBi4eekNPi.sDCCYKqWC1.z1LarzOC23A.HG', 'visitor'),
-(5, 'Varga', 'Béla', NULL, 5, 'varga.bela@example.com', '1988-07-19', 'Győr', '2025-02-22 00:00:00', 'vbela', '$2b$10$S/oxPWR1GAefsAw1sksUtu9ghwQO.M1d9pOiQ3vX0Q5uQHSfbNqV2', 'visitor'),
+(4, 'Szabó', 'Mária', 'Anna', 305432211, 'szabo.maria@example.com', '1995-03-14', 'Pécs', '2025-02-22 00:00:00', 'smaria', '$2b$10$lU4EEgGIuS2QhocVvFBi4eekNPi.sDCCYKqWC1.z1LarzOC23A.HG', 'visitor'),
+(5, 'Varga', 'Béla', NULL, 203212233, 'varga.bela@example.com', '1988-07-19', 'Győr', '2025-02-22 00:00:00', 'vbela', '$2b$10$S/oxPWR1GAefsAw1sksUtu9ghwQO.M1d9pOiQ3vX0Q5uQHSfbNqV2', 'visitor'),
 (6, 'kovacs', 'jeno', NULL, NULL, 'kovacsjeno@gmail.com', '2025-03-19', 'Saab', '2025-03-03 12:58:26', 'kjeno', '$2b$10$E4uY7aLRJ4uCeMCXKvDOj.Z6MzmiHVAm4mZKRLqhMcNywp8ihg8ou', 'visitor'),
 (7, 'Béla', 'Feri', NULL, NULL, 'belaferi@gmail.com', '2025-03-14', 'Budapest', '2025-03-03 14:09:27', 'bferi', '$2b$10$I/6jCKKXuCCqpoPBu7Qcy.fLhOjeaCYOpgTx267Eu3/Rzv7CyHTZu', 'coach'),
 (8, 'kati', 'bela', NULL, NULL, 'katibela@gmail.com', '2025-03-27', 'Szeged', '2025-03-03 14:10:52', 'kbela', '$2b$10$fBN1L4viZ4imJqPtzm61vOSBHLbyeLwsJsjv45h0sda/u7QTr2PSy', 'visitor');
@@ -400,12 +400,12 @@ INSERT INTO `kuzdosportok`.`klub_edzesek` (`sportklub_id`, `pontoscim`, `nap`, `
 (1, 'Budapest, Sportcsarnok 1.', 'Hétfő', '18:00:00'),
 (2, 'Debrecen, Edzőterem 2.', 'Szerda', '19:30:00'),
 (3, 'Szeged, Harcművészeti Központ', 'Péntek', '17:00:00'),
-(10, 'Szolnok, Városi Sportközpont', 'Csütörtök', '16:00:00'), -- Box (Szolnok) számára új edzés
-(4, 'Debrecen, Harcművészeti Akadémia', 'Kedd', '18:30:00'), -- Muay Thai (Debrecen) számára új edzés
-(5, 'Budapest, K1 Aréna', 'Péntek', '19:00:00'), -- K1 (Budapest) számára új edzés
-(6, 'Kelenföld, Birkózó Csarnok', 'Szerda', '17:30:00'), -- Birkózás (Kelenföld) számára új edzés
-(7, 'Budapest, Kickbox Centrum', 'Szombat', '10:00:00'), -- Kickbox (Budapest) számára új edzés
-(8, 'Debrecen, MMA Edzőterem', 'Hétfő', '20:00:00'), -- MMA klubb (Debrecen) számára új edzés
+(10, 'Szolnok, Városi Sportközpont', 'Csütörtök', '16:00:00'),
+(4, 'Debrecen, Harcművészeti Akadémia', 'Kedd', '18:30:00'), 
+(5, 'Budapest, K1 Aréna', 'Péntek', '19:00:00'),
+(6, 'Kelenföld, Birkózó Csarnok', 'Szerda', '17:30:00'), 
+(7, 'Budapest, Kickbox Centrum', 'Szombat', '10:00:00'), 
+(8, 'Debrecen, MMA Edzőterem', 'Hétfő', '20:00:00'), 
 (9, 'Szeged, Judo Terem', 'Vasárnap', '11:00:00'),
 (1, 'Budapest, Sportcsarnok 1.', 'Kedd', '10:00:00');
 
@@ -478,6 +478,49 @@ VALUES (
     'kovacs.bela@example.com', 
     'https://pecsimuaythai.hu'
 );
+
+-- 6. esemény
+INSERT INTO esemenyek (user_id, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
+VALUES (
+    2, 
+    'Szeged, Sportcsarnok, Dózsa György utca 12.', 
+    '2023-11-05 16:00:00', 
+    'Kickbox', 
+    'Regionális kickbox verseny kezdők és haladók számára.', 
+    'Nagy Anna', 
+    '+36709876543', 
+    'nagy.anna@example.com', 
+    'https://szegedkickbox.hu'
+);
+
+-- 7.esemény
+INSERT INTO esemenyek (user_id, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
+VALUES (
+    3, 
+    'Pécs, Expo Center, Megyeri út 72.', 
+    '2023-11-12 10:00:00', 
+    'MMA', 
+    'Nemzetközi MMA bajnokság profi és amatőr kategóriákban.', 
+    'Szabó Péter', 
+    '+36207778899', 
+    'szabo.peter@example.com', 
+    'https://pecsmma.hu'
+);
+
+-- 8. esemény
+INSERT INTO esemenyek (user_id, pontos_cim, ido, sportneve, leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal)
+VALUES (
+    4, 
+    'Kazincbarcika, Városi Sportközpont, Sport utca 8.', 
+    '2023-11-16 18:30:00', 
+    'Box', 
+    'Helyi boxgála amatőröknek és junioroknak.', 
+    'Tóth Eszter', 
+    '+36305556677', 
+    'toth.eszter@example.com', 
+    'https://kazincbox.hu'
+);
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
