@@ -284,8 +284,11 @@ const Navbar = () => {
                   className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}
                   aria-labelledby="navbarDropdown"
                 >
+                  <li className="felhasznev">{loginStatus}</li>
+                  <br />
                   <li><NavLink className="dropdown-item" to="/Profil" onClick={handleLinkClick}>Profilom</NavLink></li>
                   <li><NavLink className="dropdown-item" to="/Logout" onClick={handleLinkClick}>Kijelentkezés</NavLink></li>
+                  
                 </ul>
               </div>
             ) : null}
