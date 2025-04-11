@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { FaCalendarAlt } from 'react-icons/fa';
-import Swal from 'sweetalert2'; // Importáljuk a SweetAlert2-t
+import Swal from 'sweetalert2';
 import "../Styles/klub.css";
 
 const Klub = () => {
@@ -34,6 +34,7 @@ const Klub = () => {
       .then((response) => {
         setKlub(response.data.klub);
         setEdzesek(response.data.edzesek);
+  
 
         if (userId) {
           response.data.edzesek.forEach((edzes) => {
@@ -66,6 +67,22 @@ const Klub = () => {
       Swal.fire({
         title: 'Hiba!',
         text: 'Kérlek, jelentkezz be a jelentkezéshez!',
+        icon: 'error',
+        confirmButtonText: 'Rendben',
+        customClass: {
+          popup: 'club-alert',
+          title: 'club-alert-title',
+          content: 'club-alert-content',
+          confirmButton: 'club-alert-button',
+        },
+      });
+      return;
+    }
+
+    if (klub && klub.user_id === userId) {
+      Swal.fire({
+        title: 'Hiba!',
+        text: 'Nem jelentkezhetsz a saját edzésedre.',
         icon: 'error',
         confirmButtonText: 'Rendben',
         customClass: {
@@ -260,6 +277,7 @@ const Klub = () => {
             </div>
             <div className="edzes-info">
               <strong>{edzes.nap}</strong>
+              
               <p>{edzes.pontoscim}, {edzes.ido}</p>
             </div>
             {jelentkezesiStatus[edzes.edzes_id] ? (
