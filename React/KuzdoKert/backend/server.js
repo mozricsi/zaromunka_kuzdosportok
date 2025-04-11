@@ -604,19 +604,6 @@ app.put('/api/notifications/mark-read/:userId/:role', (req, res) => {
   });
 });
 
-// Edzésnapló - edző által hozzáadott edzések lekérdezése
-app.get("/klubbok/all/:userId", (req, res) => {
-  const { userId } = req.params;
-
-  db.query("SELECT * FROM klubbok WHERE user_id = ?", [userId], (error, results) => {
-    if (error) {
-      console.error("Hiba az edzések lekérdezésekor:", error);
-      return res.status(500).json({ message: "Hiba történt az edzések lekérdezésekor." });
-    }
-    res.json(results);
-  });
-});
-
 
 // Edzésnapló - edző által hozzáadott edzések lekérdezése
 app.get("/klubbok/all/:userId", (req, res) => {
@@ -768,24 +755,6 @@ app.get('/api/esemenyek', (req, res) => {
   });
 });
 
-
-// Üzenetek lekérdezése
-app.get('/api/uzenetek', (req, res) => {
-  const query = `
-    SELECT u.uzenet_id, u.user_id, u.felhasznalonev, u.uzenet, u.ido
-    FROM uzenetek u
-    ORDER BY u.ido DESC
-    LIMIT 50
-  `;
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Hiba az üzenetek lekérdezésekor:', err);
-      return res.status(500).json({ message: 'Hiba történt az üzenetek lekérdezésekor.' });
-    }
-    res.json(results);
-  });
-});
-
 let currentStreamUrl = null;
 let currentStreamStatus = 'offline';
 
@@ -820,11 +789,9 @@ app.post('/api/streams/stop', (req, res) => {
   }
   currentStreamUrl = null;
   currentStreamStatus = 'offline';
-  io.emit('stream-update', { streamUrl: null, status: 'offline' }); // Socket.IO-val szinkronizálás
+  io.emit('stream-update', { streamUrl: null, status: 'offline' });
   res.json({ message: 'Stream leállítva' });
 });
-
-// [A többi végpont (klubok, edzések, ranglista, stb.) változatlan]
 
 // Socket.IO integráció
 const io = new Server(5001, { cors: { origin: "http://localhost:5173" } });
@@ -839,9 +806,6 @@ io.on('connection', (socket) => {
     console.log('Felhasználó lecsatlakozott:', socket.id);
   });
 });
-
-
-
 
 // Klub törlése
 app.delete("/clubs/:sprotklubId", (req, res) => {
@@ -860,11 +824,6 @@ app.delete("/clubs/:sprotklubId", (req, res) => {
     res.json({ message: "Klub sikeresen törölve!" });
   });
 });
-
-
-
-
-
 
 // Edzések lekérdezése az edző számára
 app.get("/workouts/:userId", (req, res) => {
@@ -897,7 +856,6 @@ app.get("/workouts/:userId", (req, res) => {
 });
 
 
-
 // Edzés törlése
 app.delete("/workouts/:edzesId", (req, res) => {
   const { edzesId } = req.params;
@@ -915,11 +873,6 @@ app.delete("/workouts/:edzesId", (req, res) => {
     res.json({ message: "Edzés sikeresen törölve!" });
   });
 });
-
-
-
-
-//-----------------------------------------EDZÉSNAPLÓ-----------------------------------------
 
 app.get("/edzesnaplo/:userId", (req, res) => {
   const { userId } = req.params;
@@ -951,10 +904,7 @@ app.get("/edzesnaplo/:userId", (req, res) => {
   });
 });
 
-
-
 //jelentkezés törlése
-
 
 app.delete("/jelentkezes/:jelentkezesId", (req, res) => {
   const { jelentkezesId } = req.params;
@@ -994,10 +944,7 @@ app.get('/esemenyek/sport/:sportnev', (req, res) => {
     }
   });
 });
-
-
 //---------------------------------------------
-
 
 // Jelentkezés ID lekérdezése
 app.get('/api/jelentkezes/getId', (req, res) => {
@@ -1021,9 +968,6 @@ app.get('/api/jelentkezes/getId', (req, res) => {
     }
   });
 });
-
-
-
 
 
 
