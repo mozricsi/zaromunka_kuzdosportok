@@ -3,37 +3,42 @@
 /* Eredeti stílusok */
 .custom-navbar {
   font-family: 'Roboto', Arial, sans-serif;
-  background-color: #545353; /* Világosabb szürke háttér */
+  background-color: #545353;
   padding: 15px 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  position: relative; /* Hozzáadva a pozícionálás miatt */
+  z-index: 1000; /* Magas z-index a navbar számára */
 }
 
 /* Navigációs elemek */
 .nav-item {
-  color: #fff; /* Fehér szöveg a jobb láthatóságért */
+  color: #fff;
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin: 0 15px;
   transition: all 0.3s ease;
+  text-decoration: none;
 }
 
 .nav-item:hover {
-  color: #ff4500; /* Narancssárga hoverkor */
+  color: #ff4500;
   transform: translateY(-3px);
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 /* Aktív link kiemelése */
 .nav-item.active {
-  color: #ff4500; /* Narancssárga az aktív linknek */
+  color: #ff4500;
   font-weight: bold;
-  background-color: rgba(255, 69, 0, 0.2); /* Enyhe narancssárga háttér az aktív linknek */
+  background-color: rgba(255, 69, 0, 0.2);
   border-radius: 5px;
   padding: 5px 10px;
 }
 
-/* Toggle gombok stílusa a navbarban */
+/* Toggle gombok stílusa (ha lenne ilyen, de itt nem használjuk) */
 .nav-item .toggle-btn {
   background: none;
   border: none;
@@ -43,17 +48,26 @@
   letter-spacing: 1px;
   padding: 5px 10px;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .nav-item .toggle-btn:hover {
-  color: #ff4500; /* Narancssárga hoverkor */
+  color: #ff4500;
   transform: translateY(-3px);
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Ikonok konténere (harang és profil) */
+.icons-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 /* Dropdown konténer és ikon */
 .dropdown-container {
   position: relative;
+  z-index: 1100; /* Magasabb z-index a dropdown számára */
 }
 
 .nav-icon {
@@ -64,42 +78,45 @@
 }
 
 .nav-icon:hover {
-  transform: scale(1.1); /* Nagyítás hoverkor */
+  transform: scale(1.1);
 }
 
 .dropdown-logo {
   width: 30px;
   height: 30px;
   display: block;
-  filter: brightness(1.5); /* A logó világosítása a jobb láthatóságért */
+  filter: brightness(1.5);
 }
 
 /* Dropdown menü */
 .dropdown-menu {
-  background-color: #444; /* Világosabb szürke a dropdownhoz */
-  border: 1px solid #555; /* Világosabb szürke szegély */
+  background-color: #444;
+  border: 1px solid #555;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
   padding: 5px 0;
-  right: 0; /* Jobb oldalra igazítás */
-  left: auto;
+  position: absolute;
+  top: 100%; /* A navbar aljához igazítjuk */
+  right: 0;
   min-width: 180px;
   max-width: 250px;
-  overflow: hidden;
+  z-index: 1200; /* Még magasabb z-index a dropdown menü számára */
 }
 
 /* Dropdown elemek */
 .dropdown-item {
   background-color: transparent;
-  color: #fff; /* Fehér szöveg */
+  color: #fff;
   font-size: 1rem;
   padding: 8px 15px;
   transition: all 0.3s ease;
+  display: block;
+  text-decoration: none;
 }
 
 .dropdown-item:hover {
-  background-color: #ff4500; /* Narancssárga háttér hoverkor */
+  background-color: #ff4500;
   color: #fff;
-  transform: translateX(5px); /* Jobbra mozdulás */
+  transform: translateX(5px);
 }
 
 .dropdown-item:focus,
@@ -111,14 +128,14 @@
 }
 
 .dropdown-item.active {
-  background-color: #ff4500; /* Narancssárga az aktív dropdown elemnél */
+  background-color: #ff4500;
   color: #fff;
 }
 
 /* Értesítések konténer */
 .notification-container {
   position: relative;
-  margin-left: 15px;
+  z-index: 1100; /* Magasabb z-index az értesítések számára */
 }
 
 .notification-bell {
@@ -148,10 +165,12 @@
   border: 1px solid #555;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
   padding: 10px;
+  position: absolute;
+  top: 100%; /* A navbar aljához igazítjuk */
   right: 0;
-  left: auto;
   min-width: clamp(200px, 25vw, 300px);
   max-width: 350px;
+  z-index: 1200; /* Még magasabb z-index az értesítési menü számára */
 }
 
 .notification-item {
@@ -159,6 +178,15 @@
   font-size: 0.9rem;
   padding: 8px 0;
   border-bottom: 1px solid #555;
+}
+
+.notification-item.unread {
+  color: #fff;
+  font-weight: bold;
+}
+
+.notification-item.read {
+  color: #888;
 }
 
 .notification-item:last-child {
@@ -169,46 +197,293 @@
   color: #ff4500;
 }
 
+/* Bootstrap hamburger menü ikon finomhangolása */
+.navbar-toggler {
+  border: none;
+  z-index: 1001;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
 /* Reszponzív dizájn */
 @media (max-width: 991px) {
   .custom-navbar {
     padding: 10px 15px;
+    justify-content: space-between;
+    position: relative;
   }
 
-  .nav-item {
-    font-size: 1rem;
+  .navbar-toggler {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+  }
+
+  .navbar-collapse {
+    background-color: #545353;
+    padding: 10px;
+    margin-top: 50px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    z-index: 1000;
+  }
+
+  .navbar-collapse.show {
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+  }
+
+  .navbar-collapse .nav-item {
+    display: block;
+    font-size: 1.1rem;
+    margin: 5px 0;
+    width: 100%;
+    text-align: left;
+    padding: 10px 0;
+  }
+
+  .navbar-collapse .nav-item.active {
+    padding: 10px 0;
+  }
+
+  .d-flex {
+    flex-direction: column;
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .notification-container,
+  .dropdown-container {
     margin: 10px 0;
-  }
-
-  .nav-item.active {
-    padding: 5px;
-  }
-
-  .dropdown-menu {
     width: 100%;
-    text-align: right; /* Jobb oldali szöveg igazítás */
   }
 
-  .dropdown-logo {
-    margin: 0 auto;
-  }
-
-  .notification-container {
-    margin-left: 10px;
-  }
-
+  .dropdown-menu,
   .notification-menu {
+    position: static;
     width: 100%;
-    text-align: center;
+    max-width: none;
+    box-shadow: none;
+    border: none;
+    background-color: #3a3a3a;
   }
 }
 
 @media (max-width: 576px) {
+  .custom-navbar {
+    padding: 8px 10px;
+  }
+
+  .navbar-toggler {
+    top: 10px;
+    right: 10px;
+  }
+
+  .navbar-collapse {
+    margin-top: 40px;
+  }
+
+  .navbar-collapse .nav-item {
+    font-size: 1rem;
+    padding: 8px 0;
+  }
+
+  .dropdown-logo {
+    width: 25px;
+    height: 25px;
+  }
+
   .notification-bell svg {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
   }
+
+  .notification-count {
+    width: 14px;
+    height: 14px;
+    font-size: 0.7rem;
+  }
+
   .notification-item {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
+}
+
+/* Új stílusok a csengőhöz és az értesítésekhez */
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.navbar-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.navbar-link:hover {
+  color: #ff4500;
+  transform: translateY(-3px);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.navbar-logout {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 5px 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.navbar-logout:hover {
+  color: #ff4500;
+  transform: translateY(-3px);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.notifications-section {
+  position: relative;
+}
+
+.bell-icon {
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.bell-icon:hover {
+  color: #ff4500;
+  transform: scale(1.1);
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #ff4500;
+  color: #fff;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.notifications-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: #444;
+  border: 1px solid #555;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  min-width: clamp(200px, 25vw, 300px);
+  max-width: 350px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1200; /* Magas z-index az értesítési dropdown számára */
+}
+
+.notifications h3 {
+  color: #ff4500;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.notification-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notification-item.unread {
+  color: #fff;
+  font-weight: bold;
+}
+
+.notification-item.read {
+  color: #888;
+}
+
+.notifications p {
+  color: #444;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Reszponzív dizájn kiegészítése az új elemekhez */
+@media (max-width: 991px) {
+  .navbar-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .navbar-link,
+  .navbar-logout {
+    margin: 5px 0;
+    padding: 10px 0;
+    width: 100%;
+    text-align: left;
+  }
+
+  .notifications-section {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .notifications-dropdown {
+    position: static;
+    width: 100%;
+    max-width: none;
+    box-shadow: none;
+    border: none;
+    background-color: #3a3a3a;
+  }
+}
+
+@media (max-width: 576px) {
+  .bell-icon {
+    font-size: 1.3rem;
+  }
+
+  .notification-badge {
+    width: 14px;
+    height: 14px;
+    font-size: 0.7rem;
+  }
+
+  .notifications h3 {
+    font-size: 1.1rem;
+  }
+}
+
+.felhasznev{
+  color: #ff4500 !important;
+  text-align: center;
 }

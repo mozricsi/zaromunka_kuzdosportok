@@ -8,13 +8,14 @@ require("dotenv").config();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const { Server } = require('socket.io');
 
 const app = express();
 
 app.use(express.json());
 app.use(cors({
   origin: ["http://localhost:5173"],
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST", "DELETE"],
   credentials: true
 }));
 
@@ -436,68 +437,173 @@ app.get('/api/jelentkezes/check', (req, res) => {
     }
   });
 });
-// Értesítések lekérdezése a látogató számára
-app.get('/notifications/:user_id', (req, res) => {
-  const user_id = req.params.user_id;
 
-  const query = `
+// Értesítés létrehozása, amikor egy látogató jelentkezik egy edzésre
+app.post('/api/notifications/create', (req, res) => {
+  const { trainingId, visitorId } = req.body;
+
+  const queryTraining = `
     SELECT 
-      j.jelentkezes_id,
-      k.klubbnev,
-      k.hely,
-      e.nap,
-      e.ido,
-      l.vnev AS coach_vnev,
-      l.knev AS coach_knev
-    FROM jelentkezes j
-    JOIN klubbok k ON j.sportklub_id = k.sprotklub_id
+      e.sportklub_id, e.nap, e.ido, 
+      k.user_id AS coach_id, k.klubbnev,
+      l.vnev AS coach_vnev, l.knev AS coach_knev
+    FROM klub_edzesek e
+    JOIN klubbok k ON e.sportklub_id = k.sprotklub_id
     JOIN latogatok l ON k.user_id = l.user_id
-    JOIN klub_edzesek e ON k.sprotklub_id = e.sportklub_id
-    WHERE j.user_id = ?
-      AND e.nap = DAYNAME(CURDATE())
-      AND j.elfogadva = 1
+    WHERE e.edzes_id = ?
   `;
 
-  db.query(query, [user_id], (err, results) => {
+  db.query(queryTraining, [trainingId], (err, trainingResults) => {
     if (err) {
-      console.error('Hiba az értesítések lekérdezésekor:', err);
-      return res.status(500).json({ message: 'Hiba történt az értesítések lekérdezésekor.' });
+      console.error('Hiba az edzés lekérdezésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt az edzés lekérdezésekor.' });
+    }
+    if (trainingResults.length === 0) {
+      return res.status(404).json({ message: 'Edzés nem található.' });
+    }
+
+    const training = trainingResults[0];
+    const coachId = training.coach_id;
+    const clubName = training.klubbnev;
+    const coachName = `${training.coach_vnev} ${training.coach_knev}`;
+
+    // Napnév alapján a legközelebbi jövőbeli dátum kiszámítása
+    const daysOfWeek = {
+      'Hétfő': 1,
+      'Kedd': 2,
+      'Szerda': 3,
+      'Csütörtök': 4,
+      'Péntek': 5,
+      'Szombat': 6,
+      'Vasárnap': 0,
+    };
+    const targetDay = daysOfWeek[training.nap];
+    if (targetDay === undefined) {
+      return res.status(500).json({ message: 'Érvénytelen napnév az edzéshez.' });
+    }
+
+    const now = new Date();
+    const currentDay = now.getDay();
+    let daysUntilTarget = targetDay - currentDay;
+    if (daysUntilTarget <= 0) {
+      daysUntilTarget += 7; // Ha a nap már elmúlt, a következő hétre állítjuk
+    }
+
+    const trainingDate = new Date(now);
+    trainingDate.setDate(now.getDate() + daysUntilTarget);
+    const [hours, minutes] = training.ido.split(':');
+    trainingDate.setHours(parseInt(hours, 10));
+    trainingDate.setMinutes(parseInt(minutes, 10));
+    trainingDate.setSeconds(0);
+
+    const queryVisitor = `SELECT vnev, knev FROM latogatok WHERE user_id = ?`;
+    db.query(queryVisitor, [visitorId], (err, visitorResults) => {
+      if (err) {
+        console.error('Hiba a látogató lekérdezésekor:', err);
+        return res.status(500).json({ message: 'Hiba történt a látogató lekérdezésekor.' });
+      }
+      if (visitorResults.length === 0) {
+        return res.status(404).json({ message: 'Látogató nem található.' });
+      }
+
+      const visitor = visitorResults[0];
+      const visitorName = `${visitor.vnev} ${visitor.knev}`;
+
+      // Edző értesítése
+      const coachMessage = `Új jelentkezés: ${visitorName} jelentkezett az edzésedre (${clubName}).`;
+      const coachQuery = `
+        INSERT INTO notifications (user_id, role, message, created_at, \`read\`)
+        VALUES (?, 'coach', ?, NOW(), 0)
+      `;
+      db.query(coachQuery, [coachId, coachMessage], (err) => {
+        if (err) {
+          console.error('Hiba az edző értesítésének mentésekor:', err);
+          return res.status(500).json({ message: 'Hiba történt az edző értesítésének mentésekor.' });
+        }
+
+        // Látogató értesítése (hátralévő idő kiszámítása)
+        const now = new Date();
+        const timeUntilEvent = Math.max(0, trainingDate - now);
+        const hoursUntilEvent = Math.floor(timeUntilEvent / (1000 * 60 * 60));
+        const minutesUntilEvent = Math.floor((timeUntilEvent % (1000 * 60 * 60)) / (1000 * 60));
+
+        const visitorMessage = `Sikeresen jelentkeztél ${coachName} edzésére (${clubName}). Hátralévő idő: ${hoursUntilEvent} óra ${minutesUntilEvent} perc.`;
+        const visitorQuery = `
+          INSERT INTO notifications (user_id, role, message, created_at, \`read\`)
+          VALUES (?, 'visitor', ?, NOW(), 0)
+        `;
+        db.query(visitorQuery, [visitorId, visitorMessage], (err) => {
+          if (err) {
+            console.error('Hiba a látogató értesítésének mentésekor:', err);
+            return res.status(500).json({ message: 'Hiba történt a látogató értesítésének mentésekor.' });
+          }
+
+          res.status(200).json({ message: 'Értesítések sikeresen létrehozva.' });
+        });
+      });
+    });
+  });
+});
+
+// Értesítések lekérdezése a látogató számára
+app.get('/api/notifications/visitor/:userId', (req, res) => {
+  const userId = req.params.userId;
+
+  const query = `
+    SELECT * FROM notifications 
+    WHERE user_id = ? AND role = 'visitor'
+    ORDER BY created_at DESC
+  `;
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Hiba a látogatói értesítések lekérdezésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt a látogatói értesítések lekérdezésekor.' });
     }
     res.json(results);
   });
 });
 
-// Edzők értesítései a jelentkezésekről
-app.get('/coach-notifications/:user_id', (req, res) => {
-  const user_id = req.params.user_id;
+// Értesítések lekérdezése az edző számára
+app.get('/api/notifications/coach/:userId', (req, res) => {
+  const userId = req.params.userId;
+
+  if (isNaN(userId)) {
+    return res.status(400).json({ message: 'Érvénytelen userId.' });
+  }
 
   const query = `
-    SELECT 
-      j.jelentkezes_id,
-      l.felhasznalonev AS visitor_username,
-      k.klubbnev,
-      k.hely,
-      e.nap,
-      e.ido,
-      j.jelentkezes_ido
-    FROM jelentkezes j
-    JOIN latogatok l ON j.user_id = l.user_id
-    JOIN klubbok k ON j.sportklub_id = k.sprotklub_id
-    JOIN klub_edzesek e ON k.sprotklub_id = e.sportklub_id
-    WHERE k.user_id = ?
-      AND j.elfogadva = 1
-    ORDER BY j.jelentkezes_ido DESC
-    LIMIT 10
+    SELECT * FROM notifications 
+    WHERE user_id = ? AND role = 'coach'
+    ORDER BY created_at DESC
   `;
-
-  db.query(query, [user_id], (err, results) => {
+  db.query(query, [userId], (err, results) => {
     if (err) {
       console.error('Hiba az edzői értesítések lekérdezésekor:', err);
-      return res.status(500).json({ message: 'Hiba történt az értesítések lekérdezésekor.' });
+      return res.status(500).json({ message: 'Hiba történt az edzői értesítések lekérdezésekor.' });
     }
     res.json(results);
   });
 });
+
+// Értesítések olvasottá tétele
+app.put('/api/notifications/mark-read/:userId/:role', (req, res) => {
+  const { userId, role } = req.params;
+
+  const query = `
+    UPDATE notifications 
+    SET \`read\` = 1
+    WHERE user_id = ? AND role = ? AND \`read\` = 0
+  `;
+  db.query(query, [userId, role], (err, result) => {
+    if (err) {
+      console.error('Hiba az értesítések olvasottá tételénél:', err);
+      return res.status(500).json({ message: 'Hiba történt az értesítések olvasottá tételénél.' });
+    }
+    console.log(`Értesítések olvasottá téve: userId=${userId}, role=${role}, érintett sorok: ${result.affectedRows}`);
+    res.status(200).json({ message: 'Értesítések olvasottá téve.' });
+  });
+});
+
 
 // Edzésnapló - edző által hozzáadott edzések lekérdezése
 app.get("/klubbok/all/:userId", (req, res) => {
@@ -576,7 +682,16 @@ app.get('/api/klub/:id', (req, res) => {
 
 // Ranglista lekérdezése
 app.get('/api/ranglista', (req, res) => {
-  const query = `
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+  const filter = req.query.filter || 'all';
+  let dateFilter = '';
+  if (filter === 'last30days') {
+    dateFilter = 'AND j.jelentkezes_ido >= DATE_SUB(NOW(), INTERVAL 30 DAY)';
+  }
+
+  const coachesQuery = `
     SELECT 
       l.felhasznalonev,
       COUNT(e.edzes_id) AS edzesek
@@ -588,65 +703,66 @@ app.get('/api/ranglista', (req, res) => {
     WHERE l.role = 'coach'
     GROUP BY l.user_id, l.felhasznalonev
     ORDER BY edzesek DESC
+    LIMIT ? OFFSET ?
   `;
 
-  db.query(query, (err, results) => {
+  const visitorsQuery = `
+    SELECT 
+      l.felhasznalonev,
+      COUNT(j.jelentkezes_id) AS reszvetel
+    FROM latogatok l
+    LEFT JOIN jelentkezes j 
+      ON l.user_id = j.user_id
+    WHERE l.role = 'visitor'
+    ${dateFilter}
+    GROUP BY l.user_id, l.felhasznalonev
+    ORDER BY reszvetel DESC
+    LIMIT ? OFFSET ?
+  `;
+
+  db.query(coachesQuery, [limit, offset], (err, coachesResult) => {
     if (err) {
-      console.error('Hiba a ranglista lekérdezésekor:', err.message);
-      return res.status(500).json({ error: 'Hiba történt: ' + err.message });
+      console.error('Hiba az edzők ranglistájának lekérdezésekor:', err.message);
+      return res.status(500).json({ error: 'Hiba történt az edzők lekérdezésekor: ' + err.message });
     }
-    res.json(results);
+
+    db.query(visitorsQuery, [limit, offset], (err, visitorsResult) => {
+      if (err) {
+        console.error('Hiba a látogatók ranglistájának lekérdezésekor:', err.message);
+        return res.status(500).json({ error: 'Hiba történt a látogatók lekérdezésekor: ' + err.message });
+      }
+
+      res.json({
+        coaches: coachesResult,
+        visitors: visitorsResult,
+      });
+    });
   });
 });
 // Események lekérdezése
 app.get('/api/esemenyek', (req, res) => {
   const query = `
-    SELECT esemeny_id, user_id, latogato_resztvevo, pontos_cim, ido, sportneve, 
+    SELECT esemeny_id, user_id, pontos_cim, ido, sportneve, 
            leiras, szervezo_neve, szervezo_tel, szervezo_email, esemeny_weboldal
     FROM esemenyek
   `;
   db.query(query, (err, results) => {
     if (err) {
-      console.error('Lekérdezési hiba:', err.message); // Részletes hibaüzenet
+      console.error('Lekérdezési hiba:', err.message);
       return res.status(500).json({ error: 'Lekérdezési hiba: ' + err.message });
     }
     res.json(results);
   });
 });
 
-
-// Üzenetek lekérdezése
-app.get('/api/uzenetek', (req, res) => {
-  const query = `
-    SELECT u.uzenet_id, u.user_id, u.felhasznalonev, u.uzenet, u.ido
-    FROM uzenetek u
-    ORDER BY u.ido DESC
-    LIMIT 50
-  `;
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Hiba az üzenetek lekérdezésekor:', err);
-      return res.status(500).json({ message: 'Hiba történt az üzenetek lekérdezésekor.' });
-    }
-    res.json(results);
-  });
-});
+let currentStreamUrl = null;
+let currentStreamStatus = 'offline';
 
 // Aktív stream lekérdezése
 app.get('/api/streams/active', (req, res) => {
-  const query = `
-    SELECT stream_url
-    FROM streams
-    WHERE status = 'online'
-    ORDER BY stream_id DESC
-    LIMIT 1
-  `;
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Lekérdezési hiba:', err.message);
-      return res.status(500).json({ error: 'Hiba történt' });
-    }
-    res.json(results.length > 0 ? results[0] : []);
+  res.json({
+    stream_url: currentStreamUrl,
+    status: currentStreamStatus
   });
 });
 
@@ -656,26 +772,13 @@ app.post('/api/streams/start', (req, res) => {
   if (!userId || !streamUrl) {
     return res.status(400).json({ error: 'Hiányzó paraméterek' });
   }
-  const query = 'UPDATE streams SET status = ?, stream_url = ? WHERE user_id = ? AND status = ?';
-  db.query(query, ['online', streamUrl, userId, 'offline'], (err, result) => {
-    if (err) {
-      console.error('Hiba a stream indításakor:', err.message);
-      return res.status(500).json({ error: 'Hiba a stream indításakor' });
-    }
-    if (result.affectedRows === 0) {
-      // Ha nincs offline stream, hozz létre újat
-      const insertQuery = 'INSERT INTO streams (user_id, stream_url, status) VALUES (?, ?, ?)';
-      db.query(insertQuery, [userId, streamUrl, 'online'], (err) => {
-        if (err) {
-          console.error('Hiba az új stream létrehozásakor:', err.message);
-          return res.status(500).json({ error: 'Hiba az új stream létrehozásakor' });
-        }
-        res.json({ message: 'Stream elindítva' });
-      });
-    } else {
-      res.json({ message: 'Stream elindítva' });
-    }
-  });
+  if (!streamUrl.startsWith('https://www.youtube.com/embed/')) {
+    return res.status(400).json({ error: 'Érvénytelen YouTube embed link!' });
+  }
+  currentStreamUrl = streamUrl;
+  currentStreamStatus = 'online';
+  io.emit('stream-update', { streamUrl: currentStreamUrl, status: 'online' }); // Socket.IO-val szinkronizálás
+  res.json({ message: 'Stream elindítva' });
 });
 
 // Stream leállítása
@@ -684,18 +787,189 @@ app.post('/api/streams/stop', (req, res) => {
   if (!userId) {
     return res.status(400).json({ error: 'Hiányzó paraméterek' });
   }
-  const query = 'UPDATE streams SET status = ? WHERE user_id = ? AND status = ?';
-  db.query(query, ['offline', userId, 'online'], (err, result) => {
-    if (err) {
-      console.error('Hiba a stream leállításakor:', err.message);
-      return res.status(500).json({ error: 'Hiba a stream leállításakor' });
-    }
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'Nincs aktív stream' });
-    }
-    res.json({ message: 'Stream leállítva' });
+  currentStreamUrl = null;
+  currentStreamStatus = 'offline';
+  io.emit('stream-update', { streamUrl: null, status: 'offline' });
+  res.json({ message: 'Stream leállítva' });
+});
+
+// Socket.IO integráció
+const io = new Server(5001, { cors: { origin: "http://localhost:5173" } });
+
+io.on('connection', (socket) => {
+  console.log('Új felhasználó csatlakozott:', socket.id);
+
+  // Aktuális stream státusz küldése az új kliensnek
+  socket.emit('stream-update', { streamUrl: currentStreamUrl, status: currentStreamStatus });
+
+  socket.on('disconnect', () => {
+    console.log('Felhasználó lecsatlakozott:', socket.id);
   });
 });
+
+// Klub törlése
+app.delete("/clubs/:sprotklubId", (req, res) => {
+  const { sprotklubId } = req.params;
+
+  const query = "DELETE FROM klubbok WHERE sprotklub_id = ?";
+
+  db.query(query, [sprotklubId], (error, result) => {
+    if (error) {
+      console.error("Hiba a klub törlésekor:", error);
+      return res.status(500).json({ message: "Hiba történt a klub törlésekor." });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "A klub nem található." });
+    }
+    res.json({ message: "Klub sikeresen törölve!" });
+  });
+});
+
+// Edzések lekérdezése az edző számára
+app.get("/workouts/:userId", (req, res) => {
+  const { userId } = req.params;
+
+  const query = `
+    SELECT 
+      ke.edzes_id, 
+      ke.sportklub_id, 
+      ke.pontoscim, 
+      ke.nap, 
+      ke.ido, 
+      k.klubbnev, 
+      k.hely, 
+      k.sport_id,
+      s.sportnev
+    FROM klub_edzesek ke
+    JOIN klubbok k ON ke.sportklub_id = k.sprotklub_id
+    JOIN sport s ON k.sport_id = s.sport_id
+    WHERE k.user_id = ?
+  `;
+
+  db.query(query, [userId], (error, results) => {
+    if (error) {
+      console.error("Hiba az edzések lekérdezésekor:", error);
+      return res.status(500).json({ message: "Hiba történt az edzések lekérdezésekor." });
+    }
+    res.json(results);
+  });
+});
+
+
+// Edzés törlése
+app.delete("/workouts/:edzesId", (req, res) => {
+  const { edzesId } = req.params;
+
+  const query = "DELETE FROM klub_edzesek WHERE edzes_id = ?";
+
+  db.query(query, [edzesId], (error, result) => {
+    if (error) {
+      console.error("Hiba az edzés törlésekor:", error);
+      return res.status(500).json({ message: "Hiba történt az edzés törlésekor." });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Az edzés nem található." });
+    }
+    res.json({ message: "Edzés sikeresen törölve!" });
+  });
+});
+
+app.get("/edzesnaplo/:userId", (req, res) => {
+  const { userId } = req.params;
+
+  const query = `
+    SELECT 
+      j.jelentkezes_id,
+      ke.edzes_id,
+      ke.pontoscim,
+      ke.nap,
+      ke.ido,
+      k.sprotklub_id,
+      k.klubbnev,
+      k.hely,
+      s.sportnev
+    FROM jelentkezes j
+    JOIN klub_edzesek ke ON j.edzes_id = ke.edzes_id
+    JOIN klubbok k ON ke.sportklub_id = k.sprotklub_id
+    JOIN sport s ON k.sport_id = s.sport_id
+    WHERE j.user_id = ?
+  `;
+
+  db.query(query, [userId], (error, results) => {
+    if (error) {
+      console.error("Hiba az edzésnapló lekérdezésekor:", error);
+      return res.status(500).json({ message: "Hiba történt az edzésnapló lekérdezésekor." });
+    }
+    res.json(results);
+  });
+});
+
+//jelentkezés törlése
+
+app.delete("/jelentkezes/:jelentkezesId", (req, res) => {
+  const { jelentkezesId } = req.params;
+
+  const query = "DELETE FROM jelentkezes WHERE jelentkezes_id = ?";
+  db.query(query, [jelentkezesId], (error, result) => {
+    if (error) {
+      console.error("Hiba a jelentkezés törlésekor:", error.message);
+      return res.status(500).json({ 
+        message: "Hiba történt a jelentkezés törlésekor.", 
+        error: error.message 
+      });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "A jelentkezés nem található." });
+    }
+    res.json({ message: "Jelentkezés sikeresen törölve!" });
+  });
+});
+
+// -------------------
+
+// Események lekérése sportág alapján
+app.get('/esemenyek/sport/:sportnev', (req, res) => {
+  const sportnev = req.params.sportnev;
+  const query = `
+    SELECT * FROM esemenyek 
+    WHERE sportneve = ? AND ido >= NOW()
+    ORDER BY ido ASC
+  `;
+  db.query(query, [sportnev], (err, results) => {
+    if (err) {
+      console.error('Hiba az események lekérésekor:', err);
+      res.status(500).json({ message: 'Hiba történt az események lekérésekor.' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+//---------------------------------------------
+
+// Jelentkezés ID lekérdezése
+app.get('/api/jelentkezes/getId', (req, res) => {
+  const { user_id, edzes_id } = req.query;
+
+  const query = `
+    SELECT jelentkezes_id FROM jelentkezes 
+    WHERE user_id = ? AND edzes_id = ?
+  `;
+
+  db.query(query, [user_id, edzes_id], (err, result) => {
+    if (err) {
+      console.error('Hiba a jelentkezés ID lekérdezésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt a jelentkezés ID lekérdezésekor.' });
+    }
+
+    if (result.length > 0) {
+      res.json({ jelentkezesId: result[0].jelentkezes_id });
+    } else {
+      res.json({ jelentkezesId: null });
+    }
+  });
+});
+
+
 
 
 

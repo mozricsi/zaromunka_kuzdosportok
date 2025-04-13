@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 body {
-  background-color: #333; /* Teljes háttér kitöltése */
+  background-color: #333;
   color: #ff4500;
-  margin: 0; /* Eltávolítjuk a margót, hogy ne maradjon fehér terület */
-  min-height: 100vh; /* Biztosítjuk, hogy a body is kitöltse a képernyőt */
+  margin: 0;
+  min-height: 100vh;
 }
 
 .sport-page {
   padding: 20px;
   padding-top: 0;
   background-color: #333;
-  min-height: 100vh; /* Teljes képernyő magasság */
+  min-height: 100vh;
 }
 
 .sport-page h1 {
@@ -27,9 +27,29 @@ body {
   padding: 20px 0;
 }
 
-.sport-page table {
+.asztal table {
   border-collapse: separate;
   border-spacing: 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.asztal th {
+  background-color: #444;
+  color: #ff4500;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.asztal td {
+  transition: background-color 0.3s ease;
+}
+
+.asztal tr:hover {
+  background-color: #222;
+  transform: scale(1.01);
+  transition: transform 0.2s ease;
 }
 
 .sport-page th,
@@ -51,45 +71,218 @@ body {
   }
 }
 
-/* Responszív design */
+/* Profilképek és linkek */
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-link {
+  color: #ff4500;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.user-link:hover {
+  color: #cc3700;
+  text-decoration: underline;
+}
+
+/* Trófea animáció */
+.trophy {
+  display: inline-block;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* Szűrő szekció */
+.filter-section {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-section button {
+  padding: 10px 20px;
+  background-color: #444;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.filter-section button.active {
+  background-color: #ff4500;
+}
+
+.filter-section button:hover {
+  background-color: #cc3700;
+}
+
+/* Pagináció */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 10px 20px;
+  background-color: #ff4500;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #cc3700;
+}
+
+.pagination span {
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #ccc;
+}
+
+/* Reszponzív dizájn */
 @media (max-width: 1024px) {
-  .max-w-1200 {
-    max-width: 90%;
+  .sport-page {
+    padding: 15px;
   }
-  .sport-page th,
-  .sport-page td {
-    padding: 2px;
-    font-size: 0.95em;
+
+  .sport-page h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+
+  .asztal th,
+  .asztal td {
+    padding: 10px;
+    font-size: 0.95rem;
+  }
+
+  .avatar {
+    width: 25px;
+    height: 25px;
+  }
+
+  .filter-section button {
+    padding: 8px 15px;
+    font-size: 0.95rem;
+  }
+
+  .pagination button,
+  .pagination span {
+    padding: 8px 15px;
+    font-size: 0.95rem;
   }
 }
 
 @media (max-width: 768px) {
-  .max-w-1200 {
-    max-width: 100%;
+  .sport-page {
+    padding: 10px;
   }
-  .sport-page table {
+
+  .sport-page h1 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+  }
+
+  .asztal th,
+  .asztal td {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  .avatar {
+    width: 20px;
+    height: 20px;
+  }
+
+  .filter-section {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .filter-section button {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+
+  .pagination button,
+  .pagination span {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+
+  .asztal table {
     display: block;
     overflow-x: auto;
-  }
-  .sport-page th,
-  .sport-page td {
-    min-width: 100px;
-    font-size: 0.9em;
-  }
-  .sport-page h1 {
-    font-size: 2em;
+    white-space: nowrap;
   }
 }
 
 @media (max-width: 480px) {
-  .sport-page th,
-  .sport-page td {
-    font-size: 0.85em;
+  .sport-page {
+    padding: 8px;
   }
-  .sport-page .card-image {
-    height: 150px;
-  }
+
   .sport-page h1 {
-    font-size: 1.5em;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .asztal th,
+  .asztal td {
+    padding: 6px;
+    font-size: 0.85rem;
+  }
+
+  .avatar {
+    width: 18px;
+    height: 18px;
+  }
+
+  .filter-section {
+    gap: 5px;
+  }
+
+  .filter-section button {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+  }
+
+  .pagination button,
+  .pagination span {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+  }
+
+  .trophy {
+    font-size: 0.8rem;
   }
 }

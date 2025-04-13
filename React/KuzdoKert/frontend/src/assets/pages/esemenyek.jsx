@@ -14,7 +14,6 @@ function Esemenyek() {
   // Függvény a naptár napjainak testreszabására
   const tileClassName = ({ date, view }) => {
     if (view === 'month') {
-      // Ellenőrizzük, van-e esemény az adott napon
       const hasEvent = events.some(event => 
         new Date(event.ido).toDateString() === date.toDateString()
       );
@@ -23,23 +22,71 @@ function Esemenyek() {
     return null;
   };
 
+  // Google Maps link generálása
+  const getGoogleMapsLink = (address) => {
+    const encodedAddress = encodeURIComponent(address);
+    return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+  };
+
+  // Dátum formázása (teljes verzió)
+  const formatDateTime = (dateString) => {
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    };
+    return new Date(dateString).toLocaleString('hu-HU', options).replace('.', ':').replace(' ', ' ');
+  };
+
+  // Státusz és időpont meghatározása
+  const getEventStatusAndTime = (event) => {
+    const eventDate = new Date(event.ido);
+    const now = new Date();
+
+    if (eventDate < now) return { status: "Befejezett", showTime: false };
+    if (eventDate.toDateString() === now.toDateString()) return { status: "Élő", showTime: false };
+    return { status: "Tervezett", showTime: true, time: formatDateTime(event.ido) };
+  };
+
   return (
     <div className="esemenyek-container">
       <h1>Események</h1>
       <Calendar
         onChange={setDate}
         value={date}
-        tileClassName={tileClassName} // Dinamikus osztályok hozzárendelése
+        tileClassName={tileClassName}
       />
       <div>
         {events
           .filter(e => new Date(e.ido).toDateString() === date.toDateString())
-          .map(event => (
-            <div key={event.esemeny_id} className="event-item">
-              <p>{event.sportneve} - {event.leiras}</p>
-              <p>Helyszín: {event.pontos_cim}</p>
-            </div>
-          ))}
+          .map(event => {
+            const { status, showTime, time } = getEventStatusAndTime(event);
+
+            return (
+              <div key={event.esemeny_id} className="event-item">
+                <div className="content">
+                  <p>{event.sportneve} - {event.leiras}</p>
+                  <p>
+                    Helyszín:{' '}
+                    <a
+                      href={getGoogleMapsLink(event.pontos_cim)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="location-link"
+                    >
+                      {event.pontos_cim}
+                    </a>
+                  </p>
+                </div>
+                <div>
+                  <div className="event-status">{status}</div>
+                  {showTime && <div className="event-time">{time}</div>}
+                </div>
+              </div>
+            );
+          })}
       </div>
     </div>
   );

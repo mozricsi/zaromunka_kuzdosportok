@@ -9,6 +9,7 @@ const SportLeiras = () => {
   const [sport, setSport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [clubs, setClubs] = useState([]);
+  const [events, setEvents] = useState([]); // Új állapot az eseményeknek
   const [error, setError] = useState(null);
   const [loginStatus, setLoginStatus] = useState(false);
   const [userId, setUserId] = useState(null);
@@ -45,7 +46,7 @@ const SportLeiras = () => {
     checkLoginStatus();
     const interval = setInterval(checkLoginStatus, 100);
     return () => clearInterval(interval);
-  }, []);
+  }, [navigate]);
 
   // Sport adatainak lekérése
   useEffect(() => {
@@ -72,6 +73,19 @@ const SportLeiras = () => {
         });
     }
   }, [id]);
+
+  // Események lekérése
+  useEffect(() => {
+    if (sport) {
+      Axios.get(`http://localhost:5000/esemenyek/sport/${sport.sportnev}`)
+        .then((response) => {
+          setEvents(response.data);
+        })
+        .catch((error) => {
+          console.error('Hiba történt az események lekérésekor:', error);
+        });
+    }
+  }, [sport]);
 
   // Értékelések lekérése az egyes klubokhoz
   useEffect(() => {
@@ -226,6 +240,29 @@ const SportLeiras = () => {
             {/* Közelgő versenyek */}
             <section className="events-section">
               <h2>Közelgő versenyek</h2>
+              {events.length > 0 ? (
+                <div className="events-grid">
+                  {events.map((event) => (
+                    <div key={event.esemeny_id} className="event-card">
+                      <h3>{event.leiras}</h3>
+                      <p><strong>Helyszín:</strong> {event.pontos_cim}</p>
+                      <p><strong>Időpont:</strong> {new Date(event.ido).toLocaleString()}</p>
+                      <p><strong>Szervező:</strong> {event.szervezo_neve}</p>
+                      <p><strong>Kapcsolat:</strong> {event.szervezo_email} | {event.szervezo_tel}</p>
+                      {event.esemeny_weboldal && (
+                        <p>
+                          <strong>Weboldal:</strong>{' '}
+                          <a href={event.esemeny_weboldal} target="_blank" rel="noopener noreferrer">
+                            {event.esemeny_weboldal}
+                          </a>
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>Jelenleg nincs közelgő {sport.sportnev} verseny.</p>
+              )}
             </section>
 
             {/* Magyarországi egyesületek */}
@@ -297,7 +334,8 @@ const SportLeiras = () => {
         </>
       ) : (
         <>
-          <p>Jelentkezz be kérlek</p>
+          <h2 className='kerlek'>Jelentkezz be kérlek</h2>
+          <p className='kerlek'>Máris átirányítunk...</p>
         </>
       )}
     </div>

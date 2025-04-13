@@ -1,20 +1,54 @@
 import { useEffect, useRef } from 'react';
+import { io } from 'socket.io-client';
 import "../Styles/LiveStream.css";
 
 function LiveStream() {
-  const videoRef = useRef();
+  const iframeRef = useRef(null);
+  const socket = useRef(null);
 
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      .then(stream => {
-        videoRef.current.srcObject = stream;
-      });
+    // Socket.IO kapcsolat inicializálása
+    socket.current = io('http://localhost:5001');
+
+    // Stream státusz hallgatása
+    socket.current.on('stream-update', (data) => {
+      const { streamUrl, status } = data;
+      if (iframeRef.current) {
+        if (status === 'online' && streamUrl) {
+          iframeRef.current.src = streamUrl;
+          iframeRef.current.style.display = 'block';
+        } else {
+          iframeRef.current.src = '';
+          iframeRef.current.style.display = 'none';
+        }
+      }
+    });
+
+    // Tisztítás a komponens megsemmisítésekor
+    return () => {
+      if (socket.current) {
+        socket.current.disconnect();
+      }
+    };
   }, []);
 
   return (
-    <div className="p-4">
-      <h1 className="text-3xl font-bold">Élő Edzés</h1>
-      <video ref={videoRef} autoPlay className="w-full" />
+    <div className="live-stream-page">
+      <div className="live-stream-container">
+        <h1 className="live-stream-title">Élő Edzés</h1>
+        <div className="stream-wrapper">
+          <iframe
+            ref={iframeRef}
+            title="Live Stream"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="stream-iframe"
+            style={{ display: 'none' }}
+          />
+          <p className="stream-placeholder">Jelenleg nincs élő adás...</p>
+        </div>
+      </div>
     </div>
   );
 }

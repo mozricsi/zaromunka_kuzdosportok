@@ -14,4 +14,6 @@ export {default as Terms} from './Terms';
 export {default as LiveStream} from './LiveStream';
 export {default as Esemenyek} from './esemenyek';
 export {default as Ranglista} from './Ranglista';
+export {default as WelcomeScreen} from './WelcomeScreen';
+
 

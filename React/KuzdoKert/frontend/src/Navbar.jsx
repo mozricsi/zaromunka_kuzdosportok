@@ -6,7 +6,7 @@ import logo from './assets/kepek/fiok.png';
 import Axios from "axios";
 import './assets/Styles/navbar.css';
 
-const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
+const Navbar = () => {
   const [loginStatus, setLoginStatus] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -18,6 +18,7 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
 
   Axios.defaults.withCredentials = true;
 
+  // Bejelentkezés ellenőrzése
   useEffect(() => {
     const checkLoginStatus = () => {
       Axios.get("http://localhost:5000/login")
@@ -26,6 +27,10 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
             setLoginStatus(response.data.user[0].felhasznalonev);
             setUserRole(response.data.user[0].role);
             setUserId(response.data.user[0].user_id);
+            console.log("Bejelentkezett felhasználó:", {
+              userId: response.data.user[0].user_id,
+              userRole: response.data.user[0].role,
+            });
           } else {
             setLoginStatus(false);
             setUserRole(null);
@@ -33,7 +38,7 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
           }
         })
         .catch((error) => {
-          console.error("Hiba történt:", error);
+          console.error("Hiba történt a bejelentkezés ellenőrzésekor:", error);
         });
     };
 
@@ -42,79 +47,122 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
     return () => clearInterval(interval);
   }, []);
 
+  // Látogatói értesítések lekérése
   useEffect(() => {
-    if (userId && userRole === "visitor") {
+    if (userId && userRole === 'visitor') {
       const fetchVisitorNotifications = async () => {
         try {
-          const response = await Axios.get(`http://localhost:5000/notifications/${userId}`);
+          const response = await Axios.get(`http://localhost:5000/api/notifications/visitor/${userId}`);
           setVisitorNotifications(response.data);
+          console.log("Látogatói értesítések:", response.data);
         } catch (error) {
-          console.error("Hiba a látogatói értesítések lekérdezésekor:", error);
+          console.error('Hiba a látogatói értesítések lekérdezésekor:', error);
         }
       };
 
       fetchVisitorNotifications();
-      const interval = setInterval(fetchVisitorNotifications, 300000);
+      const interval = setInterval(fetchVisitorNotifications, 300000); // 5 percenként frissít
       return () => clearInterval(interval);
     }
   }, [userId, userRole]);
 
+  // Edzői értesítések lekérése
   useEffect(() => {
-    if (userId && userRole === "coach") {
+    if (userId && userRole === 'coach') {
       const fetchCoachNotifications = async () => {
         try {
-          const response = await Axios.get(`http://localhost:5000/coach-notifications/${userId}`);
+          const response = await Axios.get(`http://localhost:5000/api/notifications/coach/${userId}`);
           setCoachNotifications(response.data);
+          console.log("Edzői értesítések:", response.data);
         } catch (error) {
-          console.error("Hiba az edzői értesítések lekérdezésekor:", error);
+          console.error('Hiba az edzői értesítések lekérdezésekor:', error);
         }
       };
 
       fetchCoachNotifications();
-      const interval = setInterval(fetchCoachNotifications, 60000);
+      const interval = setInterval(fetchCoachNotifications, 60000); // 1 percenként frissít
       return () => clearInterval(interval);
     }
   }, [userId, userRole]);
 
+  // Olvasatlan értesítések számolása
+  const unreadVisitorNotifications = visitorNotifications.filter((notif) => notif.read === 0).length;
+  const unreadCoachNotifications = coachNotifications.filter((notif) => notif.read === 0).length;
+
+  // Értesítések olvasottá tétele
+  const markNotificationsAsRead = async () => {
+    if (!userId || !userRole) {
+      console.error("Hiányzó userId vagy userRole:", { userId, userRole });
+      return;
+    }
+
+    try {
+      console.log(`PUT kérés küldése: /api/notifications/mark-read/${userId}/${userRole}`);
+      const response = await Axios.put(`http://localhost:5000/api/notifications/mark-read/${userId}/${userRole}`);
+      console.log("PUT válasz:", response.data);
+
+      // Frissítjük az értesítéseket
+      if (userRole === 'visitor') {
+        const response = await Axios.get(`http://localhost:5000/api/notifications/visitor/${userId}`);
+        setVisitorNotifications(response.data);
+        console.log("Frissített látogatói értesítések:", response.data);
+      } else if (userRole === 'coach') {
+        const response = await Axios.get(`http://localhost:5000/api/notifications/coach/${userId}`);
+        setCoachNotifications(response.data);
+        console.log("Frissített edzői értesítések:", response.data);
+      }
+    } catch (error) {
+      console.error('Hiba az értesítések olvasottá tételénél:', error.response ? error.response.data : error.message);
+      // Ha a PUT kérés nem sikerül, próbáljuk meg újra lekérni az értesítéseket
+      if (userRole === 'visitor') {
+        const response = await Axios.get(`http://localhost:5000/api/notifications/visitor/${userId}`);
+        setVisitorNotifications(response.data);
+        console.log("Frissített látogatói értesítések (hiba után):", response.data);
+      } else if (userRole === 'coach') {
+        const response = await Axios.get(`http://localhost:5000/api/notifications/coach/${userId}`);
+        setCoachNotifications(response.data);
+        console.log("Frissített edzői értesítések (hiba után):", response.data);
+      }
+    }
+  };
+
+  // Hamburger menü bezárása link kattintáskor
+  const handleLinkClick = () => {
+    const navbar = document.getElementById("navbarNav");
+    if (navbar && navbar.classList.contains("show")) {
+      const bootstrapCollapse = new window.bootstrap.Collapse(navbar, { toggle: false });
+      bootstrapCollapse.hide();
+    }
+  };
+
   return (
     <div>
       <nav className="navbar navbar-expand-lg custom-navbar">
-        <Link className="navbar-brand nav-item" to="/">Főoldal</Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+        <Link className="navbar-brand nav-item" to="/" onClick={handleLinkClick}>Főoldal</Link>
         <div className="collapse navbar-collapse" id="navbarNav">
-          <NavLink className="navbar-brand nav-item" to="/SportKartyak">Sportok</NavLink>
-          
-          {/* NavLink-ek az útvonalakhoz */}
-          
-          <NavLink className="navbar-brand nav-item" to="/esemenyek">Események</NavLink>
-          <NavLink className="navbar-brand nav-item" to="/LiveStream">Élő Stream</NavLink>
-         
-          <NavLink className="navbar-brand nav-item" to="/ranglista">Ranglista</NavLink>
+          <NavLink className="navbar-brand nav-item" to="/SportKartyak" onClick={handleLinkClick}>Sportok</NavLink>
+          <NavLink className="navbar-brand nav-item" to="/esemenyek" onClick={handleLinkClick}>Események</NavLink>
+          <NavLink className="navbar-brand nav-item" to="/LiveStream" onClick={handleLinkClick}>Élő Stream</NavLink>
+          <NavLink className="navbar-brand nav-item" to="/ranglista" onClick={handleLinkClick}>Ranglista</NavLink>
 
           <div className="d-flex justify-content-end w-100">
             {loginStatus ? (
               <>
                 {userRole === "coach" && (
-                  <NavLink className="navbar-brand nav-item" to="/EdzoiOldal">Edzői oldal</NavLink>
+                  <>
+                  <NavLink className="navbar-brand nav-item" to="/EdzesNaplo" onClick={handleLinkClick}>Edzésnapló</NavLink>
+                  <NavLink className="navbar-brand nav-item" to="/EdzoiOldal" onClick={handleLinkClick}>Edzői oldal</NavLink>
+                  
+                </>
                 )}
                 {userRole === "visitor" && (
-                  <NavLink className="navbar-brand nav-item" to="/EdzesNaplo">Edzésnapló</NavLink>
+                  <NavLink className="navbar-brand nav-item" to="/EdzesNaplo" onClick={handleLinkClick}>Edzésnapló</NavLink>
                 )}
               </>
             ) : (
               <>
-                <NavLink className="navbar-brand nav-item" to="/Login">Bejelentkezés</NavLink>
-                <NavLink className="navbar-brand nav-item" to="/Register">Regisztráció</NavLink>
+                <NavLink className="navbar-brand nav-item" to="/Login" onClick={handleLinkClick}>Bejelentkezés</NavLink>
+                <NavLink className="navbar-brand nav-item" to="/Register" onClick={handleLinkClick}>Regisztráció</NavLink>
               </>
             )}
           </div>
@@ -124,7 +172,10 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
             <div className="notification-container">
               <div
                 className="nav-item notification"
-                onMouseEnter={() => setIsVisitorNotifOpen(true)}
+                onMouseEnter={() => {
+                  setIsVisitorNotifOpen(true);
+                  markNotificationsAsRead(); // Értesítések olvasottá tétele
+                }}
                 onMouseLeave={() => setIsVisitorNotifOpen(false)}
               >
                 <span className="nav-icon notification-bell">
@@ -141,8 +192,8 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                   </svg>
-                  {visitorNotifications.length > 0 && (
-                    <span className="notification-count">{visitorNotifications.length}</span>
+                  {unreadVisitorNotifications > 0 && (
+                    <span className="notification-count">{unreadVisitorNotifications}</span>
                   )}
                 </span>
                 <ul
@@ -151,16 +202,13 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
                 >
                   {visitorNotifications.length > 0 ? (
                     visitorNotifications.map((notif) => (
-                      <li key={notif.jelentkezes_id} className="notification-item">
-                        <strong>Emlékeztető:</strong> Ma edzésed van!<br />
-                        Klub: {notif.klubbnev}<br />
-                        Helyszín: {notif.hely}<br />
-                        Idő: {notif.nap} {notif.ido}<br />
-                        Edző: {notif.coach_vnev} {notif.coach_knev}
+                      <li key={notif.notification_id} className={`notification-item ${notif.read ? 'read' : 'unread'}`}>
+                        <strong>{notif.message}</strong><br />
+                        <small>{new Date(notif.created_at).toLocaleString()}</small>
                       </li>
                     ))
                   ) : (
-                    <li className="notification-item">Nincs ma edzésed.</li>
+                    <li className="notification-item">Nincs új értesítés.</li>
                   )}
                 </ul>
               </div>
@@ -172,7 +220,10 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
             <div className="notification-container">
               <div
                 className="nav-item notification"
-                onMouseEnter={() => setIsCoachNotifOpen(true)}
+                onMouseEnter={() => {
+                  setIsCoachNotifOpen(true);
+                  markNotificationsAsRead(); // Értesítések olvasottá tétele
+                }}
                 onMouseLeave={() => setIsCoachNotifOpen(false)}
               >
                 <span className="nav-icon notification-bell">
@@ -189,8 +240,8 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                   </svg>
-                  {coachNotifications.length > 0 && (
-                    <span className="notification-count">{coachNotifications.length}</span>
+                  {unreadCoachNotifications > 0 && (
+                    <span className="notification-count">{unreadCoachNotifications}</span>
                   )}
                 </span>
                 <ul
@@ -199,17 +250,13 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
                 >
                   {coachNotifications.length > 0 ? (
                     coachNotifications.map((notif) => (
-                      <li key={notif.jelentkezes_id} className="notification-item">
-                        <strong>Új jelentkezés:</strong><br />
-                        Látogató: {notif.visitor_username}<br />
-                        Klub: {notif.klubbnev}<br />
-                        Helyszín: {notif.hely}<br />
-                        Idő: {notif.nap} {notif.ido}<br />
-                        Jelentkezés időpontja: {new Date(notif.jelentkezes_ido).toLocaleString()}
+                      <li key={notif.notification_id} className={`notification-item ${notif.read ? 'read' : 'unread'}`}>
+                        <strong>{notif.message}</strong><br />
+                        <small>{new Date(notif.created_at).toLocaleString()}</small>
                       </li>
                     ))
                   ) : (
-                    <li className="notification-item">Nincs új jelentkezés.</li>
+                    <li className="notification-item">Nincs új értesítés.</li>
                   )}
                 </ul>
               </div>
@@ -237,13 +284,27 @@ const Navbar = () => { // Távolítsd el a propokat, mert nem használjuk őket
                   className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}
                   aria-labelledby="navbarDropdown"
                 >
-                  <li><NavLink className="dropdown-item" to="/Profil">Profilom</NavLink></li>
-                  <li><NavLink className="dropdown-item" to="/Logout">Kijelentkezés</NavLink></li>
+                  <li className="felhasznev">{loginStatus}</li>
+                  <br />
+                  <li><NavLink className="dropdown-item" to="/Profil" onClick={handleLinkClick}>Profilom</NavLink></li>
+                  <li><NavLink className="dropdown-item" to="/Logout" onClick={handleLinkClick}>Kijelentkezés</NavLink></li>
+                  
                 </ul>
               </div>
             ) : null}
           </div>
         </div>
+        <button
+          className="navbar-toggler ms-auto"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
       </nav>
     </div>
   );

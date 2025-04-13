@@ -9,6 +9,8 @@
   text-align: center;
 }
 
+
+
 /* Bejelentkezett állapot */
 .logged-in h1 {
   color: #ff4500;
@@ -76,6 +78,10 @@
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%; /* Mobil nézetben teljes szélesség */
+}
+
+body{
+  background-color: #333 !important;
 }
 
 .login-form button:hover {

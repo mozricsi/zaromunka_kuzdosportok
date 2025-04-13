@@ -1,19 +1,12 @@
-import { useState, } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Styles/Terms.css"; 
 
 const Terms = () => {
-  const [accepted, setAccepted] = useState(false);
   const navigate = useNavigate();
 
-  const handleAccept = () => {
-    if (accepted) {
-      // Itt lehetne backend hívás, hogy az elfogadást mentse
-      alert("Az ÁSZF elfogadva!");
-      navigate("/"); // Visszatér a főoldalra
-    } else {
-      alert("Kérjük, jelöld be az elfogadási checkboxot!");
-    }
+  const handleOk = () => {
+    // Visszatér a regisztrációs oldalra
+    navigate("/register");
   };
 
   return (
@@ -52,16 +45,8 @@ const Terms = () => {
       </div>
 
       <div className="accept-section">
-        <label>
-          <input
-            type="checkbox"
-            checked={accepted}
-            onChange={(e) => setAccepted(e.target.checked)}
-          />
-          Elfogadom az Általános Szerződési Feltételeket
-        </label>
-        <button onClick={handleAccept} className="accept-btn">
-          Elfogadás
+        <button onClick={handleOk} className="accept-btn">
+          OK
         </button>
       </div>
     </div>

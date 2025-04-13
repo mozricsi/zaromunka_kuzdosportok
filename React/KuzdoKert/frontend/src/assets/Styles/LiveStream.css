@@ -1,29 +1,127 @@
+/* LiveStream.css */
 
-.App {
-    font-family: Arial, sans-serif;
-    text-align: center;
+/* Alapvető reset és betűtípus */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #1a1a1a; /* Sötét háttér a sportos, modern hatásért */
+  color: #ffffff; /* Fehér szöveg a kontraszt érdekében */
+}
+
+/* Teljes oldal középre igazítása */
+.live-stream-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Konténer a stream és cím körül */
+.live-stream-container {
+  text-align: center;
+  max-width: 1280px; /* Maximum szélesség a streamhez */
+  width: 100%;
+  padding: 30px;
+  background-color: #252525; /* Enyhén világosabb háttér a konténerhez */
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Árnyék a kiemelkedéshez */
+}
+
+/* Cím formázása */
+.live-stream-title {
+  font-size: 2.5rem; /* Nagyobb cím */
+  font-weight: 700;
+  color: #ff4500; /* Kék akcentusszín */
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Finom szövegárnyék */
+}
+
+/* Stream körüli wrapper */
+.stream-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1280px; /* 720p szélesség */
+  aspect-ratio: 16 / 9; /* Arányos magasság (720p-hez) */
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #333; /* Háttér a stream helyén, ha nincs stream */
+  transition: all 0.3s ease; /* Animáció a sima megjelenéshez */
+}
+
+/* Stream iframe formázása */
+.stream-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Árnyék a stream körül */
+  transition: opacity 0.5s ease; /* Fade-in animáció */
+}
+
+/* Placeholder szöveg, amikor nincs stream */
+.stream-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  color: #6c757d; /* Szürke szín a placeholderhez */
+  font-weight: 500;
+  text-align: center;
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+/* Ha a stream aktív, a placeholder elrejtése */
+.stream-iframe[style*="display: block"] + .stream-placeholder {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Reszponzivitás */
+@media (max-width: 1280px) {
+  .stream-wrapper {
+    max-width: 90%; /* Kisebb képernyőkön arányosan kisebb */
   }
-  
-  .ranglista-section {
+
+  .live-stream-title {
+    font-size: 2rem; /* Kisebb cím */
+  }
+}
+
+@media (max-width: 768px) {
+  .live-stream-container {
     padding: 20px;
-    margin: 20px auto;
-    max-width: 800px;
-    border: 1px solid #ccc; 
-    border-radius: 5px;
-    background-color: #f9f9f9; 
   }
-  
-  .ranglista-list {
-    margin-top: 20px;
+
+  .live-stream-title {
+    font-size: 1.5rem;
   }
-  
-  .ranglista-item {
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #e0e0e0; 
-    text-align: left;
+
+  .stream-placeholder {
+    font-size: 1.2rem;
   }
-  
-  .ranglista-item strong {
-    color: #28a745; 
+}
+
+@media (max-width: 480px) {
+  .live-stream-container {
+    padding: 15px;
   }
+
+  .live-stream-title {
+    font-size: 1.2rem;
+  }
+
+  .stream-placeholder {
+    font-size: 1rem;
+  }
+}

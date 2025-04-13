@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Axios from 'axios';
 import { useNavigate, Link } from "react-router-dom";
-
 import "../Styles/login.css";
 
 const Login = () => {
@@ -17,13 +16,13 @@ const Login = () => {
     Axios.get("http://localhost:5000/login").then((response) => {
       if (response.data.loggedIn === true) {
         setLoginStatus(response.data.user[0].felhasznalonev);
-        setUserRole(response.data.user[0].role); // Szerepkör lekérdezése
+        setUserRole(response.data.user[0].role);
         setTimeout(() => {
-          navigate("/profil");
-        }, 1000);
+          navigate("/");
+        }, 700);
       }
     });
-  }, []);
+  }, [navigate]); 
 
   const login = () => {
     if (!felhasznalonev) {
@@ -42,7 +41,7 @@ const Login = () => {
             setLoginStatus(response.data[0].felhasznalonev);
             setUserRole(response.data[0].role); // Szerepkör beállítása
             setTimeout(() => {
-              navigate("/profil");
+              navigate("/WelcomeScreen"); // Módosítva: /welcome-re irányít
             }, 1000);
           }
         });
@@ -51,6 +50,7 @@ const Login = () => {
   };
 
   return (
+  <main className="logbod">
     <div className="login-container">
       <div className="background-animation">
         <div className="rotating-logo logo1"></div>
@@ -84,10 +84,10 @@ const Login = () => {
             Nem regisztráltál még? <br />
             <Link to="/register">Akkor regisztrálj itt!</Link>
           </p>
-
         </div>
       )}
     </div>
+    </main>
   );
 };
 
