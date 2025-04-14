@@ -37,12 +37,9 @@ const HeroSection = ({ navigate, loginStatus }) => (
 const Home = () => {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [featuredTrainings, setFeaturedTrainings] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
   const [loginStatus, setLoginStatus] = useState(false);
   const navigate = useNavigate();
   const NEWS_API_KEY = '6ed9be5621794199b9b943fbb1a4febf';
-  const TRANSLATE_API_KEY = 'YOUR_GOOGLE_TRANSLATE_KEY';
   const TOPIC = 'Boxing OR Kickboxing OR MMA';
 
 
@@ -62,7 +59,7 @@ const Home = () => {
     };
 
     checkLoginStatus();
-    const interval = setInterval(checkLoginStatus, 5000); // Minden 5 másodpercben újra ellenőrzi
+    const interval = setInterval(checkLoginStatus, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -70,39 +67,29 @@ const Home = () => {
   const fetchNews = async () => {
     try {
       const response = await fetch(
-        `https://newsapi.org/v2/everything?q=${TOPIC}&language=en&pageSize=20&apiKey=${NEWS_API_KEY}`
+        `https://newsapi.org/v2/everything?q=${TOPIC}&language=hu&pageSize=60&apiKey=${NEWS_API_KEY}`
       );
       const data = await response.json();
-      console.log("API válasz:", data); // Nézzük meg, mit kapunk az API-tól
+      console.log("API válasz:", data);
       if (data.articles) {
         const filteredNews = data.articles.filter(article => {
           const title = article.title ? article.title.toLowerCase() : '';
           const description = article.description ? article.description.toLowerCase() : '';
           return (
-            (title.includes('boxing') || description.includes('boxing') ||
-             title.includes('kickboxing') || description.includes('kickboxing') ||
-             title.includes('mma') || description.includes('mma')) &&
-            !title.includes('football') && !description.includes('football') &&
-            !title.includes('soccer') && !description.includes('soccer') &&
-            !title.includes('basketball') && !description.includes('basketball')
+            title.includes('box') || description.includes('box') ||
+          title.includes('kickbox') || description.includes('kickbox') ||
+          title.includes('mma') || description.includes('mma') ||
+          title.includes('judo') || description.includes('judo') ||
+          title.includes('karate') || description.includes('karate') ||
+          title.includes('taekwondo') || description.includes('taekwondo') ||
+          title.includes('birkózás') || description.includes('birkózás') ||
+          title.includes('Muay Thai') || description.includes('Muay Thai') ||
+          title.includes('boxverseny') || description.includes('boxverseny') ||
+          title.includes('küzdősport') || description.includes('küzdősport')
           );
         });
         console.log("Szűrt hírek:", filteredNews);
-
-        const newsToTranslate = filteredNews.slice(0, 10);
-        const translatedNews = await Promise.all(
-          newsToTranslate.map(async (article) => {
-            const translatedTitle = await translateText(article.title, TRANSLATE_API_KEY);
-            const translatedDescription = await translateText(article.description, TRANSLATE_API_KEY);
-            return {
-              ...article,
-              title: translatedTitle,
-              description: translatedDescription,
-            };
-          })
-        );
-        console.log("Fordított hírek:", translatedNews);
-        setNews(translatedNews);
+        setNews(filteredNews.slice(0, 10));
       }
       setLoading(false);
     } catch (error) {
@@ -111,47 +98,8 @@ const Home = () => {
     }
   };
 
-  const translateText = async (text, apiKey) => {
-    if (!text) return '';
-    try {
-      const response = await fetch(
-        `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            q: text,
-            source: 'en',
-            target: 'hu',
-          }),
-        }
-      );
-      const data = await response.json();
-      return data.data.translations[0].translatedText;
-    } catch (error) {
-      console.error("Hiba a fordítás során:", error);
-      return text;
-    }
-  };
-
-  const fetchFeaturedTrainings = async () => {
-    try {
-      const response = await Axios.get('http://localhost:5000/api/kiemelt-edzesek');
-      setFeaturedTrainings(response.data);
-    } catch (error) {
-      console.error("Hiba a kiemelt edzések lekérésekor:", error);
-    }
-  };
-
-  const handleSearch = () => {
-    Axios.get(`http://localhost:5000/api/kereses?term=${searchTerm}`)
-      .then((res) => setFeaturedTrainings(res.data))
-      .catch((err) => console.error('Hiba a keresés során:', err));
-  };
-
   useEffect(() => {
     fetchNews();
-    fetchFeaturedTrainings();
     const interval = setInterval(fetchNews, 300000);
     return () => clearInterval(interval);
   }, []);
@@ -171,9 +119,7 @@ const Home = () => {
     images.forEach((img) => observer.observe(img));
   }, [news]);
 
-  const mainNews = news.slice(0, -2);
-  const lastTwoNews = news.slice(-2);
-
+  const mainNews = news.slice(0);
   return (
     <>
       <Helmet>
@@ -285,7 +231,7 @@ const Home = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1.6 }}
         >
-          <h2>Legfrissebb hírek (Box, Kickbox, MMA)</h2>
+          <h2>Legfrissebb hírek (Box, Kickbox, MMA, stb...)</h2>
           {loading ? (
             <div className="news-grid">
               <SkeletonLoader />
@@ -315,29 +261,7 @@ const Home = () => {
                       <p>{article.description}</p>
                       <a href={article.url} target="_blank" rel="noopener noreferrer">További információk</a>
                     </div>
-                  ))}
-                </div>
-              )}
-              {lastTwoNews.length > 0 && (
-                <div className="last-two-news">
-                  {lastTwoNews.map((article, index) => (
-                    <div key={index} className="news-item last-news-item">
-                      {article.urlToImage ? (
-                        <img
-                          src={article.urlToImage}
-                          alt={article.title}
-                          className="lazy-load"
-                          data-src={article.urlToImage}
-                          onError={(e) => (e.target.src = 'https://via.placeholder.com/300x200?text=Nincs+kép')}
-                        />
-                      ) : (
-                        <img src="https://via.placeholder.com/300x200?text=Nincs+kép" alt="Nincs kép" />
-                      )}
-                      <h3>{article.title}</h3>
-                      <p>{article.description}</p>
-                      <a href={article.url} target="_blank" rel="noopener noreferrer">További információk</a>
-                    </div>
-                  ))}
+                  ))}         
                 </div>
               )}
             </>

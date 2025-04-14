@@ -32,12 +32,12 @@ app.use(session({
   },
 }));
 
-// **MySQL adatbázis kapcsolat**
+
 const db = mysql.createConnection({
   host: "localhost",
-  user: "root", // MySQL felhasználónév
-  password: "", // MySQL jelszó (ha van)
-  port: "3306",
+  user: "root", 
+  password: "",
+  port: "3307",
   database: "kuzdosportok",
 });
 
@@ -968,6 +968,7 @@ app.get('/api/jelentkezes/getId', (req, res) => {
     }
   });
 });
+
 
 
 
