@@ -130,9 +130,7 @@ body {
 .star-display svg {
   width: 20px; /* Kisebb csillagok */
   height: 20px;
-  fill: #444;
   transition: fill 0.3s ease;
-  stroke: #444;
 }
 
 .star.filled svg,
