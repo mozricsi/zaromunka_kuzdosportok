@@ -5,6 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
   const [loginStatus, setLoginStatus] = useState("");
+  const [telepulesek, setTelepulesek] = useState([]);
   Axios.defaults.withCredentials = true;
 
   useEffect(() => {  
@@ -14,6 +15,17 @@ const Register = () => {
       }
     });
   }, []);
+
+  useEffect(() => {
+    fetch('/telepulesek.txt') 
+      .then((response) => response.text())
+      .then((data) => {
+        const telepulesekArray = data.split('\n').map(line => line.trim()).filter(line => line !== '');
+        setTelepulesek(telepulesekArray);
+      })
+      .catch((error) => console.error("Hiba a települések betöltésekor:", error));
+  }, []);
+
 
   // Űrlapadatok inicializálása localStorage-ból, ha vannak
   const [vezeteknevReg, setVezeteknevReg] = useState(localStorage.getItem("vezeteknevReg") || null);
@@ -175,11 +187,12 @@ const Register = () => {
               <div>
                 <label><span className="kotelezo">*</span>Lakhely:</label> <br />
                 <select value={lakhelyReg || ""} onChange={(e) => setLakhelyReg(e.target.value)}>
-                  <option value="">Válassz..</option>
-                  <option value="Budapest">Budapest</option>
-                  <option value="Szeged">Szeged</option>
-                  <option value="Pécs">Pécs</option>
-                  <option value="Kazincbarcika">Kazincbarcika</option>
+                <option value="">Válassz..</option>
+                  {telepulesek.map((telepules, index) => (
+                    <option key={index} value={telepules}>
+                      {telepules}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
