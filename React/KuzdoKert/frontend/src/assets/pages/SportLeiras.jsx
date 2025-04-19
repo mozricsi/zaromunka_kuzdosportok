@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../Styles/sportleiras.css';
+import Swal from 'sweetalert2'
 
 const SportLeiras = () => {
   const { id } = useParams();
@@ -61,6 +62,25 @@ const SportLeiras = () => {
       });
   }, [id]);
 
+  useEffect(() => {
+    if (userId && clubs.length > 0) {
+      clubs.forEach((club) => {
+        Axios.get(`http://localhost:5000/ertekelesek/${club.sprotklub_id}`)
+          .then((response) => {
+            const userRating = response.data.find((rating) => rating.user_id === userId);
+            setRatings((prevRatings) => ({
+              ...prevRatings,
+              [club.sprotklub_id]: response.data,
+              [`${club.sprotklub_id}_hasRated`]: !!userRating,
+            }));
+          })
+          .catch((error) => {
+            console.error(`Hiba az értékelések lekérésekor (${club.sprotklub_id}):`, error);
+          });
+      });
+    }
+  }, [clubs, userId]);
+
   // Klubok lekérése
   useEffect(() => {
     if (id) {
@@ -105,6 +125,37 @@ const SportLeiras = () => {
     }
   }, [clubs]);
 
+  const deleteRating = (ertekeles_id, sportklub_id) => {
+    Axios.delete(`http://localhost:5000/ertekelesek/${ertekeles_id}`, {
+      data: { user_id: userId },
+    })
+      .then((response) => {
+        Swal.fire({
+          title: 'Siker!',
+          text: 'Sikeresen töröled az értékelést!',
+          icon: 'success',
+          customClass: {
+            popup: 'custom-swal-popup',
+            title: 'custom-swal-title',
+            content: 'custom-swal-content',
+          },
+          confirmButtonColor: '#ff4500',
+        });
+ 
+        Axios.get(`http://localhost:5000/ertekelesek/${sportklub_id}`)
+          .then((response) => {
+            setRatings((prev) => ({
+              ...prev,
+              [sportklub_id]: response.data,
+            }));
+          });
+  
+      })
+      .catch((error) => {
+        alert(error.response?.data?.message || 'Hiba történt az értékelés törlésekor.');
+      });
+  };
+
   // Új értékelés űrlap kezelése
   const handleRatingChange = (sportklub_id, field, value) => {
     setNewRating((prev) => ({
@@ -123,7 +174,17 @@ const SportLeiras = () => {
     const csillagos_ertekeles = ratingData.csillagos_ertekeles || 0;
 
     if (!szoveges_ertekeles || csillagos_ertekeles < 1 || csillagos_ertekeles > 5) {
-      alert('Kérlek, adj meg egy szöveges értékelést és egy csillagos értékelést (1-5 között)!');
+      Swal.fire({
+        title: 'Hiba!',
+        text: 'Kérlek, adj meg egy szöveges értékelést és egy csillagos értékelést (1-5 között)!',
+        icon: 'error',
+        customClass: {
+          popup: 'custom-swal-popup',
+          title: 'custom-swal-title',
+          content: 'custom-swal-content',
+        },
+        confirmButtonColor: '#ff4500',
+      });
       return;
     }
 
@@ -134,7 +195,17 @@ const SportLeiras = () => {
       csillagos_ertekeles,
     })
       .then((response) => {
-        alert(response.data.message);
+        Swal.fire({
+          title: 'Siker!',
+          text: response.data.message,
+          icon: 'success',
+          customClass: {
+            popup: 'custom-swal-popup',
+            title: 'custom-swal-title',
+            content: 'custom-swal-content',
+          },
+          confirmButtonColor: '#ff4500',
+        });
         // Frissítjük az értékeléseket
         Axios.get(`http://localhost:5000/ertekelesek/${sportklub_id}`)
           .then((response) => {
@@ -150,7 +221,17 @@ const SportLeiras = () => {
         }));
       })
       .catch((error) => {
-        alert(error.response?.data?.message || 'Hiba történt az értékelés beküldésekor.');
+        Swal.fire({
+          title: 'Hiba!',
+          text: error.response?.data?.message || 'Hiba történt az értékelés beküldésekor.',
+          icon: 'error',
+          customClass: {
+            popup: 'custom-swal-popup',
+            title: 'custom-swal-title',
+            content: 'custom-swal-content',
+          },
+          confirmButtonColor: '#ff4500',
+        });
       });
   };
 
@@ -293,8 +374,16 @@ const SportLeiras = () => {
                         <ul>
                           {ratings[club.sprotklub_id].map((rating) => (
                             <li key={rating.ertekeles_id}>
-                              <strong>{rating.felhasznalonev}</strong> <StarDisplay rating={rating.csillagos_ertekeles} />: {rating.szoveges_ertekeles}
-                            </li>
+                            <strong>{rating.felhasznalonev}</strong> <StarDisplay rating={rating.csillagos_ertekeles} />: {rating.szoveges_ertekeles}
+                            {rating.user_id === userId && (
+                              <button
+                                onClick={() => deleteRating(rating.ertekeles_id, club.sprotklub_id)}
+                                style={{ marginLeft: '10px', color: 'red' }}
+                              >
+                                Törlés
+                              </button>
+                            )}
+                          </li>
                           ))}
                         </ul>
                       ) : (

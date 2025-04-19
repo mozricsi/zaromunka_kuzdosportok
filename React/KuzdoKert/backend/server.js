@@ -344,6 +344,35 @@ app.post("/coach/add-club", (req, res) => {
   });
 });
 
+app.delete('/ertekelesek/:ertekeles_id', (req, res) => {
+  const { ertekeles_id } = req.params;
+  const { user_id } = req.body; 
+
+
+  const checkQuery = `SELECT user_id FROM ertekelesek WHERE ertekeles_id = ?`;
+  db.query(checkQuery, [ertekeles_id], (err, results) => {
+    if (err) {
+      console.error('Hiba az értékelés ellenőrzésekor:', err);
+      return res.status(500).json({ message: 'Hiba történt az értékelés ellenőrzésekor.' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Értékelés nem található.' });
+    }
+    if (results[0].user_id !== parseInt(user_id)) {
+      return res.status(403).json({ message: 'Nincs jogosultságod törölni ezt az értékelést!' });
+    }
+
+    const deleteQuery = `DELETE FROM ertekelesek WHERE ertekeles_id = ?`;
+    db.query(deleteQuery, [ertekeles_id], (err) => {
+      if (err) {
+        console.error('Hiba az értékelés törlésekor:', err);
+        return res.status(500).json({ message: 'Hiba történt az értékelés törlésekor.' });
+      }
+      res.json({ message: 'Értékelés sikeresen törölve!' });
+    });
+  });
+});
+
 // Értékelések lekérdezése
 app.get('/ertekelesek/:sportklub_id', (req, res) => {
   const sportklub_id = req.params.sportklub_id;
@@ -369,30 +398,20 @@ app.post('/ertekelesek', (req, res) => {
 
   const checkUserQuery = `SELECT role FROM latogatok WHERE user_id = ?`;
   db.query(checkUserQuery, [user_id], (err, results) => {
-    if (err) {
-      console.error('Hiba a felhasználó ellenőrzésekor:', err);
-      return res.status(500).json({ message: 'Hiba történt a felhasználó ellenőrzésekor.' });
-    }
+    if (err) return res.status(500).json({ message: 'Hiba a felhasználó ellenőrzésekor.' });
+    if (results.length === 0) return res.status(404).json({ message: 'Felhasználó nem található.' });
+    if (results[0].role !== 'visitor') return res.status(403).json({ message: 'Csak látogatók adhatnak értékelést!' });
 
-    if (results.length === 0) {
-      return res.status(404).json({ message: 'Felhasználó nem található.' });
-    }
+    const checkExistingQuery = `SELECT * FROM ertekelesek WHERE user_id = ? AND sportklub_id = ?`;
+    db.query(checkExistingQuery, [user_id, sportklub_id], (err, existing) => {
+      if (err) return res.status(500).json({ message: 'Hiba az értékelés ellenőrzésekor.' });
+      if (existing.length > 0) return res.status(400).json({ message: 'Már értékelted ezt a klubot!' });
 
-    const userRole = results[0].role;
-    if (userRole !== 'visitor') {
-      return res.status(403).json({ message: 'Csak látogatók adhatnak értékelést!' });
-    }
-
-    const insertQuery = `
-      INSERT INTO ertekelesek (user_id, sportklub_id, szoveges_ertekeles, csillagos_ertekeles)
-      VALUES (?, ?, ?, ?)
-    `;
-    db.query(insertQuery, [user_id, sportklub_id, szoveges_ertekeles, csillagos_ertekeles], (err, result) => {
-      if (err) {
-        console.error('Hiba az értékelés hozzáadásakor:', err);
-        return res.status(500).json({ message: 'Hiba történt az értékelés hozzáadása során.' });
-      }
-      res.json({ message: 'Értékelés sikeresen hozzáadva!' });
+      const insertQuery = `INSERT INTO ertekelesek (user_id, sportklub_id, szoveges_ertekeles, csillagos_ertekeles) VALUES (?, ?, ?, ?)`;
+      db.query(insertQuery, [user_id, sportklub_id, szoveges_ertekeles, csillagos_ertekeles], (err) => {
+        if (err) return res.status(500).json({ message: 'Hiba az értékelés hozzáadása során.' });
+        res.json({ message: 'Értékelés sikeresen hozzáadva!' });
+      });
     });
   });
 });
