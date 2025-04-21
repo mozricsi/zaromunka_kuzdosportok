@@ -10,7 +10,7 @@ const SportLeiras = () => {
   const [sport, setSport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [clubs, setClubs] = useState([]);
-  const [events, setEvents] = useState([]); // Új állapot az eseményeknek
+  const [events, setEvents] = useState([]);
   const [error, setError] = useState(null);
   const [loginStatus, setLoginStatus] = useState(false);
   const [userId, setUserId] = useState(null);
@@ -235,7 +235,6 @@ const SportLeiras = () => {
       });
   };
 
-  // Csillagok renderelése és kezelése
   const StarRating = ({ sportklub_id, value, onChange }) => {
     const stars = [1, 2, 3, 4, 5];
 
@@ -265,7 +264,7 @@ const SportLeiras = () => {
     );
   };
 
-  // Csillagok megjelenítése az értékeléseknél
+
   const StarDisplay = ({ rating }) => {
     const stars = [1, 2, 3, 4, 5];
     return (
@@ -391,7 +390,7 @@ const SportLeiras = () => {
                       )}
                     </div>
 
-                    {/* Értékelés űrlap (csak visitor szerepkörűeknek) */}
+                    {/* Értékelés űrlap */}
                     {userRole === 'visitor' && (
                       <div className="rating-form">
                         <h4>Add meg az értékelésed:</h4>

@@ -116,7 +116,7 @@ const EdzesNaplo = () => {
   };
 
   const formatTime = (time) => {
-    return time.split(':').slice(0, 2).join(':'); // Pl. "18:00:00" -> "18:00"
+    return time.split(':').slice(0, 2).join(':');
   };
 
   const getMotivationalMessage = () => {

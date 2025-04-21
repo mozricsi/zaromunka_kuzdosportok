@@ -14,7 +14,6 @@ function Ranglista() {
   const fetchLeaderboard = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/ranglista?page=${page}&limit=${itemsPerPage}&filter=${filter}`);
-      // Filter out users with zero activities
       const filteredCoaches = response.data.coaches.filter(coach => coach.edzesek > 0);
       const filteredVisitors = response.data.visitors.filter(visitor => visitor.reszvetel > 0);
       setCoachesLeaderboard(filteredCoaches);
@@ -28,13 +27,13 @@ function Ranglista() {
 
   useEffect(() => {
     fetchLeaderboard();
-    const interval = setInterval(fetchLeaderboard, 30000); // 30 másodpercenként frissít
+    const interval = setInterval(fetchLeaderboard, 30000);
     return () => clearInterval(interval);
   }, [page, filter]);
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
-    setPage(1); // Visszaállítjuk az első oldalra szűréskor
+    setPage(1);
   };
 
   if (loading) {

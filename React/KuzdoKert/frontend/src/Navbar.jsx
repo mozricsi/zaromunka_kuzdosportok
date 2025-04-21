@@ -61,7 +61,7 @@ const Navbar = () => {
       };
 
       fetchVisitorNotifications();
-      const interval = setInterval(fetchVisitorNotifications, 300000); // 5 percenként frissít
+      const interval = setInterval(fetchVisitorNotifications, 300000);
       return () => clearInterval(interval);
     }
   }, [userId, userRole]);
@@ -101,7 +101,6 @@ const Navbar = () => {
       const response = await Axios.put(`http://localhost:5000/api/notifications/mark-read/${userId}/${userRole}`);
       console.log("PUT válasz:", response.data);
 
-      // Frissítjük az értesítéseket
       if (userRole === 'visitor') {
         const response = await Axios.get(`http://localhost:5000/api/notifications/visitor/${userId}`);
         setVisitorNotifications(response.data);
@@ -113,7 +112,6 @@ const Navbar = () => {
       }
     } catch (error) {
       console.error('Hiba az értesítések olvasottá tételénél:', error.response ? error.response.data : error.message);
-      // Ha a PUT kérés nem sikerül, próbáljuk meg újra lekérni az értesítéseket
       if (userRole === 'visitor') {
         const response = await Axios.get(`http://localhost:5000/api/notifications/visitor/${userId}`);
         setVisitorNotifications(response.data);
@@ -222,7 +220,7 @@ const Navbar = () => {
                 className="nav-item notification"
                 onMouseEnter={() => {
                   setIsCoachNotifOpen(true);
-                  markNotificationsAsRead(); // Értesítések olvasottá tétele
+                  markNotificationsAsRead();
                 }}
                 onMouseLeave={() => setIsCoachNotifOpen(false)}
               >

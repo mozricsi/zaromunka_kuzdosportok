@@ -9,7 +9,7 @@ const Login = () => {
   const [info, setInfo] = useState(null);
   const navigate = useNavigate();
   const [loginStatus, setLoginStatus] = useState(false);
-  const [userRole, setUserRole] = useState(null); // Szerepkör tárolása
+  const [userRole, setUserRole] = useState(null);
   Axios.defaults.withCredentials = true;
 
   useEffect(() => {
@@ -39,9 +39,9 @@ const Login = () => {
             setInfo(response.data.message);
           } else {
             setLoginStatus(response.data[0].felhasznalonev);
-            setUserRole(response.data[0].role); // Szerepkör beállítása
+            setUserRole(response.data[0].role);
             setTimeout(() => {
-              navigate("/WelcomeScreen"); // Módosítva: /welcome-re irányít
+              navigate("/WelcomeScreen");
             }, 1000);
           }
         });

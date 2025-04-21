@@ -5,7 +5,6 @@ const Terms = () => {
   const navigate = useNavigate();
 
   const handleOk = () => {
-    // Visszatér a regisztrációs oldalra
     navigate("/register");
   };
 

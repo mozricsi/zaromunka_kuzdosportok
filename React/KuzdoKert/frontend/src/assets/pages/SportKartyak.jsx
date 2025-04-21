@@ -24,7 +24,7 @@ const SportKartyak = () => {
   };
 
   return (
-    <div className="sport-page"> {/* Egyedi osztálynév */}
+    <div className="sport-page">
       <h1>Sportkártyák</h1>
       <main>
         {cards.map((card) => (

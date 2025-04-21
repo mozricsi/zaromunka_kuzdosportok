@@ -102,7 +102,6 @@ const Register = () => {
               });
 
               setReg("Sikeres regisztráció!");
-              // Sikeres regisztráció után töröljük a localStorage-t
               localStorage.clear();
               setTimeout(() => {
                 navigate("/login");

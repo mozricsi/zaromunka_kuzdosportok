@@ -23,8 +23,6 @@ function LiveStream() {
         }
       }
     });
-
-    // Tisztítás a komponens megsemmisítésekor
     return () => {
       if (socket.current) {
         socket.current.disconnect();
